@@ -236,7 +236,7 @@ body{font-family:Nunito,sans-serif;background:var(--cream);color:var(--dark);min
 <div id="toast"></div>
 
 <!-- ═══════════ LOGIN SCREEN ═══════════ -->
-<div id="sl" class="scr on">
+<div id="sl" class="scr">
   <div class="login-wrap">
     <div class="logo-area">
       <div class="logo-circle">
@@ -258,7 +258,7 @@ body{font-family:Nunito,sans-serif;background:var(--cream);color:var(--dark);min
 </div>
 
 <!-- ═══════════ SHOP SCREEN ═══════════ -->
-<div id="sh" class="scr">
+<div id="sh" class="scr on">
 
   <!-- TOPBAR -->
   <div class="topbar">
@@ -429,7 +429,7 @@ body{font-family:Nunito,sans-serif;background:var(--cream);color:var(--dark);min
 // ═══════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════
-const SUPA_URL = 'https://ykttentykedjlasoewedn.supabase.co';
+const SUPA_URL = 'https://yktentykedjlasoewedn.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrdGVudHlrZWRqbGFzb2V3ZWRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTY1NjksImV4cCI6MjA5MTQ5MjU2OX0.HFD2SZqCw9MMGUVYbF_wTGCkfNcO9PsafCfPptqtApA';
 const GROQ_KEY = ''; // Agregar key de Groq acá
 
@@ -486,20 +486,9 @@ function getMoneda(prod){
 // ═══════════════════════════════════════════════
 // LOGIN
 // ═══════════════════════════════════════════════
-$('btn-login').onclick = async () => {
-  const user = $('inp-user').value.trim();
-  const pass = $('inp-pass').value.trim();
-  if(!user||!pass){$('login-err').textContent='Completá todos los campos';return;}
-  $('btn-login').textContent='Entrando...';
-  try{
-    const r = await supaFetch(`/rest/v1/socios?usuario=eq.${encodeURIComponent(user)}&password=eq.${encodeURIComponent(pass)}&activo=eq.true&select=*`);
-    const data = await r.json();
-    if(!data.length){$('login-err').textContent='Usuario o contraseña incorrectos';$('btn-login').textContent='Entrar 🌿';return;}
-    socio = data[0];
-    iniciarApp();
-  }catch(e){$('login-err').textContent='Error de conexión';$('btn-login').textContent='Entrar 🌿';}
-};
-$('inp-pass').addEventListener('keydown',e=>{if(e.key==='Enter')$('btn-login').click();});
+// DEMO MODE - login salteado
+$('btn-login').onclick = () => {};
+$('inp-pass').addEventListener('keydown',e=>{});
 
 // ═══════════════════════════════════════════════
 // INICIAR APP
@@ -859,6 +848,12 @@ function addTyping(){
 }
 $('btn-bot-send').onclick=sendBotMsg;
 $('bot-input').onkeydown=e=>{if(e.key==='Enter')sendBotMsg();};
+
+// DEMO: iniciar automáticamente
+socio = {usuario:'demo', nombre:'Socio Demo', lista_precio:1};
+$('greeting-name').textContent = 'Socio Demo';
+$('bot-fab').style.display='flex';
+cargarProductos();
 </script>
 </body>
 </html>
