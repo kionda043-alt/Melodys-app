@@ -717,6 +717,7 @@ body{
     <div id="cart-content" style="display:none">
       <div class="cart-body" id="cart-items-list"></div>
 
+      <div id="cart-min-warning" style="display:none;margin:0 14px 10px;padding:10px 14px;background:#FFF3CD;border:1px solid #FFD700;border-radius:var(--r);font-size:.75rem;color:#856404;font-weight:700"></div>
       <div style="padding:0 14px;margin-bottom:12px">
         <div id="cart-envio-row" style="display:none;justify-content:space-between;align-items:center;padding:8px 0;font-size:.78rem;color:var(--gray);border-bottom:1px solid var(--border);margin-bottom:8px">
           <span>🚚 Costo de envío (pedido menor a 20g)</span>
@@ -809,18 +810,18 @@ body{
 
         <div class="pm-section">Gramos</div>
         <div class="gramos-opts" id="gramos-opts">
-          <div class="gr-opt active" id="gr-opt-first" onclick="setGramos(0,this)">—</div>
-          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
-          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
-          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
-          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
-          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
+          <div class="gr-opt active" onclick="setGramos(5,this)">5g</div>
+          <div class="gr-opt" onclick="setGramos(10,this)">10g</div>
+          <div class="gr-opt" onclick="setGramos(15,this)">15g</div>
+          <div class="gr-opt" onclick="setGramos(20,this)">20g</div>
+          <div class="gr-opt" onclick="setGramos(25,this)">25g</div>
+          <div class="gr-opt" onclick="setGramos(30,this)">30g</div>
         </div>
       </div>
 
       <!-- OTHER: cantidad -->
       <div id="pm-other-opts" style="display:none">
-        <div class="pm-section">Cantidad</div>
+        <div class="pm-section" id="pm-qty-label">Cantidad</div>
         <div class="qty-wrap">
           <button class="qty-btn" onclick="changeQty(-1)">−</button>
           <div class="qty-val" id="pm-qty">1</div>
@@ -1075,6 +1076,9 @@ function renderProducts(cat, data) {
       priceText = pb > 0 ? "$" + pb.toLocaleString("es-AR") + "/g" : "Consultar precio";
     } else if (cat === "esquejes") {
       priceText = "5u $50.000 · 10u $80.000";
+    } else if (cat === "semillas") {
+      var pr2 = getProductPrice(p);
+      priceText = pr2 > 0 ? "Pack: $" + pr2.toLocaleString("es-AR") + "/u" : "Consultar precio";
     } else {
       var pr = getProductPrice(p);
       var mon = p.moneda === "USD" ? "USD " : "$";
@@ -1125,16 +1129,27 @@ function openModal(p, cat) {
     document.querySelectorAll(".gr-opt").forEach(function(g, i) {
       g.classList.toggle("active", i === 0);
     });
+    document.querySelectorAll(".gr-opt").forEach(function(g,i){g.classList.toggle("active",i===0);});
+    modalGramos = 5;
     setTipo("baja");
   } else if (cat === "esquejes") {
     document.getElementById("pm-flores-opts").style.display = "none";
     document.getElementById("pm-other-opts").style.display = "block";
+    document.getElementById("pm-qty-label").textContent = "Cantidad (5 o 10 unidades)";
+    document.getElementById("pm-qty").textContent = "5";
+    modalQty = 5;
+  } else if (cat === "semillas") {
+    document.getElementById("pm-flores-opts").style.display = "none";
+    document.getElementById("pm-other-opts").style.display = "block";
+    document.getElementById("pm-qty-label").textContent = "Pack (5 · 10 · 30 unidades)";
     document.getElementById("pm-qty").textContent = "5";
     modalQty = 5;
   } else {
     document.getElementById("pm-flores-opts").style.display = "none";
     document.getElementById("pm-other-opts").style.display = "block";
+    if (document.getElementById("pm-qty-label")) document.getElementById("pm-qty-label").textContent = "Cantidad";
     document.getElementById("pm-qty").textContent = "1";
+    modalQty = 1;
   }
 
   updateAddBtn();
@@ -1158,21 +1173,10 @@ function setTipo(tipo) {
   modalTipo = tipo;
   document.getElementById("tipo-baja").classList.toggle("active", tipo === "baja");
   document.getElementById("tipo-alta").classList.toggle("active", tipo === "alta");
-  // Update gramos options based on tipo
-  var minG = tipo === "baja" ? 20 : 10;
-  var grOpts = document.querySelectorAll(".gr-opt");
-  var steps = tipo === "baja" ? [20,30,40,50,60,70] : [10,20,30,40,50,60];
-  grOpts.forEach(function(el, i) {
-    el.textContent = steps[i] + "g";
-    el.onclick = function(){ setGramos(steps[i], this); };
-    el.classList.toggle("active", i === 0);
-  });
-  modalGramos = steps[0];
   updateAddBtn();
 }
 
 function setGramos(g, el) {
-  if (g === 0) return;
   modalGramos = g;
   document.querySelectorAll(".gr-opt").forEach(function(x) { x.classList.remove("active"); });
   el.classList.add("active");
@@ -1182,6 +1186,11 @@ function setGramos(g, el) {
 function changeQty(delta) {
   if (currentCat === "esquejes") {
     modalQty = modalQty === 5 ? 10 : 5;
+  } else if (currentCat === "semillas") {
+    var packs = [5, 10, 30];
+    var idx2 = packs.indexOf(modalQty);
+    idx2 = Math.max(0, Math.min(packs.length-1, idx2 + delta));
+    modalQty = packs[idx2];
   } else {
     modalQty = Math.max(1, modalQty + delta);
   }
@@ -1204,9 +1213,15 @@ function updateAddBtn() {
     btn.textContent = "Agregar " + unidEsq + " — $" + precioEsq.toLocaleString("es-AR");
   } else {
     var pr = getProductPrice(modalProduct);
-    total = pr * modalQty;
-    var mon = modalProduct.moneda === "USD" ? "USD " : "$";
-    btn.textContent = total > 0 ? "Agregar — " + mon + total.toLocaleString("es-AR") : "Agregar al carrito";
+    if (currentCat === "semillas") {
+      var semLabel = "Pack " + modalQty + "u";
+      total = pr > 0 ? pr * modalQty : 0;
+      btn.textContent = total > 0 ? "Agregar " + semLabel + " — $" + total.toLocaleString("es-AR") : "Agregar " + semLabel + " — Consultar precio";
+    } else {
+      total = pr * modalQty;
+      var mon = modalProduct.moneda === "USD" ? "USD " : "$";
+      btn.textContent = total > 0 ? "Agregar — " + mon + total.toLocaleString("es-AR") : "Agregar al carrito";
+    }
   }
 }
 
@@ -1298,6 +1313,20 @@ function renderCart() {
   document.getElementById("cart-sub").textContent = cart.length + " producto" + (cart.length !== 1 ? "s" : "");
   document.getElementById("cart-total-val").textContent = "$" + total.toLocaleString("es-AR");
 
+  // Minimum warning
+  var floresC = cart.filter(function(i){return i.cat==="flores";});
+  var grB = floresC.filter(function(i){return i.tipo==="baja";}).reduce(function(a,i){return a+i.grams;},0);
+  var grA = floresC.filter(function(i){return i.tipo==="alta";}).reduce(function(a,i){return a+i.grams;},0);
+  var minWarn = document.getElementById("cart-min-warning");
+  if (floresC.length > 0 && grB < 20 && grA < 10) {
+    minWarn.style.display = "block";
+    if (grB > 0 && grA === 0) minWarn.textContent = "⚠️ Mínimo 20g de bajas — te faltan " + (20-grB) + "g";
+    else if (grA > 0 && grB === 0) minWarn.textContent = "⚠️ Mínimo 10g de altas — te faltan " + (10-grA) + "g";
+    else minWarn.textContent = "⚠️ Mínimo: 20g de bajas o 10g de altas";
+  } else {
+    minWarn.style.display = "none";
+  }
+
   // Shipping row
   var envioRow = document.getElementById("cart-envio-row");
   if (costoEnvio > 0) {
@@ -1364,6 +1393,15 @@ function confirmarPedido() {
   var nombre = currentSocio ? currentSocio.nombre : document.getElementById("input-nombre").value.trim();
   if (!nombre) { showToast("Ingresá tu nombre", "err"); return; }
   if (!cart.length) { showToast("El carrito está vacío", "err"); return; }
+
+  // Check minimum cart requirement
+  var floresCarrito = cart.filter(function(i){return i.cat==="flores";});
+  var gramosB = floresCarrito.filter(function(i){return i.tipo==="baja";}).reduce(function(a,i){return a+i.grams;},0);
+  var gramosA = floresCarrito.filter(function(i){return i.tipo==="alta";}).reduce(function(a,i){return a+i.grams;},0);
+  if (floresCarrito.length > 0 && gramosB < 20 && gramosA < 10) {
+    showToast("Mínimo 20g de bajas o 10g de altas para confirmar", "err");
+    return;
+  }
 
   var btn = document.getElementById("confirm-btn");
   btn.disabled = true;
