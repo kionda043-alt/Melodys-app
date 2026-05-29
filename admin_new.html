@@ -188,26 +188,6 @@ tbody tr:hover{background:var(--surface2);}
 #toast.success{background:var(--green);}
 #toast.error{background:var(--red);}
 
-/* BOT */
-#bot-panel{position:fixed;bottom:88px;right:24px;width:370px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);box-shadow:var(--sh3);z-index:100;display:none;flex-direction:column;}
-#bot-panel.on{display:flex;}
-.bot-hd{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--sb);border-radius:var(--r3) var(--r3) 0 0;}
-.bot-t{font-size:.88rem;font-weight:600;color:white;display:flex;align-items:center;gap:8px;}
-.bot-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.bot-cl{background:rgba(255,255,255,.15);border:none;color:white;cursor:pointer;font-size:.85rem;padding:4px 9px;border-radius:6px;}
-.bot-msgs{height:300px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--surface2);}
-.bot-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:.83rem;line-height:1.55;}
-.bot-msg.bot{background:var(--surface);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start;box-shadow:var(--sh);}
-.bot-msg.user{background:var(--blue);color:white;border-bottom-right-radius:4px;align-self:flex-end;}
-.bot-msg.thinking{color:var(--text3);font-style:italic;background:var(--surface);}
-.bot-ir{padding:14px;border-top:1px solid var(--border);display:flex;gap:8px;}
-.bot-in{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r);padding:9px 13px;color:var(--text);font-family:var(--fn);font-size:.83rem;outline:none;transition:border-color .15s;}
-.bot-in:focus{border-color:var(--blue);}
-.bot-send{background:var(--blue);border:none;border-radius:var(--r);padding:9px 14px;color:white;cursor:pointer;font-size:.85rem;font-weight:600;}
-.bot-send:hover{background:var(--blue2);}
-#bot-tgl{position:fixed;bottom:24px;right:24px;width:52px;height:52px;background:var(--sb);border:none;border-radius:50%;color:white;font-size:1.2rem;cursor:pointer;box-shadow:var(--sh3);z-index:99;transition:all .15s;display:flex;align-items:center;justify-content:center;}
-#bot-tgl:hover{transform:scale(1.06);background:var(--sb2);}
 
 /* INNER TABS */
 .itabs{display:flex;gap:2px;margin-bottom:20px;background:var(--surface3);padding:4px;border-radius:var(--r);width:fit-content;border:1px solid var(--border);}
@@ -342,15 +322,16 @@ tbody tr:hover{background:var(--surface2);}
         <button class="itab" onclick="switchCatTab('semillas')">🌱 Semillas</button>
         <button class="itab" onclick="switchCatTab('esquejes')">✂️ Esquejes</button>
         <button class="itab" onclick="switchCatTab('cremas')">🧴 Cremas</button>
-        <button class="itab" onclick="switchCatTab('otros')">📦 Otros</button>
+        <button class="itab" onclick="switchCatTab('hongos')">🍄 Hongos</button>
       </div>
       <div id="cat-flores">
         <div class="card" style="margin-bottom:20px">
           <div class="card-hd"><span class="card-title">Precios globales de flores</span><button class="btn bp2 bsm" onclick="guardarPreciosFlores()">💾 Guardar precios</button></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px">
             <div class="psec"><div class="psec-t">Precio BAJAS — por gramo</div><div class="pgrid"><div><label>Lista 1</label><input type="number" id="fl-baja-l1" placeholder="0"/></div><div><label>Lista 2</label><input type="number" id="fl-baja-l2" placeholder="0"/></div><div><label>Lista 3</label><input type="number" id="fl-baja-l3" placeholder="0"/></div></div></div>
             <div class="psec"><div class="psec-t">Precio ALTAS — por gramo</div><div class="pgrid"><div><label>Lista 1</label><input type="number" id="fl-alta-l1" placeholder="0"/></div><div><label>Lista 2</label><input type="number" id="fl-alta-l2" placeholder="0"/></div><div><label>Lista 3</label><input type="number" id="fl-alta-l3" placeholder="0"/></div></div></div>
           </div>
+          <div class="psec"><div class="psec-t">🚚 Costo de envío — pedidos menores a 20g</div><div style="max-width:160px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Precio ($)</label><input type="number" id="fl-envio" placeholder="0"/></div></div></div></div>
         </div>
         <div class="sec-hd"><div class="sec-t">Genéticas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'flores')">+ Agregar genética</button></div>
         <div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-flores"></tbody></table></div>
@@ -359,7 +340,7 @@ tbody tr:hover{background:var(--surface2);}
       <div id="cat-semillas" style="display:none"><div class="sec-hd"><div class="sec-t">Semillas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'semillas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-semillas"></tbody></table></div></div>
       <div id="cat-esquejes" style="display:none"><div class="sec-hd"><div class="sec-t">Esquejes</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'esquejes')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-esquejes"></tbody></table></div></div>
       <div id="cat-cremas" style="display:none"><div class="sec-hd"><div class="sec-t">Cremas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'cremas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-cremas"></tbody></table></div></div>
-      <div id="cat-otros" style="display:none"><div class="sec-hd"><div class="sec-t">Otros</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'otros')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-otros"></tbody></table></div></div>
+      <div id="cat-hongos" style="display:none"><div class="sec-hd"><div class="sec-t">Otros</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'hongos')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-hongos"></tbody></table></div></div>
     </div>
 
     <!-- SOCIOS -->
@@ -368,7 +349,7 @@ tbody tr:hover{background:var(--surface2);}
         <div class="sec-t">Socios</div>
         <div style="display:flex;gap:10px"><input class="fgi" id="buscar-socio" placeholder="🔍 Buscar..." style="width:240px" oninput="filtrarSocios()"/><button class="btn bp2" onclick="abrirModalSocio(null)">+ Nuevo socio</button></div>
       </div>
-      <div class="tw"><table><thead><tr><th>Socio</th><th>Usuario</th><th>Teléfono</th><th>Lista</th><th>Membresía</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbl-socios"></tbody></table></div>
+      <div class="tw"><table><thead><tr><th>Socio</th><th>Usuario</th><th>Teléfono</th><th>Lista</th><th>Membresía</th><th>Entregas</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbl-socios"></tbody></table></div>
     </div>
 
     <!-- ADMINISTRATIVA -->
@@ -449,20 +430,12 @@ tbody tr:hover{background:var(--surface2);}
 </div>
 
 <!-- BOT -->
-<button id="bot-tgl" onclick="toggleBot()" title="Asistente IA">🤖</button>
-<div id="bot-panel">
-  <div class="bot-hd"><div class="bot-t"><span class="bot-dot"></span>Asistente Melody's</div><button class="bot-cl" onclick="toggleBot()">✕</button></div>
-  <div class="bot-msgs" id="bot-msgs"><div class="bot-msg bot">Hola! Soy tu asistente. Puedo ayudarte con información sobre pedidos, socios, ventas y más. ¿En qué te ayudo?</div></div>
-  <div class="bot-ir"><input class="bot-in" id="bot-input" placeholder="Preguntá algo..." onkeydown="if(event.key==='Enter')sendBot()"/><button class="bot-send" onclick="sendBot()">↑</button></div>
-</div>
 <div id="toast"></div>
 
 <script>
 var SB_URL="https://yktentykedjlasoewedn.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrdGVudHlrZWRqbGFzb2V3ZWRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTY1NjksImV4cCI6MjA5MTQ5MjU2OX0.HFD2SZqCw9MMGUVYbF_wTGCkfNcO9PsafCfPptqtApA";
 var ADMIN_PASS="melodys2025";
-var GROQ_KEY="";
-var GROQ_MODEL="llama3-8b-8192";
 var allPedidos=[],allSocios=[],allProductos=[],configData={};
 var currentPedidoId=null,botOpen=false,charts={};
 
@@ -498,8 +471,8 @@ function init(){
   loadConfig();loadGeneral();
 }
 
-function loadConfig(){sb("configuracion?id=eq.1","GET").then(function(d){if(d&&d[0]){configData=d[0];var f=["fl-baja-l1","fl-baja-l2","fl-baja-l3","fl-alta-l1","fl-alta-l2","fl-alta-l3"];var k=["flores_baja_lista1","flores_baja_lista2","flores_baja_lista3","flores_alta_lista1","flores_alta_lista2","flores_alta_lista3"];f.forEach(function(id,i){var el=document.getElementById(id);if(el&&configData[k[i]])el.value=configData[k[i]];});}});}
-function guardarPreciosFlores(){var datos={flores_baja_lista1:parseFloat(document.getElementById("fl-baja-l1").value)||0,flores_baja_lista2:parseFloat(document.getElementById("fl-baja-l2").value)||0,flores_baja_lista3:parseFloat(document.getElementById("fl-baja-l3").value)||0,flores_alta_lista1:parseFloat(document.getElementById("fl-alta-l1").value)||0,flores_alta_lista2:parseFloat(document.getElementById("fl-alta-l2").value)||0,flores_alta_lista3:parseFloat(document.getElementById("fl-alta-l3").value)||0};sb("configuracion?id=eq.1","PATCH",datos).then(function(r){if(!r||r.error){datos.id=1;sb("configuracion","POST",datos).then(function(){toast("Precios guardados","success");loadConfig();});}else{toast("Precios guardados","success");loadConfig();}});}
+function loadConfig(){sb("configuracion?id=eq.1","GET").then(function(d){if(d&&d[0]){configData=d[0];var f=["fl-baja-l1","fl-baja-l2","fl-baja-l3","fl-alta-l1","fl-alta-l2","fl-alta-l3","fl-envio"];var k=["flores_baja_lista1","flores_baja_lista2","flores_baja_lista3","flores_alta_lista1","flores_alta_lista2","flores_alta_lista3","costo_envio"];f.forEach(function(id,i){var el=document.getElementById(id);if(el&&configData[k[i]]!==undefined)el.value=configData[k[i]];});}});}
+function guardarPreciosFlores(){var datos={flores_baja_lista1:parseFloat(document.getElementById("fl-baja-l1").value)||0,flores_baja_lista2:parseFloat(document.getElementById("fl-baja-l2").value)||0,flores_baja_lista3:parseFloat(document.getElementById("fl-baja-l3").value)||0,flores_alta_lista1:parseFloat(document.getElementById("fl-alta-l1").value)||0,flores_alta_lista2:parseFloat(document.getElementById("fl-alta-l2").value)||0,flores_alta_lista3:parseFloat(document.getElementById("fl-alta-l3").value)||0,costo_envio:parseFloat(document.getElementById("fl-envio").value)||0};sb("configuracion?id=eq.1","PATCH",datos).then(function(r){if(!r||r.error){datos.id=1;sb("configuracion","POST",datos).then(function(){toast("Precios guardados","success");loadConfig();});}else{toast("Precios guardados","success");loadConfig();}});}
 
 function loadGeneral(){
   var hoy=new Date();hoy.setHours(0,0,0,0);
@@ -557,12 +530,13 @@ function abrirConfirmar(id){
   if(p.instrucciones)det.innerHTML+='<div style="margin-top:12px;padding:12px;background:var(--yellow-bg);border:1px solid var(--yellow-lt);border-radius:var(--r);font-size:.82rem;color:var(--yellow)">📝 '+p.instrucciones+'</div>';
   var now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());document.getElementById("mp-fecha-envio").min=now.toISOString().slice(0,16);document.getElementById("mp-nota").value="";abrirModal("modal-pedido");
 }
-function confirmarPedido(){var fecha=document.getElementById("mp-fecha-envio").value;var nota=document.getElementById("mp-nota").value;if(!fecha){toast("Seleccioná la fecha y hora de envío","error");return;}sb("pedidos?id=eq."+currentPedidoId,"PATCH",{estado:"confirmado",fecha_envio:fecha,nota_admin:nota}).then(function(){cerrarModal("modal-pedido");toast("Pedido confirmado","success");loadPedidos();});}
+function sendResendEmail(to,subject,html){return fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer re_87pcRRX8_6MhP6Bqn8iBojupgYGhnnrdk","Content-Type":"application/json"},body:JSON.stringify({from:"Melody's Farm <onboarding@resend.dev>",to:[to],subject:subject,html:html})});}
+function confirmarPedido(){var fecha=document.getElementById("mp-fecha-envio").value;var nota=document.getElementById("mp-nota").value;if(!fecha){toast("Seleccioná la fecha y hora de envío","error");return;}sb("pedidos?id=eq."+currentPedidoId,"PATCH",{estado:"confirmado",fecha_envio:fecha,nota_admin:nota}).then(function(){cerrarModal("modal-pedido");toast("Pedido confirmado","success");loadPedidos();var p=allPedidos.find(function(x){return x.id===currentPedidoId;});if(p&&p.es_membresia&&p.socio_id){sb("socios?id=eq."+p.socio_id,"GET").then(function(sd){if(sd&&sd[0]){var usadas=(sd[0].membresia_entregas_usadas||0)+1;sb("socios?id=eq."+p.socio_id,"PATCH",{membresia_entregas_usadas:usadas}).then(function(){loadSocios();});}});}if(p&&p.socio_email){var fd=new Date(fecha).toLocaleString("es-AR",{weekday:"long",day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});var html="<div style='font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a0f00'><div style='background:#E8724A;padding:20px;text-align:center;border-radius:12px 12px 0 0'><h2 style='color:white;margin:0'>✅ Tu pedido está confirmado</h2></div><div style='background:#F2E8D9;padding:24px;border-radius:0 0 12px 12px'><p>Hola <b>"+p.socio+"</b>,</p><p>Tu pedido fue confirmado. Tu envío está programado para:</p><div style='background:white;border-radius:10px;padding:16px;text-align:center;margin:16px 0;font-size:1.1rem;font-weight:700;color:#E8724A'>"+fd+"</div>"+(nota?"<p style='font-size:.85rem;color:#9a8a78'>Nota: <i>"+nota+"</i></p>":"")+"<p style='margin-top:16px;font-size:.85rem;color:#9a8a78'>Gracias por confiar en Melody's Farm 🌿</p></div></div>";sendResendEmail(p.socio_email,"✅ Tu pedido de Melody's Farm fue confirmado",html).catch(function(){});}});}
 function cambiarEstado(id,estado){sb("pedidos?id=eq."+id,"PATCH",{estado:estado}).then(function(){toast("Estado actualizado","success");loadPedidos();loadEnvios();});}
 
 function loadEnvios(){sb("pedidos?estado=in.(confirmado,en_envio)&order=fecha_envio.asc","GET").then(function(data){var tbody=document.getElementById("tbl-envios");tbody.innerHTML="";if(!data||!data.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Sin envíos pendientes</td></tr>';return;}data.forEach(function(p){var s=allSocios.find(function(x){return x.nombre===p.socio;});var dir=s&&s.direccion?s.direccion:"—";var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="font-size:.82rem">'+dir+'</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.fecha_envio)+'</td><td><button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button></td></tr>';});});}
 
-var catTabs=["flores","bombones","semillas","esquejes","cremas","otros"];
+var catTabs=["flores","bombones","semillas","esquejes","cremas","hongos"];
 function switchCatTab(tab){catTabs.forEach(function(t){var el=document.getElementById("cat-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-catalogo .itab").forEach(function(b,i){b.classList.toggle("active",catTabs[i]===tab);});loadProductosCat(tab);}
 function loadCatalogo(){loadConfig();loadProductosCat("flores");}
 function loadProductosCat(cat){sb("productos?categoria=eq."+cat+"&order=nombre.asc","GET").then(function(data){allProductos=data||[];renderTablaProductos(cat,data);});}
@@ -618,10 +592,6 @@ function loadMembresias(){var now=new Date();sb("socios?membresia_tipo=not.is.nu
 
 function exportarExcel(){var mes=document.getElementById("filtro-mes")?document.getElementById("filtro-mes").value:"";var now=new Date();var inicio=mes?new Date(mes+"-01").toISOString():new Date(now.getFullYear(),now.getMonth(),1).toISOString();var partes=(mes||now.toISOString().slice(0,7)).split("-");var fin=new Date(parseInt(partes[0]),parseInt(partes[1]),1).toISOString();sb("pedidos?created_at=gte."+inicio+"&created_at=lt."+fin+"&order=created_at.asc","GET").then(function(data){if(!data||!data.length){toast("Sin datos para exportar","error");return;}var rows=[["Fecha","Socio","Productos","Total","Método pago","Estado"]];data.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"";rows.push([fmtDate(p.created_at),p.socio,items,p.total,p.metodo_pago||"efectivo",p.estado]);});var total=data.reduce(function(a,p){return a+(p.total||0);},0);rows.push([]);rows.push(["","","TOTAL",total,"",""]);var wb=XLSX.utils.book_new();var ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=[{wch:18},{wch:20},{wch:40},{wch:12},{wch:16},{wch:14}];XLSX.utils.book_append_sheet(wb,ws,"Ventas");XLSX.writeFile(wb,"melodys_farm_ventas_"+(mes||"mes")+".xlsx");toast("Excel exportado","success");});}
 
-function toggleBot(){botOpen=!botOpen;document.getElementById("bot-panel").classList.toggle("on",botOpen);document.getElementById("bot-tgl").style.display=botOpen?"none":"flex";if(botOpen)document.getElementById("bot-input").focus();}
-function addBotMsg(text,role){var msgs=document.getElementById("bot-msgs");var div=document.createElement("div");div.className="bot-msg "+(role||"bot");div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;}
-function sendBot(){var input=document.getElementById("bot-input");var text=input.value.trim();if(!text)return;input.value="";addBotMsg(text,"user");if(!GROQ_KEY){addBotMsg("⚠️ Groq API key no configurada. Agregá tu key en el código (variable GROQ_KEY).","bot");return;}var thinking=addBotMsg("Pensando...","bot thinking");var ctx="Eres el asistente interno de Melody's Farm, un cannabis club social. Datos del dashboard:\n- Pedidos: "+allPedidos.length+"\n- Socios: "+allSocios.length+"\n- Pendientes: "+allPedidos.filter(function(p){return p.estado==="pendiente";}).length+"\n- En envío: "+allPedidos.filter(function(p){return p.estado==="en_envio";}).length+"\nRespondé en español, conciso y útil.";fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+GROQ_KEY},body:JSON.stringify({model:GROQ_MODEL,messages:[{role:"system",content:ctx},{role:"user",content:text}],max_tokens:300})}).then(function(r){return r.json();}).then(function(d){thinking.remove();addBotMsg(d.choices&&d.choices[0]?d.choices[0].message.content:"Sin respuesta","bot");}).catch(function(){thinking.remove();addBotMsg("Error al conectar.","bot");});}
-document.getElementById("bot-input").addEventListener("keydown",function(e){if(e.key==="Enter")sendBot();});
 </script>
 </body>
 </html>

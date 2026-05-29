@@ -686,8 +686,9 @@ body{
         <div class="cat-pill" onclick="setCat('bombones',this)">🍫 Bombones</div>
         <div class="cat-pill" onclick="setCat('semillas',this)">🌱 Semillas</div>
         <div class="cat-pill" onclick="setCat('esquejes',this)">✂️ Esquejes</div>
+        <div class="cat-pill" onclick="setCat('membresia',this)">🎫 Membresía</div>
         <div class="cat-pill" onclick="setCat('cremas',this)">🧴 Cremas</div>
-        <div class="cat-pill" onclick="setCat('otros',this)">📦 Otros</div>
+        <div class="cat-pill" onclick="setCat('hongos',this)">🍄 Hongos</div>
       </div>
     </div>
 
@@ -808,12 +809,12 @@ body{
 
         <div class="pm-section">Gramos</div>
         <div class="gramos-opts" id="gramos-opts">
-          <div class="gr-opt active" onclick="setGramos(5,this)">5g</div>
-          <div class="gr-opt" onclick="setGramos(10,this)">10g</div>
-          <div class="gr-opt" onclick="setGramos(15,this)">15g</div>
-          <div class="gr-opt" onclick="setGramos(20,this)">20g</div>
-          <div class="gr-opt" onclick="setGramos(25,this)">25g</div>
-          <div class="gr-opt" onclick="setGramos(30,this)">30g</div>
+          <div class="gr-opt active" id="gr-opt-first" onclick="setGramos(0,this)">—</div>
+          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
+          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
+          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
+          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
+          <div class="gr-opt" onclick="setGramos(0,this)">—</div>
         </div>
       </div>
 
@@ -975,7 +976,7 @@ function getProductPrice(p) {
 }
 
 // ===== PRODUCTS =====
-var catEmojis = { flores:"🌿", bombones:"🍫", semillas:"🌱", esquejes:"🪴", cremas:"🧴", otros:"📦" };
+var catEmojis = { flores:"🌿", bombones:"🍫", semillas:"🌱", esquejes:"🪴", cremas:"🧴", hongos:"🍄", otros:"📦", membresia:"🎫" };
 var strainEmojis = {
   "choco rock":"🍫", "choco rock 2.0":"🍫",
   "lemon blues":"🍋",
@@ -999,7 +1000,7 @@ function getEmoji(nombre, cat) {
   var key = (nombre || "").toLowerCase();
   return strainEmojis[key] || catEmojis[cat] || "📦";
 }
-var catLabels = { flores:"Flores", bombones:"Bombones", semillas:"Semillas", esquejes:"Esquejes", cremas:"Cremas", otros:"Otros" };
+var catLabels = { flores:"Flores", bombones:"Bombones", semillas:"Semillas", esquejes:"Esquejes", cremas:"Cremas", hongos:"Hongos", otros:"Otros", membresia:"Membresía" };
 
 function setCat(cat, el) {
   currentCat = cat;
@@ -1008,11 +1009,45 @@ function setCat(cat, el) {
   loadProducts(cat);
 }
 
+function renderMembresia() {
+  var grid = document.getElementById("products-grid");
+  grid.innerHTML = 
+    '<div style="padding:16px;display:flex;flex-direction:column;gap:14px">' +
+    '<div style="background:linear-gradient(135deg,#E8724A,#F5C842);border-radius:20px;padding:20px;color:white;text-align:center">' +
+    '<div style="font-size:2rem;margin-bottom:8px">🎫</div>' +
+    '<div style="font-size:1.1rem;font-weight:900;margin-bottom:4px">Club de Membresía</div>' +
+    '<div style="font-size:.8rem;opacity:.9">Acceso exclusivo · Stock seleccionado · Beneficios únicos</div>' +
+    '</div>' +
+    memCard("🌿 Membresía 10g", "USD 200", "1 entrega mensual de 10g durante 3 meses. Flores altas seleccionadas del mejor del cultivo.", ["10g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía"]) +
+    memCard("⭐ Membresía 25g", "USD 500", "1 entrega mensual de 25g durante 3 meses. La más popular del club.", ["25g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"]) +
+    memCard("👑 Membresía 50g", "USD 1000", "1 entrega mensual de 50g durante 3 meses. La experiencia completa Melody's.", ["50g de flores altas por mes","Stock especial premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"]) +
+    '<div style="background:var(--cream);border-radius:14px;padding:14px;font-size:.78rem;color:var(--gray);line-height:1.6">' +
+    '<b style="color:var(--dark)">¿Cómo funciona?</b><br>' +
+    'El pago total se abona en la primera entrega. La membresía dura 3 meses con 1 entrega mensual. ' +
+    'El stock de membresía es especial — flores altas seleccionadas de lo mejor del cultivo. ' +
+    'Además accedés a regalos, eventos exclusivos del club y visitas al cultivo y sala.<br><br>' +
+    '<b style="color:var(--orange)">Para adquirir tu membresía contactá al club. 🌿</b>' +
+    '</div>' +
+    '</div>';
+}
+
+function memCard(titulo, precio, desc, beneficios) {
+  var bList = beneficios.map(function(b){ return '<div style="display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--dark);padding:4px 0"><span style="color:var(--green);font-weight:900">✓</span>' + b + '</div>'; }).join("");
+  return '<div style="background:var(--cream);border-radius:16px;padding:16px;border:2px solid var(--border)">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+    '<span style="font-size:.92rem;font-weight:900;color:var(--dark)">' + titulo + '</span>' +
+    '<span style="background:var(--orange);color:white;font-size:.8rem;font-weight:900;padding:4px 12px;border-radius:100px">' + precio + '</span>' +
+    '</div>' +
+    '<div style="font-size:.75rem;color:var(--gray);margin-bottom:10px">' + desc + '</div>' +
+    bList + '</div>';
+}
+
 function loadProducts(cat) {
   var grid = document.getElementById("products-grid");
   grid.innerHTML = '<div class="loading-msg">Cargando...</div>';
   // Esquejes: muestra las mismas genéticas de flores
-  var queryCat = (cat === "esquejes") ? "flores" : cat;
+  if (cat === "membresia") { renderMembresia(); return; }
+  var queryCat = (cat === "esquejes") ? "flores" : (cat === "hongos") ? "otros" : cat;
   sb("productos?categoria=eq." + queryCat + "&activo=eq.true&order=nombre.asc", "GET").then(function(data) {
     if (!Array.isArray(data)) {
       grid.innerHTML = '<div class="loading-msg">⚠️ Error al conectar con la base de datos.</div>';
@@ -1039,7 +1074,7 @@ function renderProducts(cat, data) {
       var pb = getPriceFlores("baja");
       priceText = pb > 0 ? "$" + pb.toLocaleString("es-AR") + "/g" : "Consultar precio";
     } else if (cat === "esquejes") {
-      priceText = "Consultar precio";
+      priceText = "5u $50.000 · 10u $80.000";
     } else {
       var pr = getProductPrice(p);
       var mon = p.moneda === "USD" ? "USD " : "$";
@@ -1090,12 +1125,12 @@ function openModal(p, cat) {
     document.querySelectorAll(".gr-opt").forEach(function(g, i) {
       g.classList.toggle("active", i === 0);
     });
-    modalGramos = 5;
+    setTipo("baja");
   } else if (cat === "esquejes") {
     document.getElementById("pm-flores-opts").style.display = "none";
     document.getElementById("pm-other-opts").style.display = "block";
-    document.getElementById("pm-qty").textContent = "1";
-    modalQty = 1;
+    document.getElementById("pm-qty").textContent = "5";
+    modalQty = 5;
   } else {
     document.getElementById("pm-flores-opts").style.display = "none";
     document.getElementById("pm-other-opts").style.display = "block";
@@ -1123,10 +1158,21 @@ function setTipo(tipo) {
   modalTipo = tipo;
   document.getElementById("tipo-baja").classList.toggle("active", tipo === "baja");
   document.getElementById("tipo-alta").classList.toggle("active", tipo === "alta");
+  // Update gramos options based on tipo
+  var minG = tipo === "baja" ? 20 : 10;
+  var grOpts = document.querySelectorAll(".gr-opt");
+  var steps = tipo === "baja" ? [20,30,40,50,60,70] : [10,20,30,40,50,60];
+  grOpts.forEach(function(el, i) {
+    el.textContent = steps[i] + "g";
+    el.onclick = function(){ setGramos(steps[i], this); };
+    el.classList.toggle("active", i === 0);
+  });
+  modalGramos = steps[0];
   updateAddBtn();
 }
 
 function setGramos(g, el) {
+  if (g === 0) return;
   modalGramos = g;
   document.querySelectorAll(".gr-opt").forEach(function(x) { x.classList.remove("active"); });
   el.classList.add("active");
@@ -1134,7 +1180,11 @@ function setGramos(g, el) {
 }
 
 function changeQty(delta) {
-  modalQty = Math.max(1, modalQty + delta);
+  if (currentCat === "esquejes") {
+    modalQty = modalQty === 5 ? 10 : 5;
+  } else {
+    modalQty = Math.max(1, modalQty + delta);
+  }
   document.getElementById("pm-qty").textContent = modalQty;
   updateAddBtn();
 }
@@ -1149,7 +1199,9 @@ function updateAddBtn() {
     total = pxg * modalGramos;
     btn.textContent = total > 0 ? "Agregar — $" + total.toLocaleString("es-AR") : "Agregar al carrito";
   } else if (cat === "esquejes") {
-    btn.textContent = "Agregar esqueje (" + modalQty + "u)";
+    var precioEsq = modalQty >= 10 ? 80000 : 50000;
+    var unidEsq = modalQty >= 10 ? "10u" : "5u";
+    btn.textContent = "Agregar " + unidEsq + " — $" + precioEsq.toLocaleString("es-AR");
   } else {
     var pr = getProductPrice(modalProduct);
     total = pr * modalQty;
@@ -1175,14 +1227,15 @@ function addToCart() {
       precio: pxg * modalGramos
     };
   } else if (cat === "esquejes") {
+    var precioEsqC = modalQty >= 10 ? 80000 : 50000;
     item = {
       id: modalProduct.id,
-      name: modalProduct.nombre + " (Esqueje)",
+      name: modalProduct.nombre + " — Esqueje",
       cat: cat,
-      tipo: "esqueje",
+      tipo: "esqueje (" + modalQty + "u · 20 días)",
       grams: 1,
-      qty: modalQty,
-      precio: 0
+      qty: 1,
+      precio: precioEsqC
     };
   } else {
     var pr = getProductPrice(modalProduct);
@@ -1523,7 +1576,7 @@ function buildBotContext() {
 
   var ctx = "Sos el asistente de Melody's Farm, un club social de cannabis en Argentina. ";
   ctx += "Responde en espanol, de forma calida y concisa (maximo 3 parrafos). ";
-  ctx += "SOBRE EL CLUB: Melody's Farm tiene produccion propia. Ofrecemos flores, semillas, esquejes, cremas, bombones y microdosis. ";
+  ctx += "SOBRE EL CLUB: Melody's Farm tiene produccion propia. Ofrecemos flores, semillas, esquejes, cremas, bombones, hongos y microdosis. Los esquejes tardan 20 dias, minimo 5u $50.000 o 10u $80.000. Membresias: 10g USD200, 25g USD500, 50g USD1000, pago en primera entrega, stock especial de altas seleccionadas, acceso a eventos y visita al cultivo. ";
   ctx += "MEMBRESIAS: Hay 3 tipos: 10g, 25g y 50g por mes. Duran 3 meses (3 entregas, 1 por mes). El socio paga una vez. Si pide mas de los gramos cubiertos, el excedente se cobra a precio normal de su lista. ";
   ctx += "PEDIDOS: Minimo 5g de flores, en escalones de 5g. Si el pedido de flores es menor a 20g se agrega costo de envio. El admin confirma y asigna fecha de envio. ";
   ctx += "CATALOGO: " + catalogoTxt + ". ";
