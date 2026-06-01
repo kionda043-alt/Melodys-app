@@ -618,6 +618,101 @@ body{
   transition:all .15s;
 }
 .bq-btn:active{background:var(--orange);border-color:var(--orange);color:white;}
+
+/* ===== MEMBERSHIP CARD ===== */
+#home-mem-card{
+  background:linear-gradient(135deg,#1a0f00,#2d1a00);
+  margin:0 0 0 0;
+  padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;
+  border-bottom:1px solid #3d2a10;
+}
+#home-mem-card:active{opacity:.85;}
+.hmc-icon{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,#E8724A,#F5C842);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.hmc-info{flex:1;}
+.hmc-title{font-size:.82rem;font-weight:900;color:#F2E8D9;margin-bottom:2px;}
+.hmc-sub{font-size:.68rem;color:#c0a880;}
+.hmc-btn{
+  background:linear-gradient(135deg,#E8724A,#F5C842);
+  border:none;border-radius:100px;
+  padding:7px 14px;
+  font-family:'Lato',sans-serif;font-size:.7rem;font-weight:900;
+  color:white;cursor:pointer;white-space:nowrap;flex-shrink:0;
+}
+
+/* ===== MEMBERSHIP MODAL ===== */
+#mem-modal{
+  position:fixed;inset:0;z-index:100;
+  display:none;flex-direction:column;justify-content:flex-end;
+}
+#mem-modal.open{display:flex;}
+.mem-modal-overlay{position:absolute;inset:0;background:rgba(26,15,0,.5);}
+.mem-modal-sheet{
+  position:relative;background:var(--white);
+  border-radius:24px 24px 0 0;
+  max-height:90vh;overflow-y:auto;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.25,.8,.25,1);
+}
+#mem-modal.open .mem-modal-sheet{transform:translateY(0);}
+.mem-modal-sheet::-webkit-scrollbar{display:none;}
+.mem-modal-hd{
+  background:linear-gradient(135deg,#1a0f00,#2d1a00);
+  border-radius:24px 24px 0 0;
+  padding:20px 20px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mem-modal-title{font-size:1rem;font-weight:900;color:white;}
+.mem-modal-close{background:rgba(255,255,255,.15);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;}
+.mem-modal-body{padding:16px;}
+.mem-plan-card{
+  border-radius:16px;padding:16px;margin-bottom:12px;
+  border:2px solid var(--border);background:var(--cream);
+}
+.mem-plan-card.featured{
+  border-color:var(--orange);
+  background:linear-gradient(135deg,#E8724A08,#F5C84208);
+}
+.mem-plan-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.mem-plan-name{font-size:.95rem;font-weight:900;color:var(--dark);}
+.mem-plan-price{
+  background:var(--orange);color:white;
+  font-size:.82rem;font-weight:900;
+  padding:4px 12px;border-radius:100px;
+}
+.mem-plan-desc{font-size:.72rem;color:var(--gray);margin-bottom:10px;line-height:1.5;}
+.mem-plan-benefits{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.mem-plan-benefit{font-size:.72rem;color:var(--dark);display:flex;align-items:center;gap:6px;}
+.mem-plan-benefit span{color:var(--green);font-weight:900;}
+.mem-plan-btn{
+  width:100%;padding:11px;
+  background:var(--dark);border:none;border-radius:12px;
+  color:var(--cream);font-family:'Lato',sans-serif;
+  font-size:.82rem;font-weight:900;cursor:pointer;
+  transition:background .15s;
+}
+.mem-plan-card.featured .mem-plan-btn{
+  background:linear-gradient(135deg,#E8724A,#F5C842);
+  color:white;
+}
+.mem-info-box{
+  background:var(--cream);border-radius:12px;
+  padding:14px;font-size:.72rem;color:var(--gray);
+  line-height:1.6;margin-bottom:12px;
+}
+.mem-whatsapp-note{
+  background:#25D36611;border:1px solid #25D36633;
+  border-radius:12px;padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+  font-size:.75rem;color:#128C4A;font-weight:700;
+  margin-bottom:16px;
+}
 </style>
 </head>
 <body>
@@ -628,9 +723,9 @@ body{
 <div id="login-screen">
   <img src="logo.png" class="login-banner" alt="Melody's Farm" style="border-radius:50%;width:240px;height:240px;object-fit:cover;margin:0 auto 28px;display:block;box-shadow:0 8px 32px rgba(232,114,74,.25)"/>
   <div class="login-form">
-    <div class="login-welcome">Bienvenido 🌿</div>
+    <div class="login-welcome">Bienvenide 🌿</div>
     <label class="login-label">Usuario</label>
-    <input class="login-input" id="login-user" type="text" placeholder="tu_usuario" autocomplete="username"/>
+    <input class="login-input" id="login-user" type="text" placeholder="usuario" autocomplete="username"/>
     <label class="login-label">Contraseña</label>
     <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
     <button class="login-btn" onclick="doLogin()">Ingresar →</button>
@@ -681,6 +776,16 @@ body{
         </div>
       </div>
 
+      <!-- MEMBERSHIP CARD -->
+      <div id="home-mem-card" onclick="openMemModal()">
+        <div class="hmc-icon">🎫</div>
+        <div class="hmc-info">
+          <div class="hmc-title">Membresías del club</div>
+          <div class="hmc-sub">10g · 25g · 50g · Stock premium · Eventos · Visitas</div>
+        </div>
+        <button class="hmc-btn">Ver planes</button>
+      </div>
+
       <div class="cats" id="cats-row">
         <div class="cat-pill active" onclick="setCat('flores',this)">🌸 Flores</div>
         <div class="cat-pill" onclick="setCat('bombones',this)">🍫 Bombones</div>
@@ -704,14 +809,14 @@ body{
     <div class="cart-header">
       <button class="back-btn" onclick="goScreen('shop')">←</button>
       <div class="cart-header-info">
-        <div class="cart-h-title">Tu pedido</div>
+        <div class="cart-h-title">El pedido</div>
         <div class="cart-h-sub" id="cart-sub">0 productos</div>
       </div>
     </div>
 
     <div id="cart-empty-state" class="cart-empty" style="display:none">
       <div class="cart-empty-icon">🛒</div>
-      <div class="cart-empty-txt">Tu carrito está vacío</div>
+      <div class="cart-empty-txt">El carrito está vacío</div>
     </div>
 
     <div id="cart-content" style="display:none">
@@ -730,7 +835,7 @@ body{
       </div>
 
       <div class="nombre-section" style="margin-bottom:12px">
-        <div class="section-label">Tu nombre</div>
+        <div class="section-label">Nombre</div>
         <input class="nombre-input" id="input-nombre" type="text" placeholder="Ej: María García" autocomplete="name"/>
       </div>
 
@@ -765,7 +870,7 @@ body{
   <div class="screen" id="s-success">
     <div class="success-icon">🌿</div>
     <div class="success-title">¡Pedido enviado!</div>
-    <div class="success-sub">Tu pedido fue registrado. <br>Nos ponemos en contacto pronto.</div>
+    <div class="success-sub">El pedido fue registrado correctamente. <br>Nos ponemos en contacto por WhatsApp pronto. 💬</div>
     <button class="success-btn" onclick="volverTienda()">Volver a la tienda</button>
   </div>
 
@@ -836,6 +941,79 @@ body{
   </div>
 </div>
 
+
+
+<!-- MEMBERSHIP MODAL -->
+<div id="mem-modal">
+  <div class="mem-modal-overlay" onclick="closeMemModal()"></div>
+  <div class="mem-modal-sheet">
+    <div class="mem-modal-hd">
+      <div class="mem-modal-title">🎫 Membresías Melody's Farm</div>
+      <button class="mem-modal-close" onclick="closeMemModal()">✕</button>
+    </div>
+    <div class="mem-modal-body">
+
+      <div class="mem-whatsapp-note">
+        <span style="font-size:1.2rem">💬</span>
+        <span>Una vez que solicitás tu membresía, te confirmamos todo por WhatsApp.</span>
+      </div>
+
+      <div class="mem-plan-card">
+        <div class="mem-plan-hd">
+          <div class="mem-plan-name">🌿 Membresía 10g</div>
+          <div class="mem-plan-price">USD 200</div>
+        </div>
+        <div class="mem-plan-desc">1 entrega mensual de 10g durante 3 meses. Pago total en la primera entrega.</div>
+        <div class="mem-plan-benefits">
+          <div class="mem-plan-benefit"><span>✓</span>10g de flores altas por mes</div>
+          <div class="mem-plan-benefit"><span>✓</span>Stock premium seleccionado</div>
+          <div class="mem-plan-benefit"><span>✓</span>Acceso a eventos del club</div>
+          <div class="mem-plan-benefit"><span>✓</span>Regalos con tu membresía</div>
+        </div>
+        <button class="mem-plan-btn" onclick="solicitarMembresia(10, 200)">Solicitar membresía 10g</button>
+      </div>
+
+      <div class="mem-plan-card featured">
+        <div class="mem-plan-hd">
+          <div class="mem-plan-name">⭐ Membresía 25g</div>
+          <div class="mem-plan-price">USD 500</div>
+        </div>
+        <div class="mem-plan-desc">1 entrega mensual de 25g durante 3 meses. La más elegida del club. Pago total en la primera entrega.</div>
+        <div class="mem-plan-benefits">
+          <div class="mem-plan-benefit"><span>✓</span>25g de flores altas por mes</div>
+          <div class="mem-plan-benefit"><span>✓</span>Stock premium seleccionado</div>
+          <div class="mem-plan-benefit"><span>✓</span>Acceso a eventos del club</div>
+          <div class="mem-plan-benefit"><span>✓</span>Regalos con tu membresía</div>
+          <div class="mem-plan-benefit"><span>✓</span>Visita al cultivo y sala</div>
+        </div>
+        <button class="mem-plan-btn" onclick="solicitarMembresia(25, 500)">Solicitar membresía 25g</button>
+      </div>
+
+      <div class="mem-plan-card">
+        <div class="mem-plan-hd">
+          <div class="mem-plan-name">👑 Membresía 50g</div>
+          <div class="mem-plan-price">USD 1000</div>
+        </div>
+        <div class="mem-plan-desc">1 entrega mensual de 50g durante 3 meses. La experiencia completa Melody's. Pago total en la primera entrega.</div>
+        <div class="mem-plan-benefits">
+          <div class="mem-plan-benefit"><span>✓</span>50g de flores altas por mes</div>
+          <div class="mem-plan-benefit"><span>✓</span>Stock premium exclusivo</div>
+          <div class="mem-plan-benefit"><span>✓</span>Acceso VIP a todos los eventos</div>
+          <div class="mem-plan-benefit"><span>✓</span>Regalos especiales</div>
+          <div class="mem-plan-benefit"><span>✓</span>Visita al cultivo y sala</div>
+          <div class="mem-plan-benefit"><span>✓</span>Acceso anticipado a nuevas genéticas</div>
+        </div>
+        <button class="mem-plan-btn" onclick="solicitarMembresia(50, 1000)">Solicitar membresía 50g</button>
+      </div>
+
+      <div class="mem-info-box">
+        <b style="color:#1a0f00">¿Cómo funciona?</b><br>
+        El pago total se abona en la primera entrega. La membresía dura 3 meses con 1 entrega mensual. El stock es especial — flores altas seleccionadas de lo mejor del cultivo, siempre.
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- BOT FLOTANTE -->
 <button id="bot-fab" onclick="toggleBot()">
@@ -1489,7 +1667,7 @@ function doLogin() {
       }
       currentSocio = data[0];
       document.getElementById("login-screen").style.display = "none";
-      document.getElementById("header-socio").textContent = "Hola, " + currentSocio.nombre.split(" ")[0] + " 👋";
+      document.getElementById("header-socio").textContent = "Hola, " + currentSocio.nombre.split(" ")[0] + " 🌿";
       // Autoplay música
       audio.play().then(function(){
         isPlaying = true;
@@ -1501,7 +1679,7 @@ function doLogin() {
       if (currentSocio.membresia_tipo && currentSocio.membresia_vence && new Date(currentSocio.membresia_vence) > now) {
         var vence = new Date(currentSocio.membresia_vence).toLocaleDateString("es-AR", {day:"2-digit",month:"2-digit",year:"numeric"});
         document.getElementById("mem-txt").textContent = "Membresía " + currentSocio.membresia_tipo + "g activa";
-        document.getElementById("mem-sub").textContent = "Vence el " + vence;
+        document.getElementById("mem-sub").textContent = "Vence " + vence;
         var restantes = 3 - (currentSocio.membresia_entregas_usadas || 0);
         document.getElementById("mem-entregas-restantes").textContent = restantes + "/3";
         document.getElementById("mem-bar").style.display = "flex";
@@ -1564,6 +1742,46 @@ function enviarEmailAdmin(pedido, costoEnvio) {
   sendResendEmail(ADMIN_EMAIL, "🌿 Nuevo pedido de " + pedido.socio, html).catch(function(){});
 }
 
+// ===== MEMBRESIA MODAL =====
+function openMemModal() {
+  document.getElementById("mem-modal").classList.add("open");
+}
+function closeMemModal() {
+  document.getElementById("mem-modal").classList.remove("open");
+}
+function solicitarMembresia(gramos, precio) {
+  var nombre = currentSocio ? currentSocio.nombre : "Socio";
+  // Save solicitud to pedidos as a special order
+  sb("pedidos", "POST", {
+    socio: nombre,
+    socio_id: currentSocio ? currentSocio.id : null,
+    socio_email: currentSocio ? (currentSocio.email || null) : null,
+    items: [{ name: "Membresía " + gramos + "g", tipo: "membresia", grams: gramos, qty: 1, precio: 0 }],
+    total: 0,
+    metodo_pago: "pendiente",
+    estado: "pendiente",
+    instrucciones: "SOLICITUD DE MEMBRESÍA " + gramos + "g — USD " + precio,
+    es_membresia: true
+  }).then(function(r) {
+    if (r && r[0] && r[0].id) {
+      // Notify admin
+      enviarEmailAdmin({
+        socio: nombre,
+        items: [{ name: "Membresía " + gramos + "g", tipo: "membresia", grams: gramos, precio: 0 }],
+        total: 0,
+        metodo_pago: "—",
+        instrucciones: "SOLICITUD DE MEMBRESÍA " + gramos + "g — USD " + precio
+      }, 0);
+      closeMemModal();
+      showToast("¡Solicitud enviada! Te confirmamos por WhatsApp 💬", "ok");
+    } else {
+      showToast("Error al enviar. Intentá de nuevo.", "err");
+    }
+  }).catch(function() {
+    showToast("Error de conexión.", "err");
+  });
+}
+
 // ===== BOT =====
 var GROQ_KEY = "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";
 var GROQ_MODEL = "llama-3.3-70b-versatile";
@@ -1616,7 +1834,7 @@ function buildBotContext() {
   ctx += "Responde en espanol, de forma calida y concisa (maximo 3 parrafos). ";
   ctx += "SOBRE EL CLUB: Melody's Farm tiene produccion propia. Ofrecemos flores, semillas, esquejes, cremas, bombones, hongos y microdosis. Los esquejes tardan 20 dias, minimo 5u $50.000 o 10u $80.000. Membresias: 10g USD200, 25g USD500, 50g USD1000, pago en primera entrega, stock especial de altas seleccionadas, acceso a eventos y visita al cultivo. ";
   ctx += "MEMBRESIAS: Hay 3 tipos: 10g, 25g y 50g por mes. Duran 3 meses (3 entregas, 1 por mes). El socio paga una vez. Si pide mas de los gramos cubiertos, el excedente se cobra a precio normal de su lista. ";
-  ctx += "PEDIDOS: Minimo 5g de flores, en escalones de 5g. Si el pedido de flores es menor a 20g se agrega costo de envio. El admin confirma y asigna fecha de envio. ";
+  ctx += "PEDIDOS: Minimo 5g de flores por genetica, en escalones de 5g. Minimo de carrito 20g de bajas o 10g de altas. Si el pedido es menor a 20g se agrega costo de envio. El admin confirma y avisa por WhatsApp. ";
   ctx += "CATALOGO: " + catalogoTxt + ". ";
   ctx += "SOCIO: " + (currentSocio ? currentSocio.nombre : "No identificado") + ", lista " + (currentSocio ? currentSocio.lista_precios : "-") + ". ";
   ctx += "MEMBRESIA SOCIO: " + membTxt + ". ";
