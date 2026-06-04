@@ -93,7 +93,7 @@ body{
 /* ===== SHOP SCREEN ===== */
 #s-shop .shop-header{
   background:var(--cream);
-  padding:12px 12px 0;
+  padding:16px 16px 0;
 }
 .shop-top{
   display:flex;align-items:center;justify-content:space-between;
@@ -753,7 +753,7 @@ body{
   <div class="screen active" id="s-shop">
     <div class="shop-header">
       <div class="shop-top" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <img src="banner.png" alt="Melody's Farm" style="width:calc(100% - 52px);height:auto;object-fit:contain;display:block"/>
+        <img src="banner.png" alt="Melody's Farm" style="width:calc(100% - 52px);height:auto;object-fit:contain;display:block;margin:0 auto;border-radius:12px;"/>
         <button class="cart-badge-btn" onclick="goScreen('cart')">
           🛒
           <div id="cart-badge">0</div>
@@ -777,13 +777,13 @@ body{
       </div>
 
       <!-- MEMBERSHIP CARD -->
-      <div id="home-mem-card" onclick="openMemModal()">
+      <div id="home-mem-card" onclick="setCatFromCard('membresia')">
         <div class="hmc-icon">🎫</div>
         <div class="hmc-info">
           <div class="hmc-title">Membresías del club</div>
           <div class="hmc-sub">10g · 25g · 50g · Stock premium · Eventos · Visitas</div>
         </div>
-        <button class="hmc-btn">Ver planes</button>
+        <button class="hmc-btn">Ver planes →</button>
       </div>
 
       <div class="cats" id="cats-row">
@@ -1148,6 +1148,14 @@ function getPriceFlores(tipo) {
   var key = "flores_" + tipo + "_lista" + lista;
   return parseFloat(configData[key]) || 0;
 }
+function isLista3() {
+  return currentSocio && currentSocio.lista_precios === 3;
+}
+function formatFloresPrice(tipo) {
+  var p = getPriceFlores(tipo);
+  if (p <= 0) return "Consultar precio";
+  return isLista3() ? "USD " + p.toLocaleString("es-AR") + "/g" : "$" + p.toLocaleString("es-AR") + "/g";
+}
 function getProductPrice(p) {
   var lista = currentSocio ? (currentSocio.lista_precios || 1) : 1;
   if (p.moneda === "USD") return p["precio_lista" + lista + "_usd"] || p.precio_lista1_usd || 0;
@@ -1198,8 +1206,8 @@ function renderMembresia() {
     '<div style="font-size:.8rem;opacity:.9">Acceso exclusivo · Stock seleccionado · Beneficios únicos</div>' +
     '</div>' +
     memCard("🌿 Membresía 10g", "USD 200", "1 entrega mensual de 10g durante 3 meses. Flores altas seleccionadas del mejor del cultivo.", ["10g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía"]) +
-    memCard("⭐ Membresía 25g", "USD 500", "1 entrega mensual de 25g durante 3 meses. La más popular del club.", ["25g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"]) +
-    memCard("👑 Membresía 50g", "USD 1000", "1 entrega mensual de 50g durante 3 meses. La experiencia completa Melody's.", ["50g de flores altas por mes","Stock especial premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"]) +
+    memCard("⭐ Membresía 25g", "USD 500", "1 entrega mensual de 25g durante 3 meses. La más popular del club.", ["25g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"], 25, 500) +
+    memCard("👑 Membresía 50g", "USD 1000", "1 entrega mensual de 50g durante 3 meses. La experiencia completa Melody's.", ["50g de flores altas por mes","Stock especial premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"], 50, 1000) +
     '<div style="background:var(--cream);border-radius:14px;padding:14px;font-size:.78rem;color:var(--gray);line-height:1.6">' +
     '<b style="color:var(--dark)">¿Cómo funciona?</b><br>' +
     'El pago total se abona en la primera entrega. La membresía dura 3 meses con 1 entrega mensual. ' +
@@ -1210,15 +1218,16 @@ function renderMembresia() {
     '</div>';
 }
 
-function memCard(titulo, precio, desc, beneficios) {
+function memCard(titulo, precio, desc, beneficios, gramos, precioUSD) {
   var bList = beneficios.map(function(b){ return '<div style="display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--dark);padding:4px 0"><span style="color:var(--green);font-weight:900">✓</span>' + b + '</div>'; }).join("");
-  return '<div style="background:var(--cream);border-radius:16px;padding:16px;border:2px solid var(--border)">' +
+  var btnHtml = gramos ? '<button onclick="solicitarMembresia(' + gramos + ',' + precioUSD + ')" style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,#E8724A,#F5C842);border:none;border-radius:12px;color:white;font-family:Lato,sans-serif;font-size:.82rem;font-weight:900;cursor:pointer;">Solicitar membresía ' + gramos + 'g →</button>' : '';
+  return '<div style="background:var(--cream);border-radius:16px;padding:16px;border:2px solid var(--border);margin-bottom:12px">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
     '<span style="font-size:.92rem;font-weight:900;color:var(--dark)">' + titulo + '</span>' +
     '<span style="background:var(--orange);color:white;font-size:.8rem;font-weight:900;padding:4px 12px;border-radius:100px">' + precio + '</span>' +
     '</div>' +
     '<div style="font-size:.75rem;color:var(--gray);margin-bottom:10px">' + desc + '</div>' +
-    bList + '</div>';
+    bList + btnHtml + '</div>';
 }
 
 function loadProducts(cat) {
@@ -1250,8 +1259,14 @@ function renderProducts(cat, data) {
     var emoji = getEmoji(p.nombre, cat);
     var priceText = "";
     if (cat === "flores") {
-      var pb = getPriceFlores("baja");
-      priceText = pb > 0 ? "$" + pb.toLocaleString("es-AR") + "/g" : "Consultar precio";
+      var bajaOk = p.bajas_activo !== false;
+      var altaOk = p.altas_activo !== false;
+      if (!bajaOk && !altaOk) {
+        priceText = "Sin stock";
+      } else {
+        var tipoRef = bajaOk ? "baja" : "alta";
+        priceText = formatFloresPrice(tipoRef);
+      }
     } else if (cat === "esquejes") {
       priceText = "5u $50.000 · 10u $80.000";
     } else if (cat === "semillas") {
@@ -1268,7 +1283,7 @@ function renderProducts(cat, data) {
     div.innerHTML =
       '<div class="prod-emoji">' + emoji + '</div>' +
       '<div class="prod-info">' +
-        (cat === "flores" ? '<span class="prod-tipo">Flores</span>' : '') +
+        (cat === "flores" ? '<span class="prod-tipo">' + (p.bajas_activo !== false && p.altas_activo !== false ? "Flores" : p.bajas_activo === false && p.altas_activo !== false ? "Solo Altas" : p.altas_activo === false && p.bajas_activo !== false ? "Solo Bajas" : "Sin stock") + '</span>' : '') +
         '<div class="prod-name">' + p.nombre + '</div>' +
         '<div class="prod-desc">' + (p.descripcion || "") + '</div>' +
         '<div class="prod-footer">' +
@@ -1319,7 +1334,7 @@ function openModal(p, cat) {
   } else if (cat === "semillas") {
     document.getElementById("pm-flores-opts").style.display = "none";
     document.getElementById("pm-other-opts").style.display = "block";
-    document.getElementById("pm-qty-label").textContent = "Pack (5 · 10 · 30 unidades)";
+    document.getElementById("pm-qty-label").textContent = "Pack (5 · 10 · 20 unidades)";
     document.getElementById("pm-qty").textContent = "5";
     modalQty = 5;
   } else {
@@ -1341,10 +1356,8 @@ function closeModal() {
 }
 
 function updateTipoPrices() {
-  var pb = getPriceFlores("baja");
-  var pa = getPriceFlores("alta");
-  document.getElementById("tipo-baja-price").textContent = pb > 0 ? "$" + pb.toLocaleString("es-AR") + "/g" : "—";
-  document.getElementById("tipo-alta-price").textContent = pa > 0 ? "$" + pa.toLocaleString("es-AR") + "/g" : "—";
+  document.getElementById("tipo-baja-price").textContent = formatFloresPrice("baja") || "—";
+  document.getElementById("tipo-alta-price").textContent = formatFloresPrice("alta") || "—";
 }
 
 function setTipo(tipo) {
@@ -1365,7 +1378,7 @@ function changeQty(delta) {
   if (currentCat === "esquejes") {
     modalQty = modalQty === 5 ? 10 : 5;
   } else if (currentCat === "semillas") {
-    var packs = [5, 10, 30];
+    var packs = [5, 10, 20];
     var idx2 = packs.indexOf(modalQty);
     idx2 = Math.max(0, Math.min(packs.length-1, idx2 + delta));
     modalQty = packs[idx2];
@@ -1384,7 +1397,8 @@ function updateAddBtn() {
   if (cat === "flores") {
     var pxg = getPriceFlores(modalTipo);
     total = pxg * modalGramos;
-    btn.textContent = total > 0 ? "Agregar — $" + total.toLocaleString("es-AR") : "Agregar al carrito";
+    var currency = isLista3() ? "USD " : "$";
+    btn.textContent = total > 0 ? "Agregar — " + currency + total.toLocaleString("es-AR") : "Agregar al carrito";
   } else if (cat === "esquejes") {
     var precioEsq = modalQty >= 10 ? 80000 : 50000;
     var unidEsq = modalQty >= 10 ? "10u" : "5u";
@@ -1392,9 +1406,10 @@ function updateAddBtn() {
   } else {
     var pr = getProductPrice(modalProduct);
     if (currentCat === "semillas") {
+      var semPrices = {5: 25000, 10: 40000, 20: 65000};
       var semLabel = "Pack " + modalQty + "u";
-      total = pr > 0 ? pr * modalQty : 0;
-      btn.textContent = total > 0 ? "Agregar " + semLabel + " — $" + total.toLocaleString("es-AR") : "Agregar " + semLabel + " — Consultar precio";
+      var semTotal = semPrices[modalQty] || (pr * modalQty);
+      btn.textContent = "Agregar " + semLabel + " — $" + semTotal.toLocaleString("es-AR");
     } else {
       total = pr * modalQty;
       var mon = modalProduct.moneda === "USD" ? "USD " : "$";
@@ -1743,6 +1758,23 @@ function enviarEmailAdmin(pedido, costoEnvio) {
 }
 
 // ===== MEMBRESIA MODAL =====
+function setCatFromCard(cat) {
+  // Activate the pill
+  document.querySelectorAll(".cat-pill").forEach(function(p){ p.classList.remove("active"); });
+  document.querySelectorAll(".cat-pill").forEach(function(p){
+    if (p.getAttribute("onclick") && p.getAttribute("onclick").includes("'" + cat + "'")) {
+      p.classList.add("active");
+    }
+  });
+  currentCat = cat;
+  loadProducts(cat);
+  // Scroll to products
+  setTimeout(function(){
+    var grid = document.getElementById("products-grid");
+    if (grid) grid.scrollIntoView({behavior:"smooth", block:"start"});
+  }, 100);
+}
+
 function openMemModal() {
   document.getElementById("mem-modal").classList.add("open");
 }
@@ -1783,7 +1815,7 @@ function solicitarMembresia(gramos, precio) {
 }
 
 // ===== BOT =====
-var GROQ_KEY = "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";
+var GROQ_KEY = "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";
 var GROQ_MODEL = "llama-3.3-70b-versatile";
 var botOpen = false;
 var botHistory = [];
