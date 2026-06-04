@@ -305,7 +305,7 @@ tbody tr:hover{background:var(--surface2);}
         <div><div class="sec-t">Gestión de pedidos</div><div class="sec-sub">Confirmá y asigná horarios de envío</div></div>
         <select class="fgs" id="filtro-estado" style="width:180px" onchange="loadPedidos()"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="confirmado">Confirmado</option><option value="en_envio">En envío</option><option value="entregado">Entregado</option></select>
       </div>
-      <div class="tw"><table><thead><tr><th>Socio</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th>Fecha envío</th><th>Pedido</th><th>Acciones</th></tr></thead><tbody id="tbl-pedidos"></tbody></table></div>
+      <div class="tw"><table><thead><tr><th>Socio</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th>Fecha envío</th><th>Pedido</th><th>Acciones</th><th></th></tr></thead><tbody id="tbl-pedidos"></tbody></table></div>
     </div>
 
     <!-- ENVIOS -->
@@ -334,7 +334,7 @@ tbody tr:hover{background:var(--surface2);}
           <div class="psec"><div class="psec-t">🚚 Costo de envío — pedidos menores a 20g</div><div style="max-width:160px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Precio ($)</label><input type="number" id="fl-envio" placeholder="0"/></div></div></div></div>
         </div>
         <div class="sec-hd"><div class="sec-t">Genéticas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'flores')">+ Agregar genética</button></div>
-        <div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-flores"></tbody></table></div>
+        <div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Bajas</th><th>Altas</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-flores"></tbody></table></div>
       </div>
       <div id="cat-bombones" style="display:none"><div class="sec-hd"><div class="sec-t">Bombones</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'bombones')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-bombones"></tbody></table></div></div>
       <div id="cat-semillas" style="display:none"><div class="sec-hd"><div class="sec-t">Semillas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'semillas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-semillas"></tbody></table></div></div>
@@ -513,14 +513,14 @@ function loadBarSemana(){
 }
 
 function loadPedidos(){
-  var filtro=document.getElementById("filtro-estado").value;var query="pedidos?order=created_at.desc";if(filtro)query+="&estado=eq."+filtro;
+  var filtro=document.getElementById("filtro-estado").value;var query="pedidos?order=created_at.desc&archivado=not.eq.true";if(filtro)query+="&estado=eq."+filtro;
   sb(query,"GET").then(function(data){allPedidos=data||[];var tbody=document.getElementById("tbl-pedidos");tbody.innerHTML="";
     if(!allPedidos.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Sin pedidos</td></tr>';return;}
     allPedidos.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";var acc="";
       if(p.estado==="pendiente")acc='<button class="btn bp2 bsm" onclick="abrirConfirmar('+p.id+')">✓ Confirmar</button>';
       else if(p.estado==="confirmado")acc='<button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'en_envio\')">→ En envío</button>';
       else if(p.estado==="en_envio")acc='<button class="btn bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button>';
-      tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td><td style="font-size:.78rem;font-family:var(--mono)">'+(p.fecha_envio?fmtDate(p.fecha_envio):'<span style="color:var(--text3)">—</span>')+'</td><td style="font-size:.78rem;font-family:var(--mono);color:var(--text3)">'+fmtDate(p.created_at)+'</td><td>'+acc+'</td></tr>';});
+      var delBtn='<button class="btn bsm bic" onclick="confirmarAccionPedido('+p.id+')" title="Archivar/Borrar" style="color:var(--text3)">⋯</button>';tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td><td style="font-size:.78rem;font-family:var(--mono)">'+(p.fecha_envio?fmtDate(p.fecha_envio):'<span style="color:var(--text3)">—</span>')+'</td><td style="font-size:.78rem;font-family:var(--mono);color:var(--text3)">'+fmtDate(p.created_at)+'</td><td>'+acc+'</td><td>'+delBtn+'</td></tr>';});
   });
 }
 function abrirConfirmar(id){
@@ -533,13 +533,32 @@ function abrirConfirmar(id){
 function sendResendEmail(to,subject,html){return fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer re_87pcRRX8_6MhP6Bqn8iBojupgYGhnnrdk","Content-Type":"application/json"},body:JSON.stringify({from:"Melody's Farm <onboarding@resend.dev>",to:[to],subject:subject,html:html})});}
 function confirmarPedido(){var fecha=document.getElementById("mp-fecha-envio").value;var nota=document.getElementById("mp-nota").value;if(!fecha){toast("Seleccioná la fecha y hora de envío","error");return;}sb("pedidos?id=eq."+currentPedidoId,"PATCH",{estado:"confirmado",fecha_envio:fecha,nota_admin:nota}).then(function(){cerrarModal("modal-pedido");toast("Pedido confirmado","success");loadPedidos();var p=allPedidos.find(function(x){return x.id===currentPedidoId;});if(p&&p.es_membresia&&p.socio_id){sb("socios?id=eq."+p.socio_id,"GET").then(function(sd){if(sd&&sd[0]){var usadas=(sd[0].membresia_entregas_usadas||0)+1;sb("socios?id=eq."+p.socio_id,"PATCH",{membresia_entregas_usadas:usadas}).then(function(){loadSocios();});}});}if(p&&p.socio_email){var fd=new Date(fecha).toLocaleString("es-AR",{weekday:"long",day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});var html="<div style='font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a0f00'><div style='background:#E8724A;padding:20px;text-align:center;border-radius:12px 12px 0 0'><h2 style='color:white;margin:0'>✅ Tu pedido está confirmado</h2></div><div style='background:#F2E8D9;padding:24px;border-radius:0 0 12px 12px'><p>Hola <b>"+p.socio+"</b>,</p><p>Tu pedido fue confirmado. Tu envío está programado para:</p><div style='background:white;border-radius:10px;padding:16px;text-align:center;margin:16px 0;font-size:1.1rem;font-weight:700;color:#E8724A'>"+fd+"</div>"+(nota?"<p style='font-size:.85rem;color:#9a8a78'>Nota: <i>"+nota+"</i></p>":"")+"<p style='margin-top:16px;font-size:.85rem;color:#9a8a78'>Gracias por confiar en Melody's Farm 🌿</p></div></div>";sendResendEmail(p.socio_email,"✅ Tu pedido de Melody's Farm fue confirmado",html).catch(function(){});}});}
 function cambiarEstado(id,estado){sb("pedidos?id=eq."+id,"PATCH",{estado:estado}).then(function(){toast("Estado actualizado","success");loadPedidos();loadEnvios();});}
+function confirmarAccionPedido(id){
+  if(confirm("¿Qué querés hacer con este pedido?\n\nOK = Archivar (ocultar)\nCancelar = Borrar permanentemente")){
+    sb("pedidos?id=eq."+id,"PATCH",{archivado:true}).then(function(){toast("Pedido archivado","success");loadPedidos();});
+  } else {
+    if(confirm("⚠️ ¿Confirmar borrado PERMANENTE? Esta acción no se puede deshacer.")){
+      sb("pedidos?id=eq."+id,"DELETE").then(function(){toast("Pedido eliminado","success");loadPedidos();});
+    }
+  }
+}
 
 function loadEnvios(){sb("pedidos?estado=in.(confirmado,en_envio)&order=fecha_envio.asc","GET").then(function(data){var tbody=document.getElementById("tbl-envios");tbody.innerHTML="";if(!data||!data.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Sin envíos pendientes</td></tr>';return;}data.forEach(function(p){var s=allSocios.find(function(x){return x.nombre===p.socio;});var dir=s&&s.direccion?s.direccion:"—";var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="font-size:.82rem">'+dir+'</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.fecha_envio)+'</td><td><button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button></td></tr>';});});}
 
 var catTabs=["flores","bombones","semillas","esquejes","cremas","hongos"];
 function switchCatTab(tab){catTabs.forEach(function(t){var el=document.getElementById("cat-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-catalogo .itab").forEach(function(b,i){b.classList.toggle("active",catTabs[i]===tab);});loadProductosCat(tab);}
 function loadCatalogo(){loadConfig();loadProductosCat("flores");}
-function loadProductosCat(cat){sb("productos?categoria=eq."+cat+"&order=nombre.asc","GET").then(function(data){allProductos=data||[];renderTablaProductos(cat,data);});}
+function loadProductosCat(cat){
+  var queryCat = cat === "hongos" ? "otros" : cat === "esquejes" ? "flores" : cat;
+  sb("productos?categoria=eq."+queryCat+"&order=nombre.asc","GET").then(function(data){
+    allProductos=data||[];
+    if(cat==="esquejes"){
+      var tbody=document.getElementById("tbl-esquejes");
+      if(tbody){tbody.innerHTML="<tr><td colspan='4' style='padding:16px;color:var(--text2);font-size:.82rem;background:var(--yellow-bg)'>✂️ Los esquejes se generan a partir de las genéticas de flores. Las siguientes están disponibles:</td></tr>";}
+    }
+    renderTablaProductos(cat,data);
+  });
+}
 function renderTablaProductos(cat,data){
   var tbody=document.getElementById("tbl-"+cat);if(!tbody)return;tbody.innerHTML="";
   if(!data||!data.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Sin productos. Agregá el primero.</td></tr>';return;}
@@ -553,6 +572,7 @@ function renderTablaProductos(cat,data){
   });
 }
 function toggleProducto(id,activo){sb("productos?id=eq."+id,"PATCH",{activo:activo}).then(function(){toast(activo?"Habilitado":"Deshabilitado","success");});}
+function toggleBajaAlta(id,tipo,activo){var datos={};datos[tipo+'_activo']=activo;sb("productos?id=eq."+id,"PATCH",datos).then(function(){toast((tipo==='bajas'?'Bajas':'Altas')+' '+(activo?'habilitadas':'deshabilitadas'),'success');});}
 function abrirModalProducto(id,cat){
   document.getElementById("mp2-id").value=id||"";document.getElementById("mp2-cat").value=cat;document.getElementById("mp2-titulo").textContent=id?"Editar producto":"Nuevo producto";
   document.getElementById("mp2-nombre").value="";document.getElementById("mp2-desc").value="";document.getElementById("mp2-l1").value="";document.getElementById("mp2-l2").value="";document.getElementById("mp2-l3").value="";document.getElementById("mp2-moneda").value="ARS";
