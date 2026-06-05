@@ -380,6 +380,22 @@ tbody tr:hover{background:var(--surface2);}
   </div>
 </div>
 
+<!-- MODAL DETALLE PEDIDO -->
+<div class="mo" id="modal-detalle-pedido">
+  <div class="mb" style="max-width:600px">
+    <div class="mb-hd">
+      <div class="mb-t">Detalle del pedido</div>
+      <button class="mb-cl" onclick="cerrarModal('modal-detalle-pedido')">✕ Cerrar</button>
+    </div>
+    <div class="mb-body" id="mdp-body">
+    </div>
+    <div class="mb-ft">
+      <button class="btn" onclick="cerrarModal('modal-detalle-pedido')">Cerrar</button>
+      <button class="btn bp2" id="mdp-confirmar-btn" onclick="pasarAConfirmar()" style="display:none">✓ Confirmar envío</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL PEDIDO -->
 <div class="mo" id="modal-pedido">
   <div class="mb">
@@ -520,9 +536,58 @@ function loadPedidos(){
       if(p.estado==="pendiente")acc='<button class="btn bp2 bsm" onclick="abrirConfirmar('+p.id+')">✓ Confirmar</button>';
       else if(p.estado==="confirmado")acc='<button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'en_envio\')">→ En envío</button>';
       else if(p.estado==="en_envio")acc='<button class="btn bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button>';
-      var delBtn='<button class="btn bsm bic" onclick="confirmarAccionPedido('+p.id+')" title="Archivar/Borrar" style="color:var(--text3)">⋯</button>';tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td><td style="font-size:.78rem;font-family:var(--mono)">'+(p.fecha_envio?fmtDate(p.fecha_envio):'<span style="color:var(--text3)">—</span>')+'</td><td style="font-size:.78rem;font-family:var(--mono);color:var(--text3)">'+fmtDate(p.created_at)+'</td><td>'+acc+'</td><td>'+delBtn+'</td></tr>';});
+      var verBtn='<button class="btn bsm" onclick="verDetallePedido('+p.id+')" title="Ver detalle">👁 Ver</button>';var delBtn='<button class="btn bsm bic" onclick="confirmarAccionPedido('+p.id+')" title="Archivar/Borrar" style="color:var(--text3)">⋯</button>';tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td><td style="font-size:.78rem;font-family:var(--mono)">'+(p.fecha_envio?fmtDate(p.fecha_envio):'<span style="color:var(--text3)">—</span>')+'</td><td style="font-size:.78rem;font-family:var(--mono);color:var(--text3)">'+fmtDate(p.created_at)+'</td><td>'+verBtn+' '+acc+'</td><td>'+delBtn+'</td></tr>';});
   });
 }
+function verDetallePedido(id) {
+  var p = allPedidos.find(function(x){ return x.id === id; });
+  if (!p) return;
+  var items = p.items ? p.items.map(function(i){
+    return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">' +
+      '<div><span style="font-weight:600">' + i.name + '</span>' +
+      '<div style="font-size:.75rem;color:var(--text3);margin-top:2px">' + (i.tipo||'') + (i.grams>1?' · '+i.grams+'g':'') + (i.qty>1?' · x'+i.qty:'') + '</div></div>' +
+      '<span style="font-weight:700">$' + fmt(i.precio) + '</span></div>';
+  }).join('') : '<div style="color:var(--text3)">Sin items</div>';
+
+  var socioInfo = '';
+  var s = allSocios.find(function(x){ return x.nombre === p.socio; });
+  if (s) {
+    socioInfo = '<div style="background:var(--surface2);border-radius:var(--r);padding:12px;margin-bottom:16px;font-size:.82rem">' +
+      '<div style="font-weight:700;margin-bottom:6px">📋 Datos del socio</div>' +
+      '<div>Nombre: <b>' + s.nombre + '</b></div>' +
+      (s.telefono ? '<div>Teléfono: <b>' + s.telefono + '</b></div>' : '') +
+      (s.direccion ? '<div>Dirección: <b>' + s.direccion + '</b></div>' : '') +
+      (s.email ? '<div>Email: <b>' + s.email + '</b></div>' : '') +
+      '<div>Lista de precios: <b>Lista ' + (s.lista_precios||1) + '</b></div>' +
+      '</div>';
+  }
+
+  var html = socioInfo +
+    '<div style="margin-bottom:12px">' + items + '</div>' +
+    '<div style="display:flex;justify-content:space-between;padding:12px 0;font-size:1rem;font-weight:700;border-top:2px solid var(--border)">' +
+    '<span>Total</span><span style="color:var(--orange)">$' + fmt(p.total) + '</span></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;font-size:.82rem">' +
+    '<div style="background:var(--surface2);padding:10px;border-radius:var(--r)"><div style="color:var(--text3);font-size:.7rem;margin-bottom:3px">PAGO</div><b>' + (p.metodo_pago||'—') + '</b></div>' +
+    '<div style="background:var(--surface2);padding:10px;border-radius:var(--r)"><div style="color:var(--text3);font-size:.7rem;margin-bottom:3px">ESTADO</div>' + eBadge(p.estado) + '</div>' +
+    '<div style="background:var(--surface2);padding:10px;border-radius:var(--r)"><div style="color:var(--text3);font-size:.7rem;margin-bottom:3px">PEDIDO</div><b>' + fmtDate(p.created_at) + '</b></div>' +
+    '<div style="background:var(--surface2);padding:10px;border-radius:var(--r)"><div style="color:var(--text3);font-size:.7rem;margin-bottom:3px">ENVÍO</div><b>' + (p.fecha_envio ? fmtDate(p.fecha_envio) : '—') + '</b></div>' +
+    '</div>' +
+    (p.instrucciones ? '<div style="margin-top:12px;padding:12px;background:var(--yellow-bg);border:1px solid var(--yellow-lt);border-radius:var(--r);font-size:.82rem">📝 ' + p.instrucciones + '</div>' : '') +
+    (p.nota_admin ? '<div style="margin-top:8px;padding:12px;background:var(--blue-bg);border:1px solid var(--blue-lt);border-radius:var(--r);font-size:.82rem">🔵 Nota admin: ' + p.nota_admin + '</div>' : '');
+
+  document.getElementById("mdp-body").innerHTML = html;
+  var confBtn = document.getElementById("mdp-confirmar-btn");
+  confBtn.style.display = p.estado === "pendiente" ? "" : "none";
+  confBtn.setAttribute("data-id", id);
+  abrirModal("modal-detalle-pedido");
+}
+
+function pasarAConfirmar() {
+  var id = parseInt(document.getElementById("mdp-confirmar-btn").getAttribute("data-id"));
+  cerrarModal("modal-detalle-pedido");
+  abrirConfirmar(id);
+}
+
 function abrirConfirmar(id){
   currentPedidoId=id;var p=allPedidos.find(function(x){return x.id===id;});if(!p)return;
   var det=document.getElementById("mp-detalle");var items=p.items?p.items.map(function(i){return'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>'+i.name+' ('+i.tipo+')'+(i.grams>1?' — '+i.grams+'g':'')+'</span><span style="font-weight:600">$'+fmt(i.precio)+'</span></div>';}).join(""):"";
