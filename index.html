@@ -1815,7 +1815,7 @@ function solicitarMembresia(gramos, precio) {
 }
 
 // ===== BOT =====
-var GROQ_KEY = "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";
+var GROQ_KEY = "proxy"; // Key manejada por Cloudflare Worker
 var GROQ_MODEL = "llama-3.3-70b-versatile";
 var botOpen = false;
 var botHistory = [];
@@ -1886,9 +1886,9 @@ function sendBot() {
 
   var messages = [{ role: "system", content: buildBotContext() }].concat(botHistory.slice(-8));
 
-  fetch("https://api.groq.com/openai/v1/chat/completions", {
+  fetch("https://melodys-bot.kionda043.workers.dev", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + GROQ_KEY },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ model: GROQ_MODEL, messages: messages, max_tokens: 400 })
   })    .then(function(resp){ return resp.json(); })
     .then(function(d){
