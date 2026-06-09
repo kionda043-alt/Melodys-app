@@ -1317,14 +1317,20 @@ function openModal(p, cat) {
     document.getElementById("pm-flores-opts").style.display = "block";
     document.getElementById("pm-other-opts").style.display = "none";
     updateTipoPrices();
-    setTipo("baja");
-    // Reset gramos
     document.querySelectorAll(".gr-opt").forEach(function(g, i) {
       g.classList.toggle("active", i === 0);
     });
-    document.querySelectorAll(".gr-opt").forEach(function(g,i){g.classList.toggle("active",i===0);});
     modalGramos = 5;
-    setTipo("baja");
+    // Set initial tipo based on availability
+    var bajaOk = p.bajas_activo !== false;
+    var altaOk = p.altas_activo !== false;
+    setTipo(bajaOk ? "baja" : "alta");
+    var bajaBt = document.getElementById("tipo-baja");
+    var altaBt = document.getElementById("tipo-alta");
+    if (!bajaOk) { bajaBt.style.opacity=".4"; bajaBt.style.pointerEvents="none"; document.getElementById("tipo-baja-price").textContent="Sin stock"; }
+    else { bajaBt.style.opacity=""; bajaBt.style.pointerEvents=""; }
+    if (!altaOk) { altaBt.style.opacity=".4"; altaBt.style.pointerEvents="none"; document.getElementById("tipo-alta-price").textContent="Sin stock"; }
+    else { altaBt.style.opacity=""; altaBt.style.pointerEvents=""; }
   } else if (cat === "esquejes") {
     document.getElementById("pm-flores-opts").style.display = "none";
     document.getElementById("pm-other-opts").style.display = "block";
@@ -1444,6 +1450,19 @@ function addToCart() {
       grams: 1,
       qty: 1,
       precio: precioEsqC
+    };
+  } else if (cat === "semillas") {
+    var semPricesAC = {5: 25000, 10: 40000, 20: 65000};
+    var prSemAC = getProductPrice(modalProduct);
+    item = {
+      id: modalProduct.id,
+      name: modalProduct.nombre,
+      cat: cat,
+      tipo: "Pack " + modalQty + "u",
+      grams: 1,
+      qty: modalQty,
+      precio: semPricesAC[modalQty] || (prSemAC * modalQty),
+      moneda: "ARS"
     };
   } else {
     var pr = getProductPrice(modalProduct);
