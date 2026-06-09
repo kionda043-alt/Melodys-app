@@ -380,6 +380,24 @@ tbody tr:hover{background:var(--surface2);}
   </div>
 </div>
 
+<!-- MODAL ACCION PEDIDO -->
+<div class="mo" id="modal-accion-pedido">
+  <div class="mb" style="max-width:420px">
+    <div class="mb-hd"><div class="mb-t">Gestionar pedido</div><button class="mb-cl" onclick="cerrarModal('modal-accion-pedido')">✕ Cerrar</button></div>
+    <div class="mb-body">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:.9rem;font-weight:700;color:var(--text)" id="map-info"></div>
+        <div style="font-size:.8rem;color:var(--text3);margin-top:6px">¿Qué querés hacer con este pedido?</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn" onclick="archivarPedido()" style="width:100%;justify-content:center;background:var(--surface2)">📦 Archivar (ocultar de la lista)</button>
+        <button class="btn br2" onclick="borrarPedidoPerm()" style="width:100%;justify-content:center">🗑️ Borrar permanentemente</button>
+        <button class="btn bp2" onclick="cerrarModal('modal-accion-pedido')" style="width:100%;justify-content:center">← Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL DETALLE PEDIDO -->
 <div class="mo" id="modal-detalle-pedido">
   <div class="mb" style="max-width:600px">
@@ -598,15 +616,10 @@ function abrirConfirmar(id){
 function sendResendEmail(to,subject,html){return fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer re_87pcRRX8_6MhP6Bqn8iBojupgYGhnnrdk","Content-Type":"application/json"},body:JSON.stringify({from:"Melody's Farm <onboarding@resend.dev>",to:[to],subject:subject,html:html})});}
 function confirmarPedido(){var fecha=document.getElementById("mp-fecha-envio").value;var nota=document.getElementById("mp-nota").value;if(!fecha){toast("Seleccioná la fecha y hora de envío","error");return;}sb("pedidos?id=eq."+currentPedidoId,"PATCH",{estado:"confirmado",fecha_envio:fecha,nota_admin:nota}).then(function(){cerrarModal("modal-pedido");toast("Pedido confirmado","success");loadPedidos();var p=allPedidos.find(function(x){return x.id===currentPedidoId;});if(p&&p.es_membresia&&p.socio_id){sb("socios?id=eq."+p.socio_id,"GET").then(function(sd){if(sd&&sd[0]){var usadas=(sd[0].membresia_entregas_usadas||0)+1;sb("socios?id=eq."+p.socio_id,"PATCH",{membresia_entregas_usadas:usadas}).then(function(){loadSocios();});}});}if(p&&p.socio_email){var fd=new Date(fecha).toLocaleString("es-AR",{weekday:"long",day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});var html="<div style='font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a0f00'><div style='background:#E8724A;padding:20px;text-align:center;border-radius:12px 12px 0 0'><h2 style='color:white;margin:0'>✅ Tu pedido está confirmado</h2></div><div style='background:#F2E8D9;padding:24px;border-radius:0 0 12px 12px'><p>Hola <b>"+p.socio+"</b>,</p><p>Tu pedido fue confirmado. Tu envío está programado para:</p><div style='background:white;border-radius:10px;padding:16px;text-align:center;margin:16px 0;font-size:1.1rem;font-weight:700;color:#E8724A'>"+fd+"</div>"+(nota?"<p style='font-size:.85rem;color:#9a8a78'>Nota: <i>"+nota+"</i></p>":"")+"<p style='margin-top:16px;font-size:.85rem;color:#9a8a78'>Gracias por confiar en Melody's Farm 🌿</p></div></div>";sendResendEmail(p.socio_email,"✅ Tu pedido de Melody's Farm fue confirmado",html).catch(function(){});}});}
 function cambiarEstado(id,estado){sb("pedidos?id=eq."+id,"PATCH",{estado:estado}).then(function(){toast("Estado actualizado","success");loadPedidos();loadEnvios();});}
-function confirmarAccionPedido(id){
-  if(confirm("¿Qué querés hacer con este pedido?\n\nOK = Archivar (ocultar)\nCancelar = Borrar permanentemente")){
-    sb("pedidos?id=eq."+id,"PATCH",{archivado:true}).then(function(){toast("Pedido archivado","success");loadPedidos();});
-  } else {
-    if(confirm("⚠️ ¿Confirmar borrado PERMANENTE? Esta acción no se puede deshacer.")){
-      sb("pedidos?id=eq."+id,"DELETE").then(function(){toast("Pedido eliminado","success");loadPedidos();});
-    }
-  }
-}
+var accionPedidoId=null;
+function confirmarAccionPedido(id){accionPedidoId=id;var p=allPedidos.find(function(x){return x.id===id;});document.getElementById("map-info").textContent=p?(p.socio+" — $"+fmt(p.total)):"";abrirModal("modal-accion-pedido");}
+function archivarPedido(){if(!accionPedidoId)return;sb("pedidos?id=eq."+accionPedidoId,"PATCH",{archivado:true}).then(function(){cerrarModal("modal-accion-pedido");toast("Pedido archivado","success");loadPedidos();});}
+function borrarPedidoPerm(){if(!accionPedidoId)return;if(!confirm("⚠️ ÚLTIMO AVISO: el pedido se borra para siempre y NO se puede recuperar. ¿Seguro?"))return;sb("pedidos?id=eq."+accionPedidoId,"DELETE").then(function(){cerrarModal("modal-accion-pedido");toast("Pedido eliminado","success");loadPedidos();});}
 
 function loadEnvios(){sb("pedidos?estado=in.(confirmado,en_envio)&order=fecha_envio.asc","GET").then(function(data){var tbody=document.getElementById("tbl-envios");tbody.innerHTML="";if(!data||!data.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Sin envíos pendientes</td></tr>';return;}data.forEach(function(p){var s=allSocios.find(function(x){return x.nombre===p.socio;});var dir=s&&s.direccion?s.direccion:"—";var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="font-size:.82rem">'+dir+'</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.fecha_envio)+'</td><td><button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button></td></tr>';});});}
 
@@ -631,12 +644,16 @@ function renderTablaProductos(cat,data){
   data.forEach(function(p){
     var tog='<label class="tgl"><input type="checkbox"'+(p.activo?" checked":"")+" onchange=\"toggleProducto('"+p.id+"',this.checked)\"/><span class=\"tgl-s\"></span></label>";
     var acc='<button class="btn bsm bic" onclick="abrirModalProducto(\''+p.id+'\',\''+cat+'\')" title="Editar">✏</button> <button class="btn bsm bic br2" onclick="eliminarProducto(\''+p.id+'\',\''+cat+'\')" title="Eliminar">✕</button>';
-    if(cat==="flores"){tbody.innerHTML+='<tr><td class="tdm">'+p.nombre+'</td><td style="font-size:.8rem;color:var(--text2);max-width:260px">'+(p.descripcion||"—")+'</td><td>'+tog+'</td><td>'+acc+'</td></tr>';}
+    if(cat==="flores"){
+      var togB='<label class="tgl"><input type="checkbox"'+(p.bajas_activo!==false?" checked":"")+" onchange=\"toggleBajaAlta('"+p.id+"','bajas',this.checked)\"/><span class=\"tgl-s\"></span></label>";
+      var togA='<label class="tgl"><input type="checkbox"'+(p.altas_activo!==false?" checked":"")+" onchange=\"toggleBajaAlta('"+p.id+"','altas',this.checked)\"/><span class=\"tgl-s\"></span></label>";
+      tbody.innerHTML+='<tr><td class="tdm">'+p.nombre+'</td><td style="font-size:.8rem;color:var(--text2);max-width:180px">'+(p.descripcion||"—")+'</td><td>'+togB+'</td><td>'+togA+'</td><td>'+tog+'</td><td>'+acc+'</td></tr>';
+    }
     else if(hasDesc){var mon=p.moneda==="USD"?'<span class="badge bb">USD</span>':'<span class="badge bgr">ARS</span>';tbody.innerHTML+='<tr><td class="tdm">'+p.nombre+'</td><td style="font-size:.78rem;max-width:140px">'+(p.descripcion||"—")+'</td><td style="font-family:var(--mono)">'+fmt(p.precio_lista1_ars||p.precio_lista1_usd)+'</td><td style="font-family:var(--mono)">'+fmt(p.precio_lista2_ars||p.precio_lista2_usd)+'</td><td style="font-family:var(--mono)">'+fmt(p.precio_lista3_ars||p.precio_lista3_usd)+'</td><td>'+mon+'</td><td>'+tog+'</td><td>'+acc+'</td></tr>';}
     else{var mon2=p.moneda==="USD"?'<span class="badge bb">USD</span>':'<span class="badge bgr">ARS</span>';tbody.innerHTML+='<tr><td class="tdm">'+p.nombre+'</td><td style="font-family:var(--mono)">'+fmt(p.precio_lista1_ars||p.precio_lista1_usd)+'</td><td style="font-family:var(--mono)">'+fmt(p.precio_lista2_ars||p.precio_lista2_usd)+'</td><td style="font-family:var(--mono)">'+fmt(p.precio_lista3_ars||p.precio_lista3_usd)+'</td><td>'+mon2+'</td><td>'+tog+'</td><td>'+acc+'</td></tr>';}
   });
 }
-function toggleProducto(id,activo){sb("productos?id=eq."+id,"PATCH",{activo:activo}).then(function(){toast(activo?"Habilitado":"Deshabilitado","success");});}
+function toggleProducto(id,activo){var cat=document.querySelector("#page-catalogo .itab.active");var catName=cat?catTabs[Array.prototype.indexOf.call(cat.parentNode.children,cat)]:null;sb("productos?id=eq."+id,"PATCH",{activo:activo}).then(function(){toast(activo?"Producto con stock":"Producto sin stock","success");});}
 function toggleBajaAlta(id,tipo,activo){var datos={};datos[tipo+'_activo']=activo;sb("productos?id=eq."+id,"PATCH",datos).then(function(){toast((tipo==='bajas'?'Bajas':'Altas')+' '+(activo?'habilitadas':'deshabilitadas'),'success');});}
 function abrirModalProducto(id,cat){
   document.getElementById("mp2-id").value=id||"";document.getElementById("mp2-cat").value=cat;document.getElementById("mp2-titulo").textContent=id?"Editar producto":"Nuevo producto";
