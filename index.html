@@ -713,6 +713,37 @@ body{
   font-size:.75rem;color:#128C4A;font-weight:700;
   margin-bottom:16px;
 }
+
+/* ===== DASHBOARD ===== */
+#dash-view{padding:0 0 90px;}
+.dash-title{font-size:.7rem;font-weight:900;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;margin:18px 16px 10px;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;}
+.dash-tile{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:16px 14px;display:flex;flex-direction:column;gap:5px;cursor:pointer;transition:transform .12s;}
+.dash-tile:active{transform:scale(.97);}
+.dash-tile .dt-ico{font-size:1.8rem;}
+.dash-tile .dt-nm{font-size:.9rem;font-weight:900;color:var(--dark);}
+.dash-tile .dt-ds{font-size:.66rem;color:var(--gray);}
+.dash-tile.dash-flores{border-color:var(--orange);background:linear-gradient(135deg,#fff,#fdf3ee);}
+
+/* ===== MEMBERSHIP HERO ===== */
+#mem-hero{margin:14px 0 0;border-radius:var(--r2);padding:16px;background:linear-gradient(135deg,var(--dark),var(--dark2));position:relative;overflow:hidden;cursor:pointer;}
+#mem-hero:active{opacity:.9;}
+#mem-hero::after{content:"🎫";position:absolute;right:-8px;bottom:-12px;font-size:5rem;opacity:.12;}
+.mh-tag{font-size:.6rem;font-weight:900;color:var(--yellow);letter-spacing:.12em;text-transform:uppercase;}
+.mh-title{font-size:1.05rem;font-weight:900;color:var(--cream);margin:4px 0 2px;}
+.mh-sub{font-size:.7rem;color:var(--gray2);margin-bottom:12px;position:relative;z-index:1;}
+.mh-btn{background:linear-gradient(135deg,var(--orange),var(--yellow));border:none;border-radius:100px;padding:9px 18px;font-family:'Lato',sans-serif;font-size:.78rem;font-weight:900;color:#fff;cursor:pointer;position:relative;z-index:1;}
+
+/* ===== CATEGORY VIEW ===== */
+.cat-view-head{padding:12px 16px 4px;background:var(--cream);}
+.cat-back-btn{background:none;border:none;font-family:'Lato',sans-serif;font-size:.82rem;font-weight:700;color:var(--orange);cursor:pointer;padding:4px 0;}
+.cat-view-title{font-size:1.3rem;font-weight:900;color:var(--dark);margin-top:4px;}
+
+/* ===== FLOATING MEMBERSHIP BUTTON ===== */
+#mem-fab{position:fixed;bottom:88px;left:50%;margin-left:-199px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));border:none;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 16px rgba(123,196,127,.5);cursor:pointer;z-index:90;transition:transform .15s;}
+#mem-fab:active{transform:scale(.92);}
+@media(max-width:430px){#mem-fab{left:16px;margin-left:0;}}
+
 </style>
 </head>
 <body>
@@ -776,30 +807,39 @@ body{
         </div>
       </div>
 
-      <!-- MEMBERSHIP CARD -->
-      <div id="home-mem-card" onclick="setCatFromCard('membresia')">
-        <div class="hmc-icon">🎫</div>
-        <div class="hmc-info">
-          <div class="hmc-title">Membresías del club</div>
-          <div class="hmc-sub">10g · 25g · 50g · Stock premium · Eventos · Visitas</div>
-        </div>
-        <button class="hmc-btn">Ver planes →</button>
+      <!-- MEMBERSHIP HERO -->
+      <div id="mem-hero" onclick="goCat('membresia')">
+        <div class="mh-tag">Exclusivo socios</div>
+        <div class="mh-title">🎫 Membresías del club</div>
+        <div class="mh-sub">10g · 25g · 50g — stock premium, eventos y visitas</div>
+        <button class="mh-btn">Ver planes →</button>
       </div>
 
-      <div class="cats" id="cats-row">
-        <div class="cat-pill active" onclick="setCat('flores',this)">🌸 Flores</div>
-        <div class="cat-pill" onclick="setCat('bombones',this)">🍫 Bombones</div>
-        <div class="cat-pill" onclick="setCat('semillas',this)">🌱 Semillas</div>
-        <div class="cat-pill" onclick="setCat('esquejes',this)">✂️ Esquejes</div>
-        <div class="cat-pill" onclick="setCat('membresia',this)">🎫 Membresía</div>
-        <div class="cat-pill" onclick="setCat('cremas',this)">🧴 Cremas</div>
-        <div class="cat-pill" onclick="setCat('hongos',this)">🍄 Hongos</div>
+    </div>
+
+    <!-- DASHBOARD (grilla de categorias) -->
+    <div id="dash-view">
+      <div class="dash-title">¿Qué estás buscando?</div>
+      <div class="dash-grid">
+        <div class="dash-tile dash-flores" onclick="goCat('flores')"><div class="dt-ico">🌸</div><div class="dt-nm">Flores</div><div class="dt-ds">Bajas y altas · por gramo</div></div>
+        <div class="dash-tile" onclick="goCat('bombones')"><div class="dt-ico">🍫</div><div class="dt-nm">Bombones</div><div class="dt-ds">Comestibles</div></div>
+        <div class="dash-tile" onclick="goCat('semillas')"><div class="dt-ico">🌱</div><div class="dt-nm">Semillas</div><div class="dt-ds">Packs 5 · 10 · 20</div></div>
+        <div class="dash-tile" onclick="goCat('esquejes')"><div class="dt-ico">🪴</div><div class="dt-nm">Esquejes</div><div class="dt-ds">Plantas vivas</div></div>
+        <div class="dash-tile" onclick="goCat('cremas')"><div class="dt-ico">🧴</div><div class="dt-nm">Cremas</div><div class="dt-ds">Uso tópico</div></div>
+        <div class="dash-tile" onclick="goCat('hongos')"><div class="dt-ico">🍄</div><div class="dt-nm">Hongos</div><div class="dt-ds">Microdosis</div></div>
       </div>
     </div>
 
-    <div class="products-wrap">
-      <div class="products-grid" id="products-grid">
-        <div class="loading-msg">Cargando productos...</div>
+    <!-- VISTA DE CATEGORIA -->
+    <div id="cat-view" style="display:none">
+      <div class="cat-view-head">
+        <button class="cat-back-btn" onclick="goDash()">← Volver al inicio</button>
+        <div class="cat-view-title" id="cat-view-title">Categoría</div>
+      </div>
+      <div class="products-wrap">
+        <div class="products-grid" id="products-grid">
+          <div class="loading-msg">Cargando productos...</div>
+        </div>
       </div>
     </div>
   </div>
@@ -856,6 +896,15 @@ body{
             <span class="pago-label">Transferencia</span>
           </div>
         </div>
+        <div id="transfer-data" style="display:none;margin-top:10px;background:var(--cream);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+          <div style="font-size:.72rem;font-weight:900;color:var(--dark);margin-bottom:8px">💳 Datos para transferir</div>
+          <div style="font-size:.78rem;color:var(--dark);line-height:1.9">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:4px"><span style="color:var(--gray)">Alias</span><b id="td-alias">melodys.farm</b></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--gray)">CBU/CVU</span><b id="td-cbu">—</b></div>
+            <div style="display:flex;justify-content:space-between;padding-top:4px"><span style="color:var(--gray)">Titular</span><b id="td-titular">Melody's Farm</b></div>
+          </div>
+          <div style="font-size:.68rem;color:var(--gray);margin-top:10px;line-height:1.5">Una vez que transfieras, te confirmamos por WhatsApp. 💬</div>
+        </div>
       </div>
 
       <button class="confirm-btn" id="confirm-btn" onclick="confirmarPedido()">
@@ -865,6 +914,20 @@ body{
   </div>
 
 
+
+  <!-- MIS PEDIDOS -->
+  <div class="screen" id="s-pedidos">
+    <div class="cart-header">
+      <button class="back-btn" onclick="goScreen('shop')">←</button>
+      <div class="cart-header-info">
+        <div class="cart-h-title">Mis pedidos</div>
+        <div class="cart-h-sub">Estado e historial</div>
+      </div>
+    </div>
+    <div id="pedidos-content" style="padding:0 14px 90px">
+      <div class="loading-msg">Cargando tus pedidos...</div>
+    </div>
+  </div>
 
   <!-- SUCCESS -->
   <div class="screen" id="s-success">
@@ -883,6 +946,9 @@ body{
   </button>
   <button class="nav-item" id="nav-cart" onclick="goScreen('cart')">
     <span class="nav-icon">🛒</span>Carrito
+  </button>
+  <button class="nav-item" id="nav-pedidos" onclick="goScreen('pedidos')">
+    <span class="nav-icon">📋</span>Mis pedidos
   </button>
 
 </div>
@@ -1015,6 +1081,9 @@ body{
   </div>
 </div>
 
+<!-- MEMBERSHIP FLOATING BUTTON -->
+<button id="mem-fab" onclick="goCat('membresia')" title="Membresías">🎫</button>
+
 <!-- BOT FLOTANTE -->
 <button id="bot-fab" onclick="toggleBot()">
   🌿
@@ -1132,7 +1201,6 @@ var modalQty = 1;
 window.addEventListener("load", function() {
   loadTrack(0);
   loadConfig();
-  loadProducts("flores");
   updateCartBadge();
 });
 
@@ -1189,10 +1257,23 @@ function getEmoji(nombre, cat) {
 }
 var catLabels = { flores:"Flores", bombones:"Bombones", semillas:"Semillas", esquejes:"Esquejes", cremas:"Cremas", hongos:"Hongos", otros:"Otros", membresia:"Membresía" };
 
-function setCat(cat, el) {
+function goDash() {
+  document.getElementById("dash-view").style.display = "block";
+  document.getElementById("cat-view").style.display = "none";
+  document.getElementById("mem-hero").style.display = "block";
+  document.getElementById("main") && (document.getElementById("main").scrollTop = 0);
+}
+
+var catTitles = {flores:"🌸 Flores", bombones:"🍫 Bombones", semillas:"🌱 Semillas", esquejes:"🪴 Esquejes", cremas:"🧴 Cremas", hongos:"🍄 Hongos", membresia:"🎫 Membresías"};
+
+function goCat(cat) {
   currentCat = cat;
-  document.querySelectorAll(".cat-pill").forEach(function(p) { p.classList.remove("active"); });
-  el.classList.add("active");
+  document.getElementById("dash-view").style.display = "none";
+  document.getElementById("mem-hero").style.display = "none";
+  document.getElementById("cat-view").style.display = "block";
+  document.getElementById("cat-view-title").textContent = catTitles[cat] || cat;
+  var m = document.getElementById("main");
+  if (m) m.scrollTop = 0;
   loadProducts(cat);
 }
 
@@ -1599,6 +1680,8 @@ function setPago(tipo, el) {
   selectedPago = tipo;
   document.querySelectorAll(".pago-opt").forEach(function(x) { x.classList.remove("active"); });
   el.classList.add("active");
+  var td = document.getElementById("transfer-data");
+  if (td) td.style.display = (tipo === "transferencia") ? "block" : "none";
 }
 
 function confirmarPedido() {
@@ -1719,7 +1802,7 @@ function doLogin() {
         document.getElementById("mem-bar").style.display = "flex";
       }
       loadConfig();
-      loadProducts("flores");
+      goDash();
     })
     .catch(function() { err.textContent = "Error de conexión. Intentá de nuevo."; });
 }
@@ -1778,20 +1861,7 @@ function enviarEmailAdmin(pedido, costoEnvio) {
 
 // ===== MEMBRESIA MODAL =====
 function setCatFromCard(cat) {
-  // Activate the pill
-  document.querySelectorAll(".cat-pill").forEach(function(p){ p.classList.remove("active"); });
-  document.querySelectorAll(".cat-pill").forEach(function(p){
-    if (p.getAttribute("onclick") && p.getAttribute("onclick").includes("'" + cat + "'")) {
-      p.classList.add("active");
-    }
-  });
-  currentCat = cat;
-  loadProducts(cat);
-  // Scroll to products
-  setTimeout(function(){
-    var grid = document.getElementById("products-grid");
-    if (grid) grid.scrollIntoView({behavior:"smooth", block:"start"});
-  }, 100);
+  goCat(cat);
 }
 
 function openMemModal() {
@@ -1924,8 +1994,77 @@ function sendBot() {
 }
 
 // ===== NAVIGATION =====
-var screens = ["shop", "cart", "success"];
-var navIds = { shop: "nav-shop", cart: "nav-cart" };
+var screens = ["shop", "cart", "pedidos", "success"];
+var navIds = { shop: "nav-shop", cart: "nav-cart", pedidos: "nav-pedidos" };
+
+
+// ===== MIS PEDIDOS =====
+function estadoBadge(estado) {
+  var map = {
+    pendiente: ["⏳ Pendiente", "#F5C842", "#856404"],
+    confirmado: ["✓ Confirmado", "#7BC47F", "#2a6a2e"],
+    enviado: ["🚚 Enviado", "#7BC47F", "#2a6a2e"],
+    entregado: ["✅ Entregado", "#7BC47F", "#2a6a2e"],
+    cancelado: ["✕ Cancelado", "#e0d0bc", "#9a8a78"]
+  };
+  var m = map[estado] || ["• " + (estado||"—"), "#e0d0bc", "#9a8a78"];
+  return '<span style="background:' + m[1] + '33;border:1px solid ' + m[1] + ';color:' + m[2] + ';font-size:.68rem;font-weight:900;padding:3px 10px;border-radius:100px;white-space:nowrap">' + m[0] + '</span>';
+}
+
+function loadMisPedidos() {
+  var cont = document.getElementById("pedidos-content");
+  if (!currentSocio) {
+    cont.innerHTML = '<div class="loading-msg">Iniciá sesión para ver tus pedidos.</div>';
+    return;
+  }
+  cont.innerHTML = '<div class="loading-msg">Cargando tus pedidos...</div>';
+  sb("pedidos?socio_id=eq." + currentSocio.id + "&archivado=not.eq.true&order=created_at.desc", "GET").then(function(data) {
+    if (!Array.isArray(data) || !data.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--gray)"><div style="font-size:2.5rem;margin-bottom:10px">📋</div><div style="font-size:.9rem;font-weight:700">Todavía no hiciste pedidos</div><div style="font-size:.75rem;margin-top:6px">Cuando hagas tu primer pedido va a aparecer acá</div></div>';
+      return;
+    }
+    var html = "";
+    // Último pedido en curso (destacado)
+    var ultimo = data[0];
+    html += '<div style="margin:16px 0 8px;font-size:.7rem;font-weight:900;color:var(--gray);letter-spacing:.1em;text-transform:uppercase">Último pedido</div>';
+    html += pedidoCard(ultimo, true);
+    if (data.length > 1) {
+      html += '<div style="margin:20px 0 8px;font-size:.7rem;font-weight:900;color:var(--gray);letter-spacing:.1em;text-transform:uppercase">Historial</div>';
+      for (var i = 1; i < data.length; i++) {
+        html += pedidoCard(data[i], false);
+      }
+    }
+    cont.innerHTML = html;
+  }).catch(function() {
+    cont.innerHTML = '<div class="loading-msg">⚠️ Sin conexión. Intentá de nuevo.</div>';
+  });
+}
+
+function pedidoCard(p, destacado) {
+  var fecha = p.created_at ? new Date(p.created_at).toLocaleDateString("es-AR", {day:"2-digit",month:"2-digit",year:"numeric"}) : "—";
+  var items = (p.items && p.items.length) ? p.items.map(function(i) {
+    var det = i.cat === "flores" ? (i.tipo + " · " + i.grams + "g") : (i.tipo && i.tipo !== "unidad" ? i.tipo : (i.qty > 1 ? "x" + i.qty : ""));
+    return '<div style="display:flex;justify-content:space-between;font-size:.76rem;padding:3px 0"><span style="color:var(--dark)">' + i.name + (det ? ' <span style="color:var(--gray)">· ' + det + '</span>' : '') + '</span><span style="font-weight:700;color:var(--dark)">$' + (i.precio||0).toLocaleString("es-AR") + '</span></div>';
+  }).join("") : '<div style="font-size:.76rem;color:var(--gray)">Sin detalle</div>';
+
+  var pagoTxt = p.metodo_pago === "transferencia" ? "Transferencia" : p.metodo_pago === "efectivo" ? "Efectivo" : (p.metodo_pago || "—");
+  var border = destacado ? "2px solid var(--orange)" : "1px solid var(--border)";
+  var bg = destacado ? "linear-gradient(135deg,#fff,#fdf3ee)" : "var(--white)";
+
+  return '<div style="background:' + bg + ';border:' + border + ';border-radius:var(--r2);padding:14px;margin-bottom:10px">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+    '<span style="font-size:.72rem;color:var(--gray);font-weight:700">📅 ' + fecha + '</span>' +
+    estadoBadge(p.estado) +
+    '</div>' +
+    '<div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 0;margin-bottom:10px">' + items + '</div>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center">' +
+    '<span style="font-size:.72rem;color:var(--gray)">💳 ' + pagoTxt + '</span>' +
+    '<span style="font-size:.95rem;font-weight:900;color:var(--orange)">Total: $' + (p.total||0).toLocaleString("es-AR") + '</span>' +
+    '</div>' +
+    (p.fecha_envio ? '<div style="font-size:.72rem;color:var(--green2);font-weight:700;margin-top:8px">🚚 Envío: ' + new Date(p.fecha_envio).toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit"}) + '</div>' : '') +
+    (p.instrucciones && p.es_membresia ? '<div style="font-size:.72rem;color:var(--gray);margin-top:6px;font-style:italic">' + p.instrucciones + '</div>' : '') +
+    '</div>';
+}
 
 function goScreen(name) {
   screens.forEach(function(s) {
@@ -1948,7 +2087,15 @@ function goScreen(name) {
   }
 
   if (name === "cart") renderCart();
+  if (name === "pedidos") loadMisPedidos();
 
+  // Floating buttons solo en shop
+  var memFab = document.getElementById("mem-fab");
+  var botFab = document.getElementById("bot-fab");
+  if (memFab) memFab.style.display = (name === "shop") ? "flex" : "none";
+  if (botFab) botFab.style.display = (name === "shop") ? "flex" : "none";
+  // Al volver al shop, mostrar dashboard
+  if (name === "shop") goDash();
 
   document.getElementById("main").scrollTop = 0;
 }
