@@ -871,12 +871,12 @@ body{
       <div class="dash-title">¿Qué estás buscando?</div>
       <div class="dash-grid">
         <div class="dash-tile dash-flores" onclick="goCat('flores')"><div class="dt-ico">🌸</div><div class="dt-nm">Flores</div><div class="dt-ds">Bajas y altas · por gramo</div></div>
+        <div class="dash-tile dash-promo" onclick="goCat('promos')"><div class="dt-ico">🔥</div><div class="dt-nm">Promos</div><div class="dt-ds">Ofertas del club</div></div>
         <div class="dash-tile" onclick="goCat('bombones')"><div class="dt-ico">🍫</div><div class="dt-nm">Bombones</div><div class="dt-ds">Comestibles</div></div>
         <div class="dash-tile" onclick="goCat('semillas')"><div class="dt-ico">🌱</div><div class="dt-nm">Semillas</div><div class="dt-ds">Packs 5 · 10 · 20</div></div>
         <div class="dash-tile" onclick="goCat('esquejes')"><div class="dt-ico">🪴</div><div class="dt-nm">Esquejes</div><div class="dt-ds">Plantas vivas</div></div>
         <div class="dash-tile" onclick="goCat('cremas')"><div class="dt-ico">🧴</div><div class="dt-nm">Cremas</div><div class="dt-ds">Uso tópico</div></div>
         <div class="dash-tile" onclick="goCat('hongos')"><div class="dt-ico">🍄</div><div class="dt-nm">Hongos</div><div class="dt-ds">Microdosis</div></div>
-        <div class="dash-tile dash-promo" onclick="goCat('promos')"><div class="dt-ico">🔥</div><div class="dt-nm">Promos</div><div class="dt-ds">Ofertas del club</div></div>
       </div>
     </div>
 
@@ -1168,8 +1168,8 @@ body{
   <div class="pb-sheet">
     <div class="pb-hd">
       <div>
-        <div class="pb-title">🔥 Armá tu promo 100g</div>
-        <div class="pb-sub">Elegí 100g entre las genéticas · $7.500/g</div>
+        <div class="pb-title" id="pb-title">🔥 Armá tu promo</div>
+        <div class="pb-sub" id="pb-sub">Elegí los gramos entre las genéticas</div>
       </div>
       <button class="pb-close" onclick="cerrarPromoBuilder()">✕</button>
     </div>
@@ -1314,6 +1314,7 @@ function sb(path, method, body) {
 var cart = [];
 var currentCat = "flores";
 var configData = {};
+var MEM_PRECIOS = {10:200, 25:500, 50:1000};
 var productos = [];
 var selectedPago = "efectivo";
 var currentSocio = null;
@@ -1336,8 +1337,19 @@ window.addEventListener("load", function() {
 // ===== CONFIG =====
 function loadConfig() {
   sb("configuracion?id=eq.1", "GET").then(function(d) {
-    if (d && d[0]) configData = d[0];
+    if (d && d[0]) {
+      configData = d[0];
+      if (d[0].membresia_precio_10 != null) MEM_PRECIOS[10] = d[0].membresia_precio_10;
+      if (d[0].membresia_precio_25 != null) MEM_PRECIOS[25] = d[0].membresia_precio_25;
+      if (d[0].membresia_precio_50 != null) MEM_PRECIOS[50] = d[0].membresia_precio_50;
+      refreshMembresiaPrecios();
+    }
   });
+}
+function refreshMembresiaPrecios() {
+  var els = document.querySelectorAll(".mem-plan-price");
+  var vals = [MEM_PRECIOS[10], MEM_PRECIOS[25], MEM_PRECIOS[50]];
+  els.forEach(function(el, i) { if (vals[i] != null) el.textContent = "USD " + vals[i]; });
 }
 
 function getPriceFlores(tipo) {
@@ -1415,9 +1427,9 @@ function renderMembresia() {
     '<div style="font-size:1.1rem;font-weight:900;margin-bottom:4px">Club de Membresía</div>' +
     '<div style="font-size:.8rem;opacity:.9">Acceso exclusivo · Stock seleccionado · Beneficios únicos</div>' +
     '</div>' +
-    memCard("🌿 Membresía 10g", "USD 200", "1 entrega mensual de 10g durante 3 meses. Flores altas seleccionadas del mejor del cultivo.", ["10g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía"]) +
-    memCard("⭐ Membresía 25g", "USD 500", "1 entrega mensual de 25g durante 3 meses. La más popular del club.", ["25g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"], 25, 500) +
-    memCard("👑 Membresía 50g", "USD 1000", "1 entrega mensual de 50g durante 3 meses. La experiencia completa Melody's.", ["50g de flores altas por mes","Stock especial premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"], 50, 1000) +
+    memCard("🌿 Membresía 10g", "USD " + MEM_PRECIOS[10], "1 entrega mensual de 10g durante 3 meses. Flores altas seleccionadas del mejor del cultivo.", ["10g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía"], 10, MEM_PRECIOS[10]) +
+    memCard("⭐ Membresía 25g", "USD " + MEM_PRECIOS[25], "1 entrega mensual de 25g durante 3 meses. La más popular del club.", ["25g de flores altas por mes","Stock especial premium","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"], 25, MEM_PRECIOS[25]) +
+    memCard("👑 Membresía 50g", "USD " + MEM_PRECIOS[50], "1 entrega mensual de 50g durante 3 meses. La experiencia completa Melody's.", ["50g de flores altas por mes","Stock especial premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"], 50, MEM_PRECIOS[50]) +
     '<div style="background:var(--cream);border-radius:14px;padding:14px;font-size:.78rem;color:var(--gray);line-height:1.6">' +
     '<b style="color:var(--dark)">¿Cómo funciona?</b><br>' +
     'El pago total se abona en la primera entrega. La membresía dura 3 meses con 1 entrega mensual. ' +
@@ -1430,83 +1442,104 @@ function renderMembresia() {
 
 
 // ===== PROMOS =====
-var promoSeleccion = []; // {nombre, tipo, grams}
-var PROMO_GRAMOS = 100;
-var PROMO_PRECIO = 750000;
+var promoSeleccion = []; // {nombre, grams}
+var promoActual = null;   // promo elegida
+var promosCache = [];
+var floresPromoCache = [];
+function nombreGenetica(id){ var g = floresPromoCache.find(function(x){return String(x.id)===String(id);}); return g ? g.nombre : null; }
+function fmtNum(n){ return (parseFloat(n)||0).toLocaleString("es-AR"); }
 
 function renderPromos() {
   promoSeleccion = [];
   var grid = document.getElementById("products-grid");
-  grid.innerHTML =
-    '<div style="padding:16px">' +
-    '<div style="background:linear-gradient(135deg,#E8724A,#F5C842);border-radius:20px;padding:20px;color:white;margin-bottom:16px;position:relative;overflow:hidden">' +
-    '<div style="font-size:.62rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.9">Promo del club</div>' +
-    '<div style="font-size:1.4rem;font-weight:900;margin:4px 0">🔥 100g x $750.000</div>' +
-    '<div style="font-size:.8rem;opacity:.92">Armá 100g combinando las genéticas que quieras (altas o bajas). Precio fijo: $7.500/g.</div>' +
-    '</div>' +
-    '<button onclick="abrirPromoBuilder()" style="width:100%;padding:14px;background:var(--dark);border:none;border-radius:14px;color:var(--cream);font-family:Lato,sans-serif;font-size:.9rem;font-weight:900;cursor:pointer">➕ Agregar promo (elegir 100g)</button>' +
-    '<div style="background:var(--cream);border-radius:14px;padding:14px;font-size:.78rem;color:var(--gray);line-height:1.6;margin-top:16px">' +
-    '<b style="color:var(--dark)">¿Cómo funciona?</b><br>Tocá "Agregar promo", elegí 100g repartidos entre las genéticas disponibles y se suma al carrito con el precio fijo de la promo.' +
-    '</div>' +
-    '</div>';
+  grid.innerHTML = '<div style="padding:16px" id="promos-cont"><div style="text-align:center;color:var(--gray);padding:24px">Cargando promos...</div></div>';
+  Promise.all([
+    sb("promos?activa=eq.true&order=created_at.desc", "GET"),
+    sb("productos?categoria=eq.flores&activo=eq.true&order=nombre.asc", "GET")
+  ]).then(function(res){
+    promosCache = Array.isArray(res[0]) ? res[0] : [];
+    floresPromoCache = Array.isArray(res[1]) ? res[1] : [];
+    var cont = document.getElementById("promos-cont");
+    if (!cont) return;
+    if (!promosCache.length) {
+      cont.innerHTML = '<div style="background:var(--cream);border-radius:16px;padding:28px;text-align:center;color:var(--gray);font-size:.85rem">🔥 No hay promos activas por ahora.<br>Volvé pronto.</div>';
+      return;
+    }
+    cont.innerHTML = promosCache.map(function(pr){
+      var genTxt = pr.genetica_id ? (nombreGenetica(pr.genetica_id) || "Genética seleccionada") : "Mezcla de genéticas a elección";
+      return '<div style="background:linear-gradient(135deg,#E8724A,#F5C842);border-radius:20px;padding:20px;color:white;margin-bottom:14px;position:relative;overflow:hidden">' +
+        '<div style="font-size:.6rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.9">🔥 Stock limitado</div>' +
+        '<div style="font-size:1.3rem;font-weight:900;margin:4px 0">' + pr.nombre + '</div>' +
+        '<div style="font-size:.95rem;font-weight:800;margin-bottom:4px">' + pr.cantidad_g + 'g · $' + fmtNum(pr.precio) + '</div>' +
+        (pr.descripcion ? '<div style="font-size:.78rem;opacity:.92;margin-bottom:4px">' + pr.descripcion + '</div>' : '') +
+        '<div style="font-size:.72rem;opacity:.85;margin-bottom:12px">' + genTxt + '</div>' +
+        '<button onclick="seleccionarPromo(\'' + pr.id + '\')" style="width:100%;padding:12px;background:var(--dark);border:none;border-radius:12px;color:var(--cream);font-family:Lato,sans-serif;font-size:.85rem;font-weight:900;cursor:pointer">➕ Agregar promo</button>' +
+      '</div>';
+    }).join("");
+  });
+}
+
+function seleccionarPromo(id) {
+  promoActual = promosCache.find(function(x){ return String(x.id)===String(id); });
+  if (!promoActual) return;
+  promoSeleccion = [];
+  if (promoActual.genetica_id) {
+    var nom = nombreGenetica(promoActual.genetica_id) || "Genética";
+    cart.push({ id:"promo-"+Date.now(), name:"🔥 "+promoActual.nombre, cat:"promos", tipo:"promo", grams:promoActual.cantidad_g, qty:1, precio:promoActual.precio, moneda:"ARS", promoDetalle: nom+" "+promoActual.cantidad_g+"g" });
+    updateCartBadge();
+    showToast("¡Promo agregada al carrito! 🔥", "ok");
+  } else {
+    abrirPromoBuilder();
+  }
 }
 
 function abrirPromoBuilder() {
+  if (!promoActual) return;
   promoSeleccion = [];
-  // Cargar genéticas disponibles
-  sb("productos?categoria=eq.flores&activo=eq.true&order=nombre.asc", "GET").then(function(data){
-    if (!Array.isArray(data) || !data.length) { showToast("No hay genéticas disponibles", "err"); return; }
-    var rows = "";
-    data.forEach(function(p){
-      var bajaOk = p.bajas_activo !== false;
-      var altaOk = p.altas_activo !== false;
-      if (!bajaOk && !altaOk) return;
-      var tipos = [];
-      if (bajaOk) tipos.push("baja");
-      if (altaOk) tipos.push("alta");
-      tipos.forEach(function(t){
-        var key = p.nombre + "|" + t;
-        rows += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">' +
-          '<div><div style="font-weight:700;font-size:.85rem;color:var(--dark)">' + p.nombre + '</div><div style="font-size:.68rem;color:var(--gray)">' + (t==="baja"?"Baja":"Alta") + '</div></div>' +
-          '<div style="display:flex;align-items:center;gap:8px">' +
-          '<button onclick="promoAdj(\''+ key.replace(/'/g,"") +'\',-5)" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--white);font-weight:900;cursor:pointer">−</button>' +
-          '<span id="promo-g-' + btoa(unescape(encodeURIComponent(key))).replace(/=/g,"") + '" style="min-width:42px;text-align:center;font-weight:900;font-size:.85rem">0g</span>' +
-          '<button onclick="promoAdj(\''+ key.replace(/'/g,"") +'\',5)" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--white);font-weight:900;cursor:pointer">+</button>' +
-          '</div></div>';
-      });
-    });
-    document.getElementById("promo-builder-rows").innerHTML = rows;
-    promoSeleccion = [];
-    updatePromoTotal();
-    document.getElementById("promo-builder").classList.add("open");
+  if (!floresPromoCache.length) { showToast("No hay genéticas disponibles", "err"); return; }
+  var t = document.getElementById("pb-title"); if (t) t.textContent = "🔥 " + promoActual.nombre;
+  var s = document.getElementById("pb-sub"); if (s) s.textContent = "Elegí " + promoActual.cantidad_g + "g entre las genéticas";
+  var rows = "";
+  floresPromoCache.forEach(function(p){
+    var key = p.nombre;
+    rows += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">' +
+      '<div style="font-weight:700;font-size:.85rem;color:var(--dark)">' + p.nombre + '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+      '<button onclick="promoAdj(\''+ key.replace(/'/g,"") +'\',-5)" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--white);font-weight:900;cursor:pointer">−</button>' +
+      '<span id="' + keyId(key) + '" style="min-width:42px;text-align:center;font-weight:900;font-size:.85rem">0g</span>' +
+      '<button onclick="promoAdj(\''+ key.replace(/'/g,"") +'\',5)" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--white);font-weight:900;cursor:pointer">+</button>' +
+      '</div></div>';
   });
+  document.getElementById("promo-builder-rows").innerHTML = rows;
+  updatePromoTotal();
+  document.getElementById("promo-builder").classList.add("open");
 }
 
 function keyId(key){ return "promo-g-" + btoa(unescape(encodeURIComponent(key))).replace(/=/g,""); }
 
-function promoAdj(key, delta) {
-  var parts = key.split("|");
-  var nombre = parts[0], tipo = parts[1];
-  var existing = promoSeleccion.find(function(x){ return x.nombre===nombre && x.tipo===tipo; });
+function promoAdj(nombre, delta) {
+  var target = promoActual ? promoActual.cantidad_g : 100;
+  var existing = promoSeleccion.find(function(x){ return x.nombre===nombre; });
   var current = existing ? existing.grams : 0;
   var totalActual = promoSeleccion.reduce(function(a,x){return a+x.grams;},0);
   var nuevo = current + delta;
   if (nuevo < 0) nuevo = 0;
-  // No pasar de 100 en total
-  if (delta > 0 && totalActual + delta > PROMO_GRAMOS) { showToast("La promo es de 100g", "err"); return; }
-  if (existing) { existing.grams = nuevo; if (nuevo===0) promoSeleccion = promoSeleccion.filter(function(x){return !(x.nombre===nombre&&x.tipo===tipo);}); }
-  else if (nuevo > 0) promoSeleccion.push({nombre:nombre, tipo:tipo, grams:nuevo});
-  var el = document.getElementById(keyId(key));
+  if (delta > 0 && totalActual + delta > target) { showToast("La promo es de " + target + "g", "err"); return; }
+  if (existing) { existing.grams = nuevo; if (nuevo===0) promoSeleccion = promoSeleccion.filter(function(x){return x.nombre!==nombre;}); }
+  else if (nuevo > 0) promoSeleccion.push({nombre:nombre, grams:nuevo});
+  var el = document.getElementById(keyId(nombre));
   if (el) el.textContent = nuevo + "g";
   updatePromoTotal();
 }
 
 function updatePromoTotal() {
+  var target = promoActual ? promoActual.cantidad_g : 100;
   var total = promoSeleccion.reduce(function(a,x){return a+x.grams;},0);
-  document.getElementById("promo-total").textContent = total + "g / 100g";
+  document.getElementById("promo-total").textContent = total + "g / " + target + "g";
   var btn = document.getElementById("promo-confirm-btn");
-  btn.disabled = total !== PROMO_GRAMOS;
-  btn.style.opacity = total === PROMO_GRAMOS ? "1" : ".5";
+  btn.disabled = total !== target;
+  btn.style.opacity = total === target ? "1" : ".5";
+  btn.textContent = "Agregar promo — $" + fmtNum(promoActual ? promoActual.precio : 0);
 }
 
 function cerrarPromoBuilder() {
@@ -1514,17 +1547,19 @@ function cerrarPromoBuilder() {
 }
 
 function confirmarPromo() {
+  if (!promoActual) return;
+  var target = promoActual.cantidad_g;
   var total = promoSeleccion.reduce(function(a,x){return a+x.grams;},0);
-  if (total !== PROMO_GRAMOS) { showToast("Tenés que elegir 100g", "err"); return; }
-  var detalle = promoSeleccion.map(function(x){ return x.nombre + " " + (x.tipo==="baja"?"(B)":"(A)") + " " + x.grams + "g"; }).join(", ");
+  if (total !== target) { showToast("Tenés que elegir " + target + "g", "err"); return; }
+  var detalle = promoSeleccion.map(function(x){ return x.nombre + " " + x.grams + "g"; }).join(", ");
   cart.push({
     id: "promo-" + Date.now(),
-    name: "🔥 Promo 100g",
+    name: "🔥 " + promoActual.nombre,
     cat: "promos",
     tipo: "promo",
-    grams: 100,
+    grams: target,
     qty: 1,
-    precio: PROMO_PRECIO,
+    precio: promoActual.precio,
     moneda: "ARS",
     promoDetalle: detalle,
     promoItems: JSON.parse(JSON.stringify(promoSeleccion))
@@ -1747,6 +1782,9 @@ function addToCart() {
   var item = {};
 
   if (cat === "flores") {
+    var stockTipo = modalTipo === "baja" ? (modalProduct.stock_bajas_g || 0) : (modalProduct.stock_altas_g || 0);
+    if (stockTipo <= 0) { showToast("Esta genética no tiene stock disponible", "err"); return; }
+    if (stockTipo < modalGramos) { showToast("No hay stock suficiente de esta genética", "err"); return; }
     var pxg = getPriceFlores(modalTipo);
     item = {
       id: modalProduct.id,
@@ -2161,6 +2199,7 @@ function procesarPedido() {
 
   sb("pedidos", "POST", pedidoData).then(function(r) {
     if (r && r[0] && r[0].id) {
+      descontarStockFlores(items);
       enviarEmailAdmin(pedidoData, costoEnvio);
       cart = [];
       updateCartBadge();
@@ -2174,6 +2213,21 @@ function procesarPedido() {
     showToast("Error de conexión", "err");
     btn.disabled = false;
     btn.textContent = "Confirmar pedido 🌿";
+  });
+}
+
+function descontarStockFlores(items) {
+  (items || []).forEach(function(it) {
+    if (it.cat !== "flores" || !it.id || !it.grams) return;
+    var col = it.tipo === "baja" ? "stock_bajas_g" : "stock_altas_g";
+    sb("productos?id=eq." + it.id, "GET").then(function(d) {
+      if (d && d[0]) {
+        var actual = d[0][col] || 0;
+        var nuevo = Math.max(0, actual - it.grams);
+        var patch = {}; patch[col] = nuevo;
+        sb("productos?id=eq." + it.id, "PATCH", patch);
+      }
+    });
   });
 }
 
@@ -2213,8 +2267,9 @@ function doLogin() {
       if (currentSocio.membresia_tipo && currentSocio.membresia_vence && new Date(currentSocio.membresia_vence) > now) {
         var vence = new Date(currentSocio.membresia_vence).toLocaleDateString("es-AR", {day:"2-digit",month:"2-digit",year:"numeric"});
         document.getElementById("mem-txt").textContent = "Membresía " + currentSocio.membresia_tipo + "g activa";
-        document.getElementById("mem-sub").textContent = "Vence " + vence;
         var restantes = 3 - (currentSocio.membresia_entregas_usadas || 0);
+        var msgMem = restantes <= 0 ? "Membresía completada — sin entregas disponibles" : (restantes === 1 ? "Te queda 1 entrega (última)" : "Te quedan " + restantes + " entregas");
+        document.getElementById("mem-sub").textContent = "Vence " + vence + " · " + msgMem;
         document.getElementById("mem-entregas-restantes").textContent = restantes + "/3";
         document.getElementById("mem-bar").style.display = "flex";
       }
@@ -2288,6 +2343,7 @@ function closeMemModal() {
   document.getElementById("mem-modal").classList.remove("open");
 }
 function solicitarMembresia(gramos, precio) {
+  precio = MEM_PRECIOS[gramos] || precio;
   var nombre = currentSocio ? currentSocio.nombre : "Socio";
   // Save solicitud to pedidos as a special order
   sb("pedidos", "POST", {
@@ -2299,7 +2355,8 @@ function solicitarMembresia(gramos, precio) {
     metodo_pago: "pendiente",
     estado: "pendiente",
     instrucciones: "SOLICITUD DE MEMBRESÍA " + gramos + "g — USD " + precio,
-    es_membresia: true
+    es_membresia: true,
+    es_solicitud: true
   }).then(function(r) {
     if (r && r[0] && r[0].id) {
       // Notify admin
