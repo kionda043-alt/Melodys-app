@@ -378,6 +378,7 @@ tbody tr:hover{background:var(--surface2);}
         <button class="itab" onclick="switchCatTab('esquejes')">✂️ Esquejes</button>
         <button class="itab" onclick="switchCatTab('cremas')">🧴 Cremas</button>
         <button class="itab" onclick="switchCatTab('hongos')">🍄 Hongos</button>
+        <button class="itab" onclick="switchCatTab('promos')">🔥 Promos</button>
         <button class="itab" onclick="switchCatTab('membresias')">💳 Membresías</button>
       </div>
       <div id="cat-flores">
@@ -397,6 +398,10 @@ tbody tr:hover{background:var(--surface2);}
       <div id="cat-esquejes" style="display:none"><div class="sec-hd"><div class="sec-t">Esquejes</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'esquejes')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-esquejes"></tbody></table></div></div>
       <div id="cat-cremas" style="display:none"><div class="sec-hd"><div class="sec-t">Cremas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'cremas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-cremas"></tbody></table></div></div>
       <div id="cat-hongos" style="display:none"><div class="sec-hd"><div class="sec-t">Otros</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'hongos')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-hongos"></tbody></table></div></div>
+      <div id="cat-promos" style="display:none">
+        <div class="sec-hd"><div class="sec-t">Promos</div><button class="btn bp2 bsm" onclick="abrirModalPromo(null)">+ Nueva promo</button></div>
+        <div id="lista-promos"></div>
+      </div>
       <div id="cat-membresias" style="display:none">
         <div class="card" style="margin-bottom:16px">
           <div class="card-hd"><span class="card-title">💵 Precios de membresía (USD)</span><button class="btn bp2 bsm" onclick="guardarPreciosMembresia()">💾 Guardar precios</button></div>
@@ -446,6 +451,20 @@ tbody tr:hover{background:var(--surface2);}
   </div>
 </div>
 
+<!-- MODAL PROMO -->
+<div class="mo" id="modal-promo">
+  <div class="mb" style="max-width:460px">
+    <div class="mb-hd"><div class="mb-t" id="mpr-tit">Nueva promo</div><button class="mb-cl" onclick="cerrarModal('modal-promo')">✕ Cerrar</button></div>
+    <div class="mb-body">
+      <div class="fg"><label class="fgl">Nombre de la promo</label><input class="fgi" id="mpr-nombre" placeholder="Ej: Promo 100g mix"/></div>
+      <div class="fg"><label class="fgl">Descripción (opcional)</label><input class="fgi" id="mpr-desc" placeholder="Ej: Armá 100g combinando genéticas"/></div>
+      <div class="fg"><label class="fgl">Aplica a</label><select class="fgs" id="mpr-genetica"><option value="">Todas (mezcla a elección del socio)</option></select></div>
+      <div class="fr2"><div class="fg"><label class="fgl">Cantidad (g)</label><input type="number" class="fgi" id="mpr-cantidad" value="100"/></div><div class="fg"><label class="fgl">Precio ($)</label><input type="number" class="fgi" id="mpr-precio" value="0"/></div></div>
+    </div>
+    <div class="mb-ft"><button class="btn" onclick="cerrarModal('modal-promo')">Cancelar</button><button class="btn bp2" onclick="guardarPromo()">Guardar promo</button></div>
+  </div>
+</div>
+
 <!-- MODAL EDITAR MEMBRESIA -->
 <div class="mo" id="modal-mem-edit">
   <div class="mb" style="max-width:440px">
@@ -469,9 +488,10 @@ tbody tr:hover{background:var(--surface2);}
         <div style="font-size:.8rem;color:var(--text3);margin-top:6px">¿Qué querés hacer con este pedido?</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn" onclick="cancelarPedido()" style="width:100%;justify-content:center;background:var(--orange-bg);border-color:var(--orange-lt);color:var(--orange)">🔄 Cancelar pedido (devolver stock y archivar)</button>
         <button class="btn" onclick="archivarPedido()" style="width:100%;justify-content:center;background:var(--surface2)">📦 Archivar (ocultar de la lista)</button>
         <button class="btn br2" onclick="borrarPedidoPerm()" style="width:100%;justify-content:center">🗑️ Borrar permanentemente</button>
-        <button class="btn bp2" onclick="cerrarModal('modal-accion-pedido')" style="width:100%;justify-content:center">← Cancelar</button>
+        <button class="btn bp2" onclick="cerrarModal('modal-accion-pedido')" style="width:100%;justify-content:center">← Volver</button>
       </div>
     </div>
   </div>
@@ -705,8 +725,8 @@ function borrarPedidoPerm(){if(!accionPedidoId)return;if(!confirm("⚠️ ÚLTIM
 function loadEnvios(){sb("pedidos?estado=in.(confirmado,en_envio)&order=fecha_envio.asc","GET").then(function(data){var tbody=document.getElementById("tbl-envios");tbody.innerHTML="";if(!data||!data.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Sin envíos pendientes</td></tr>';return;}data.forEach(function(p){var s=allSocios.find(function(x){return x.nombre===p.socio;});var dir=s&&s.direccion?s.direccion:"—";var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="font-size:.82rem">'+dir+'</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.fecha_envio)+'</td><td><button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button></td></tr>';});});}
 
 var catTabs=["flores","bombones","semillas","esquejes","cremas","hongos"];
-var allCatTabs=["flores","bombones","semillas","esquejes","cremas","hongos","membresias"];
-function switchCatTab(tab){allCatTabs.forEach(function(t){var el=document.getElementById("cat-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-catalogo .itab").forEach(function(b,i){b.classList.toggle("active",allCatTabs[i]===tab);});if(tab==="membresias"){loadMembresiasCat();}else{loadProductosCat(tab);}}
+var allCatTabs=["flores","bombones","semillas","esquejes","cremas","hongos","promos","membresias"];
+function switchCatTab(tab){allCatTabs.forEach(function(t){var el=document.getElementById("cat-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-catalogo .itab").forEach(function(b,i){b.classList.toggle("active",allCatTabs[i]===tab);});if(tab==="membresias"){loadMembresiasCat();}else if(tab==="promos"){loadPromosAdmin();}else{loadProductosCat(tab);}}
 function loadCatalogo(){loadConfig();loadProductosCat("flores");}
 function loadProductosCat(cat){
   var queryCat = cat === "hongos" ? "otros" : cat === "esquejes" ? "flores" : cat;
@@ -889,6 +909,61 @@ function guardarPreciosMembresia(){
   var datos={membresia_precio_10:parseFloat(document.getElementById("mp-10").value)||0,membresia_precio_25:parseFloat(document.getElementById("mp-25").value)||0,membresia_precio_50:parseFloat(document.getElementById("mp-50").value)||0};
   sb("configuracion?id=eq.1","PATCH",datos).then(function(){toast("Precios de membresía guardados","success");});
 }
+
+/* ===== CANCELAR PEDIDO (devuelve stock + archiva) ===== */
+function cancelarPedido(){
+  if(!accionPedidoId)return;
+  if(!confirm("¿Cancelar este pedido? Se devuelve el stock de las flores y el pedido se archiva."))return;
+  var p=allPedidos.find(function(x){return x.id===accionPedidoId;});
+  if(p&&p.items&&p.items.length){
+    p.items.forEach(function(it){
+      if(it.cat!=="flores"||!it.id||!it.grams)return;
+      var col=it.tipo==="baja"?"stock_bajas_g":"stock_altas_g";
+      sb("productos?id=eq."+it.id,"GET").then(function(d){if(d&&d[0]){var actual=d[0][col]||0;var patch={};patch[col]=actual+it.grams;sb("productos?id=eq."+it.id,"PATCH",patch);}});
+    });
+  }
+  sb("pedidos?id=eq."+accionPedidoId,"PATCH",{estado:"cancelado",archivado:true}).then(function(){cerrarModal("modal-accion-pedido");toast("Pedido cancelado — stock devuelto","success");loadPedidos();});
+}
+
+/* ===== PROMOS (admin) ===== */
+var _promos=[],_promoEditId=null,_promoGens=[];
+function loadPromosAdmin(){
+  sb("productos?categoria=eq.flores&order=nombre.asc","GET").then(function(gs){
+    _promoGens=gs||[];var sel=document.getElementById("mpr-genetica");
+    if(sel)sel.innerHTML='<option value="">Todas (mezcla a elección del socio)</option>'+_promoGens.map(function(g){return '<option value="'+g.id+'">'+g.nombre+'</option>';}).join("");
+  });
+  sb("promos?order=created_at.desc","GET").then(function(d){_promos=d||[];renderPromosAdmin();});
+}
+function nombreGenAdmin(id){var g=_promoGens.find(function(x){return String(x.id)===String(id);});return g?g.nombre:"Genética";}
+function renderPromosAdmin(){
+  var c=document.getElementById("lista-promos");if(!c)return;
+  if(!_promos.length){c.innerHTML='<div class="empty" style="padding:24px;text-align:center;color:var(--text3)">Sin promos. Creá la primera con "+ Nueva promo".</div>';return;}
+  c.innerHTML=_promos.map(function(pr){
+    var genTxt=pr.genetica_id?nombreGenAdmin(pr.genetica_id):"Mezcla de genéticas";
+    return '<div class="gen-card"><div class="gen-top"><div><div class="gen-name">'+(pr.nombre||"")+'</div>'
+      +'<div class="gen-desc">'+(pr.descripcion||"—")+'</div>'
+      +'<div style="font-size:.82rem;font-weight:700;color:var(--text2);margin-top:6px">'+pr.cantidad_g+'g · $'+((pr.precio||0).toLocaleString("es-AR"))+' · '+genTxt+'</div></div>'
+      +'<div class="gen-acc"><button class="btn bsm bic" onclick="abrirModalPromo(\''+pr.id+'\')" title="Editar">✏</button>'
+      +'<button class="btn bsm bic br2" onclick="eliminarPromo(\''+pr.id+'\')" title="Eliminar">✕</button></div></div>'
+      +'<div class="gen-disp"><span class="gen-disp-l">Visible para socios</span>'
+      +'<span class="pill '+(pr.activa!==false?"on":"off")+'" onclick="togPromoActiva(\''+pr.id+'\')">'+(pr.activa!==false?"✓ Activa":"Pausada")+'</span></div></div>';
+  }).join("");
+}
+function abrirModalPromo(id){
+  _promoEditId=id;
+  if(id){var pr=_promos.find(function(x){return String(x.id)===String(id);});if(!pr)return;document.getElementById("mpr-tit").textContent="Editar promo";document.getElementById("mpr-nombre").value=pr.nombre||"";document.getElementById("mpr-desc").value=pr.descripcion||"";document.getElementById("mpr-genetica").value=pr.genetica_id||"";document.getElementById("mpr-cantidad").value=pr.cantidad_g||100;document.getElementById("mpr-precio").value=pr.precio||0;}
+  else{document.getElementById("mpr-tit").textContent="Nueva promo";document.getElementById("mpr-nombre").value="";document.getElementById("mpr-desc").value="";document.getElementById("mpr-genetica").value="";document.getElementById("mpr-cantidad").value=100;document.getElementById("mpr-precio").value=0;}
+  abrirModal("modal-promo");
+}
+function guardarPromo(){
+  var nombre=document.getElementById("mpr-nombre").value.trim();
+  if(!nombre){toast("Poné un nombre a la promo","error");return;}
+  var datos={nombre:nombre,descripcion:document.getElementById("mpr-desc").value.trim()||null,genetica_id:document.getElementById("mpr-genetica").value||null,cantidad_g:parseInt(document.getElementById("mpr-cantidad").value)||0,precio:parseFloat(document.getElementById("mpr-precio").value)||0};
+  if(_promoEditId){sb("promos?id=eq."+_promoEditId,"PATCH",datos).then(function(){cerrarModal("modal-promo");toast("Promo actualizada","success");loadPromosAdmin();});}
+  else{datos.activa=true;sb("promos","POST",datos).then(function(){cerrarModal("modal-promo");toast("Promo creada","success");loadPromosAdmin();});}
+}
+function togPromoActiva(id){var pr=_promos.find(function(x){return String(x.id)===String(id);});if(!pr)return;var nv=!(pr.activa!==false);pr.activa=nv;sb("promos?id=eq."+id,"PATCH",{activa:nv}).then(function(){toast(nv?"Promo activada":"Promo pausada","success");});renderPromosAdmin();}
+function eliminarPromo(id){if(!confirm("¿Eliminar esta promo?"))return;sb("promos?id=eq."+id,"DELETE").then(function(){toast("Promo eliminada","success");loadPromosAdmin();});}
 
 </script>
 </body>
