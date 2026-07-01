@@ -213,6 +213,61 @@ tbody tr:hover{background:var(--surface2);}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+/* === Flores: tarjetas con stock + contraste === */
+.gen-grid{display:flex;flex-direction:column;gap:12px;}
+.gen-card{border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;background:var(--surface);}
+.gen-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.gen-name{font-weight:800;font-size:.98rem;color:var(--text);}
+.gen-desc{font-size:.74rem;color:var(--text3);margin-top:2px;line-height:1.35;max-width:440px;}
+.gen-acc{margin-left:auto;display:flex;gap:6px;flex-shrink:0;}
+.gen-disp{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--border);}
+.gen-disp-l{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);}
+.gen-tipos{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:640px){.gen-tipos{grid-template-columns:1fr;}}
+.gen-tipo{border:1.5px solid var(--border);border-radius:var(--r);padding:12px;background:var(--surface2);}
+.gen-tipo.off{opacity:.65;}
+.gen-tipo.nostock{border-color:var(--red-lt);background:var(--red-bg);}
+.gen-tipo-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.gen-tipo-n{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;font-size:.72rem;font-weight:700;cursor:pointer;border:2px solid;user-select:none;transition:.12s;}
+.pill.on{background:var(--green);border-color:var(--green);color:#fff;}
+.pill.off{background:#fff;border-color:var(--border2);color:var(--text3);}
+.pill:active{transform:scale(.96);}
+.gen-stock{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.gen-stock label{font-size:.72rem;font-weight:600;color:var(--text2);}
+.gen-stock .si{display:flex;align-items:center;background:#fff;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;max-width:110px;}
+.gen-stock .si input{width:100%;border:none;outline:none;padding:7px 9px;font-family:var(--fn);font-weight:700;font-size:.88rem;text-align:center;}
+.gen-stock .si span{padding:0 9px 0 0;color:var(--text3);font-weight:700;font-size:.78rem;}
+.gen-est{font-size:.74rem;font-weight:700;padding:5px 9px;border-radius:var(--r);}
+.est-venta{background:var(--green-bg);color:var(--green);}
+.est-sin{background:var(--red-bg);color:var(--red);}
+.est-off{background:var(--surface3);color:var(--text3);}
+/* === Membresías (dentro de Catálogo) === */
+.mp-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:640px){.mp-grid{grid-template-columns:1fr;}}
+.mp-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:13px;}
+.mp-box h4{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:2px;}
+.mp-box .sub{font-size:.66rem;color:var(--text3);margin-bottom:9px;}
+.mp-in{display:flex;align-items:center;background:#fff;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.mp-in span{padding:0 0 0 11px;color:var(--text3);font-weight:700;font-size:.85rem;}
+.mp-in input{flex:1;border:none;outline:none;padding:9px 11px;font-family:var(--fn);font-size:.95rem;font-weight:700;color:var(--text);width:100%;}
+.mem-card{border:1px solid var(--border);border-radius:var(--r2);padding:14px 15px;margin-bottom:11px;background:var(--surface);}
+.mem-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.mem-av{width:36px;height:36px;border-radius:50%;background:var(--sb);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;}
+.mem-name{font-weight:700;color:var(--text);font-size:.92rem;}
+.mem-meta{font-size:.7rem;color:var(--text3);margin-top:1px;}
+.mem-badges{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+.mem-body{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:11px;border-top:1px solid var(--border);}
+.mem-cl{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:6px;}
+.dots{display:flex;gap:8px;align-items:center;}
+.dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;color:transparent;font-weight:800;transition:.12s;}
+.dot:hover{border-color:var(--green);}
+.dot.on{background:var(--green);border-color:var(--green);color:#fff;}
+.dot-n{font-size:.78rem;font-weight:700;color:var(--text2);margin-left:5px;}
+.dot-n b{color:var(--green);}
+.step{display:flex;gap:8px;align-items:center;}
+.stepb{width:32px;height:32px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface2);font-size:1.05rem;font-weight:700;color:var(--text2);cursor:pointer;}
+.stepv{min-width:42px;text-align:center;font-size:1.05rem;font-weight:800;}
 </style>
 </head>
 <body>
@@ -323,6 +378,7 @@ tbody tr:hover{background:var(--surface2);}
         <button class="itab" onclick="switchCatTab('esquejes')">✂️ Esquejes</button>
         <button class="itab" onclick="switchCatTab('cremas')">🧴 Cremas</button>
         <button class="itab" onclick="switchCatTab('hongos')">🍄 Hongos</button>
+        <button class="itab" onclick="switchCatTab('membresias')">💳 Membresías</button>
       </div>
       <div id="cat-flores">
         <div class="card" style="margin-bottom:20px">
@@ -334,13 +390,28 @@ tbody tr:hover{background:var(--surface2);}
           <div class="psec"><div class="psec-t">🚚 Costo de envío — pedidos menores a 20g</div><div style="max-width:160px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Precio ($)</label><input type="number" id="fl-envio" placeholder="0"/></div></div></div></div>
         </div>
         <div class="sec-hd"><div class="sec-t">Genéticas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'flores')">+ Agregar genética</button></div>
-        <div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Bajas</th><th>Altas</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-flores"></tbody></table></div>
+        <div id="tbl-flores" class="gen-grid"></div>
       </div>
       <div id="cat-bombones" style="display:none"><div class="sec-hd"><div class="sec-t">Bombones</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'bombones')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-bombones"></tbody></table></div></div>
       <div id="cat-semillas" style="display:none"><div class="sec-hd"><div class="sec-t">Semillas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'semillas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-semillas"></tbody></table></div></div>
       <div id="cat-esquejes" style="display:none"><div class="sec-hd"><div class="sec-t">Esquejes</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'esquejes')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-esquejes"></tbody></table></div></div>
       <div id="cat-cremas" style="display:none"><div class="sec-hd"><div class="sec-t">Cremas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'cremas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-cremas"></tbody></table></div></div>
       <div id="cat-hongos" style="display:none"><div class="sec-hd"><div class="sec-t">Otros</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'hongos')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Lista 1</th><th>Lista 2</th><th>Lista 3</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-hongos"></tbody></table></div></div>
+      <div id="cat-membresias" style="display:none">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-hd"><span class="card-title">💵 Precios de membresía (USD)</span><button class="btn bp2 bsm" onclick="guardarPreciosMembresia()">💾 Guardar precios</button></div>
+          <div class="mp-grid">
+            <div class="mp-box"><h4>Básica</h4><div class="sub">10 g por entrega</div><div class="mp-in"><span>USD</span><input type="number" id="mp-10" placeholder="0"/></div></div>
+            <div class="mp-box"><h4>Media</h4><div class="sub">25 g por entrega</div><div class="mp-in"><span>USD</span><input type="number" id="mp-25" placeholder="0"/></div></div>
+            <div class="mp-box"><h4>Completa</h4><div class="sub">50 g por entrega</div><div class="mp-in"><span>USD</span><input type="number" id="mp-50" placeholder="0"/></div></div>
+          </div>
+        </div>
+        <div class="g3" id="mem-stats" style="margin-bottom:16px"></div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">👥 Socios con membresía</span><span style="font-size:.72rem;color:var(--text3)">Tocá los círculos para marcar cada entrega</span></div>
+          <div id="mem-lista"></div>
+        </div>
+      </div>
     </div>
 
     <!-- SOCIOS -->
@@ -357,7 +428,6 @@ tbody tr:hover{background:var(--surface2);}
       <div class="itabs">
         <button class="itab active" onclick="switchAdminTab('resumen')">📊 Resumen</button>
         <button class="itab" onclick="switchAdminTab('ventas')">💰 Ventas</button>
-        <button class="itab" onclick="switchAdminTab('membresias')">🎫 Membresías</button>
       </div>
       <div id="adm-resumen">
         <div class="g3">
@@ -371,12 +441,21 @@ tbody tr:hover{background:var(--surface2);}
         <div class="sec-hd"><div class="sec-t">Historial de ventas</div><div style="display:flex;gap:10px"><input type="month" class="fgi" id="filtro-mes" style="width:180px" onchange="loadVentasMes()"/><button class="btn bp2 bsm" onclick="exportarExcel()">⬇ Excel</button></div></div>
         <div class="tw"><table><thead><tr><th>Fecha</th><th>Socio</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th></tr></thead><tbody id="tbl-ventas"></tbody></table></div>
       </div>
-      <div id="adm-membresias" style="display:none">
-        <div class="g3" id="adm-mem-stats"></div>
-        <div class="card"><div class="card-hd"><span class="card-title">Socios con membresía</span></div><div class="tw"><table><thead><tr><th>Socio</th><th>Tipo</th><th>Pedidos de membresía</th><th>Vence</th><th>Estado</th></tr></thead><tbody id="tbl-mem"></tbody></table></div></div>
-      </div>
     </div>
 
+  </div>
+</div>
+
+<!-- MODAL EDITAR MEMBRESIA -->
+<div class="mo" id="modal-mem-edit">
+  <div class="mb" style="max-width:440px">
+    <div class="mb-hd"><div class="mb-t" id="me-tit">Editar membresía</div><button class="mb-cl" onclick="cerrarModal('modal-mem-edit')">✕ Cerrar</button></div>
+    <div class="mb-body">
+      <div class="fg"><label class="fgl">Tipo de membresía</label><select class="fgs" id="me-tipo"><option value="10">10 g — Básica</option><option value="25">25 g — Media</option><option value="50">50 g — Completa</option></select></div>
+      <div class="fr2"><div class="fg"><label class="fgl">Fecha de ingreso</label><input type="date" class="fgi" id="me-inicio"/></div><div class="fg"><label class="fgl">Membresía Nº (del año)</label><input type="number" class="fgi" id="me-num" min="1" value="1"/></div></div>
+      <div class="fg"><label class="fgl">Cuota / entregas usadas</label><div class="step"><button class="stepb" onclick="memStep(-1)">−</button><div class="stepv"><span id="me-cuota">0</span> / 3</div><button class="stepb" onclick="memStep(1)">+</button></div></div>
+    </div>
+    <div class="mb-ft"><button class="btn" onclick="cerrarModal('modal-mem-edit')">Cancelar</button><button class="btn bp2" onclick="memGuardarEdit()">Guardar cambios</button></div>
   </div>
 </div>
 
@@ -616,7 +695,7 @@ function abrirConfirmar(id){
   var now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());document.getElementById("mp-fecha-envio").min=now.toISOString().slice(0,16);document.getElementById("mp-nota").value="";abrirModal("modal-pedido");
 }
 function sendResendEmail(to,subject,html){return fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer re_87pcRRX8_6MhP6Bqn8iBojupgYGhnnrdk","Content-Type":"application/json"},body:JSON.stringify({from:"Melody's Farm <onboarding@resend.dev>",to:[to],subject:subject,html:html})});}
-function confirmarPedido(){var fecha=document.getElementById("mp-fecha-envio").value;var nota=document.getElementById("mp-nota").value;if(!fecha){toast("Seleccioná la fecha y hora de envío","error");return;}sb("pedidos?id=eq."+currentPedidoId,"PATCH",{estado:"confirmado",fecha_envio:fecha,nota_admin:nota}).then(function(){cerrarModal("modal-pedido");toast("Pedido confirmado","success");loadPedidos();var p=allPedidos.find(function(x){return x.id===currentPedidoId;});if(p&&p.es_membresia&&p.socio_id){sb("socios?id=eq."+p.socio_id,"GET").then(function(sd){if(sd&&sd[0]){var usadas=(sd[0].membresia_entregas_usadas||0)+1;sb("socios?id=eq."+p.socio_id,"PATCH",{membresia_entregas_usadas:usadas}).then(function(){loadSocios();});}});}if(p&&p.socio_email){var fd=new Date(fecha).toLocaleString("es-AR",{weekday:"long",day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});var html="<div style='font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a0f00'><div style='background:#E8724A;padding:20px;text-align:center;border-radius:12px 12px 0 0'><h2 style='color:white;margin:0'>✅ Tu pedido está confirmado</h2></div><div style='background:#F2E8D9;padding:24px;border-radius:0 0 12px 12px'><p>Hola <b>"+p.socio+"</b>,</p><p>Tu pedido fue confirmado. Tu envío está programado para:</p><div style='background:white;border-radius:10px;padding:16px;text-align:center;margin:16px 0;font-size:1.1rem;font-weight:700;color:#E8724A'>"+fd+"</div>"+(nota?"<p style='font-size:.85rem;color:#9a8a78'>Nota: <i>"+nota+"</i></p>":"")+"<p style='margin-top:16px;font-size:.85rem;color:#9a8a78'>Gracias por confiar en Melody's Farm 🌿</p></div></div>";sendResendEmail(p.socio_email,"✅ Tu pedido de Melody's Farm fue confirmado",html).catch(function(){});}});}
+function confirmarPedido(){var fecha=document.getElementById("mp-fecha-envio").value;var nota=document.getElementById("mp-nota").value;if(!fecha){toast("Seleccioná la fecha y hora de envío","error");return;}sb("pedidos?id=eq."+currentPedidoId,"PATCH",{estado:"confirmado",fecha_envio:fecha,nota_admin:nota}).then(function(){cerrarModal("modal-pedido");toast("Pedido confirmado","success");loadPedidos();var p=allPedidos.find(function(x){return x.id===currentPedidoId;});if(p&&p.es_membresia&&!p.es_solicitud&&(p.total>0)&&p.socio_id){sb("socios?id=eq."+p.socio_id,"GET").then(function(sd){if(sd&&sd[0]){var usadas=(sd[0].membresia_entregas_usadas||0)+1;sb("socios?id=eq."+p.socio_id,"PATCH",{membresia_entregas_usadas:usadas}).then(function(){loadSocios();});}});}if(p&&p.socio_email){var fd=new Date(fecha).toLocaleString("es-AR",{weekday:"long",day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});var html="<div style='font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a0f00'><div style='background:#E8724A;padding:20px;text-align:center;border-radius:12px 12px 0 0'><h2 style='color:white;margin:0'>✅ Tu pedido está confirmado</h2></div><div style='background:#F2E8D9;padding:24px;border-radius:0 0 12px 12px'><p>Hola <b>"+p.socio+"</b>,</p><p>Tu pedido fue confirmado. Tu envío está programado para:</p><div style='background:white;border-radius:10px;padding:16px;text-align:center;margin:16px 0;font-size:1.1rem;font-weight:700;color:#E8724A'>"+fd+"</div>"+(nota?"<p style='font-size:.85rem;color:#9a8a78'>Nota: <i>"+nota+"</i></p>":"")+"<p style='margin-top:16px;font-size:.85rem;color:#9a8a78'>Gracias por confiar en Melody's Farm 🌿</p></div></div>";sendResendEmail(p.socio_email,"✅ Tu pedido de Melody's Farm fue confirmado",html).catch(function(){});}});}
 function cambiarEstado(id,estado){sb("pedidos?id=eq."+id,"PATCH",{estado:estado}).then(function(){toast("Estado actualizado","success");loadPedidos();loadEnvios();});}
 var accionPedidoId=null;
 function confirmarAccionPedido(id){accionPedidoId=id;var p=allPedidos.find(function(x){return x.id===id;});document.getElementById("map-info").textContent=p?(p.socio+" — $"+fmt(p.total)):"";abrirModal("modal-accion-pedido");}
@@ -626,7 +705,8 @@ function borrarPedidoPerm(){if(!accionPedidoId)return;if(!confirm("⚠️ ÚLTIM
 function loadEnvios(){sb("pedidos?estado=in.(confirmado,en_envio)&order=fecha_envio.asc","GET").then(function(data){var tbody=document.getElementById("tbl-envios");tbody.innerHTML="";if(!data||!data.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Sin envíos pendientes</td></tr>';return;}data.forEach(function(p){var s=allSocios.find(function(x){return x.nombre===p.socio;});var dir=s&&s.direccion?s.direccion:"—";var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";tbody.innerHTML+='<tr><td class="tdm">'+p.socio+'</td><td style="font-size:.82rem">'+dir+'</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.fecha_envio)+'</td><td><button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button></td></tr>';});});}
 
 var catTabs=["flores","bombones","semillas","esquejes","cremas","hongos"];
-function switchCatTab(tab){catTabs.forEach(function(t){var el=document.getElementById("cat-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-catalogo .itab").forEach(function(b,i){b.classList.toggle("active",catTabs[i]===tab);});loadProductosCat(tab);}
+var allCatTabs=["flores","bombones","semillas","esquejes","cremas","hongos","membresias"];
+function switchCatTab(tab){allCatTabs.forEach(function(t){var el=document.getElementById("cat-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-catalogo .itab").forEach(function(b,i){b.classList.toggle("active",allCatTabs[i]===tab);});if(tab==="membresias"){loadMembresiasCat();}else{loadProductosCat(tab);}}
 function loadCatalogo(){loadConfig();loadProductosCat("flores");}
 function loadProductosCat(cat){
   var queryCat = cat === "hongos" ? "otros" : cat === "esquejes" ? "flores" : cat;
@@ -640,6 +720,7 @@ function loadProductosCat(cat){
   });
 }
 function renderTablaProductos(cat,data){
+  if(cat==="flores"){return renderFloresCards(data||[]);}
   var tbody=document.getElementById("tbl-"+cat);if(!tbody)return;tbody.innerHTML="";
   if(!data||!data.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Sin productos. Agregá el primero.</td></tr>';return;}
   var hasDesc=["flores","semillas","esquejes"].includes(cat);
@@ -687,7 +768,7 @@ function toggleSocio(id,activo){sb("socios?id=eq."+id,"PATCH",{activo:!activo}).
 function verHistorial2(s){document.getElementById("hist2-nombre").textContent=s.nombre;document.getElementById("hist2-body").innerHTML='<div class="loading">Cargando...</div>';abrirModal("modal-hist");sb("pedidos?socio_id=eq."+s.id+"&order=created_at.desc","GET").then(function(data){if(!data||!data.length){sb("pedidos?socio=eq."+encodeURIComponent(s.nombre)+"&order=created_at.desc","GET").then(function(d2){renderHistorial(d2||[]);});return;}renderHistorial(data);});}
 function renderHistorial(data){var body=document.getElementById("hist2-body");if(!data.length){body.innerHTML='<div class="empty">Sin historial</div>';return;}var html='<div class="tw"><table><thead><tr><th>Fecha</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th></tr></thead><tbody>';data.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";html+='<tr><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.created_at)+'</td><td style="font-size:.78rem;max-width:180px">'+items+'</td><td><strong>$'+fmt(p.total)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td></tr>';});html+='</tbody></table></div>';body.innerHTML=html;}
 
-function switchAdminTab(tab){["resumen","ventas","membresias"].forEach(function(t){var el=document.getElementById("adm-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-administrativa .itab").forEach(function(b,i){b.classList.toggle("active",i===["resumen","ventas","membresias"].indexOf(tab));});if(tab==="ventas")loadVentasMes();if(tab==="membresias")loadMembresias();}
+function switchAdminTab(tab){["resumen","ventas"].forEach(function(t){var el=document.getElementById("adm-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-administrativa .itab").forEach(function(b,i){b.classList.toggle("active",i===["resumen","ventas"].indexOf(tab));});if(tab==="ventas")loadVentasMes();}
 function loadAdministrativa(){loadResumenAdm();loadChartMensual();}
 function loadResumenAdm(){var now=new Date();var pM=new Date(now.getFullYear(),now.getMonth(),1).toISOString();var pA=new Date(now.getFullYear(),now.getMonth()-1,1).toISOString();var uA=new Date(now.getFullYear(),now.getMonth(),0).toISOString();Promise.all([sb("pedidos?created_at=gte."+pM+"&select=total","GET"),sb("pedidos?created_at=gte."+pA+"&created_at=lte."+uA+"&select=total","GET")]).then(function(res){var mes=res[0]||[];var prev=res[1]||[];var tm=mes.reduce(function(a,p){return a+(p.total||0);},0);var tp=prev.reduce(function(a,p){return a+(p.total||0);},0);var pr=mes.length?tm/mes.length:0;document.getElementById("adm-mes-total").textContent="$"+fmt(Math.round(tm));document.getElementById("adm-mes-pedidos").textContent=mes.length+" pedidos";document.getElementById("adm-prev-total").textContent="$"+fmt(Math.round(tp));document.getElementById("adm-prev-pedidos").textContent=prev.length+" pedidos";document.getElementById("adm-promedio").textContent="$"+fmt(Math.round(pr));});}
 function loadChartMensual(){var now=new Date();var months=[];var labels=[];for(var i=5;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push(d);labels.push(d.toLocaleDateString("es-AR",{month:"short",year:"2-digit"}));}Promise.all(months.map(function(d){var ini=d.toISOString();var fin=new Date(d.getFullYear(),d.getMonth()+1,1).toISOString();return sb("pedidos?created_at=gte."+ini+"&created_at=lt."+fin+"&select=total","GET");})).then(function(res){var data=res.map(function(m){return (m||[]).reduce(function(a,p){return a+(p.total||0);},0);});if(charts.m)charts.m.destroy();var ctx=document.getElementById("chart-mensual");if(!ctx)return;var bgs=data.map(function(_,i){return i===5?"rgba(37,99,235,.5)":"rgba(37,99,235,.12)";});var brs=data.map(function(_,i){return i===5?"#2563eb":"#93c5fd";});charts.m=new Chart(ctx,{type:"bar",data:{labels:labels,datasets:[{label:"Recaudación",data:data,backgroundColor:bgs,borderColor:brs,borderWidth:2,borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#8a96a8"},grid:{color:"#e2e6ed"}},y:{ticks:{color:"#8a96a8",callback:function(v){return"$"+v.toLocaleString("es-AR");}},grid:{color:"#e2e6ed"}}}}});});}
@@ -707,6 +788,107 @@ sb("pedidos?es_membresia=eq.true&order=created_at.desc","GET").then(function(ped
 });});}
 
 function exportarExcel(){var mes=document.getElementById("filtro-mes")?document.getElementById("filtro-mes").value:"";var now=new Date();var inicio=mes?new Date(mes+"-01").toISOString():new Date(now.getFullYear(),now.getMonth(),1).toISOString();var partes=(mes||now.toISOString().slice(0,7)).split("-");var fin=new Date(parseInt(partes[0]),parseInt(partes[1]),1).toISOString();sb("pedidos?created_at=gte."+inicio+"&created_at=lt."+fin+"&order=created_at.asc","GET").then(function(data){if(!data||!data.length){toast("Sin datos para exportar","error");return;}var rows=[["Fecha","Socio","Productos","Total","Método pago","Estado"]];data.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"";rows.push([fmtDate(p.created_at),p.socio,items,p.total,p.metodo_pago||"efectivo",p.estado]);});var total=data.reduce(function(a,p){return a+(p.total||0);},0);rows.push([]);rows.push(["","","TOTAL",total,"",""]);var wb=XLSX.utils.book_new();var ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=[{wch:18},{wch:20},{wch:40},{wch:12},{wch:16},{wch:14}];XLSX.utils.book_append_sheet(wb,ws,"Ventas");XLSX.writeFile(wb,"melodys_farm_ventas_"+(mes||"mes")+".xlsx");toast("Excel exportado","success");});}
+
+/* ===== FLORES: tarjetas con stock separado + contraste ===== */
+var _flores=[];
+function renderFloresCards(data){
+  _flores=data||[];
+  var c=document.getElementById("tbl-flores");if(!c)return;
+  if(!_flores.length){c.innerHTML='<div class="empty" style="padding:24px;text-align:center;color:var(--text3)">Sin genéticas. Agregá la primera.</div>';return;}
+  c.innerHTML=_flores.map(function(p){
+    return '<div class="gen-card">'
+      +'<div class="gen-top"><div><div class="gen-name">'+(p.nombre||"")+'</div><div class="gen-desc">'+(p.descripcion||"—")+'</div></div>'
+      +'<div class="gen-acc"><button class="btn bsm bic" onclick="abrirModalProducto(\''+p.id+'\',\'flores\')" title="Editar">✏</button>'
+      +'<button class="btn bsm bic br2" onclick="eliminarProducto(\''+p.id+'\',\'flores\')" title="Eliminar">✕</button></div></div>'
+      +'<div class="gen-disp"><span class="gen-disp-l">Visible en la app</span>'
+      +'<span class="pill '+(p.activo!==false?"on":"off")+'" onclick="togGenPill(\''+p.id+'\',\'disp\')">'+(p.activo!==false?"✓ Sí":"No")+'</span></div>'
+      +'<div class="gen-tipos">'+bloqueTipoGen(p,"bajas")+bloqueTipoGen(p,"altas")+'</div></div>';
+  }).join("");
+}
+function bloqueTipoGen(p,tipo){
+  var on=tipo==="bajas"?(p.bajas_activo!==false):(p.altas_activo!==false);
+  var stock=tipo==="bajas"?(p.stock_bajas_g||0):(p.stock_altas_g||0);
+  var nom=tipo==="bajas"?"Bajas":"Altas";
+  var noStock=on&&stock<=0;
+  var cls="gen-tipo"+(!on?" off":"")+(noStock?" nostock":"");
+  var est=!on?'<div class="gen-est est-off">⚪ Deshabilitada</div>':(stock<=0?'<div class="gen-est est-sin">🔴 Sin stock — no se puede comprar</div>':'<div class="gen-est est-venta">🟢 En venta · '+stock+' g</div>');
+  return '<div class="'+cls+'"><div class="gen-tipo-hd"><span class="gen-tipo-n">'+nom+'</span>'
+    +'<span class="pill '+(on?"on":"off")+'" onclick="togGenPill(\''+p.id+'\',\''+tipo+'\')">'+(on?"✓ Habilitada":"Deshabilitada")+'</span></div>'
+    +'<div class="gen-stock"><label>Stock</label><div class="si"><input type="number" min="0" value="'+stock+'" onchange="setStockGen(\''+p.id+'\',\''+tipo+'\',this.value)"/><span>g</span></div></div>'
+    +est+'</div>';
+}
+function togGenPill(id,which){
+  var p=_flores.find(function(x){return x.id===id;});if(!p)return;
+  if(which==="disp"){var nv=!(p.activo!==false);p.activo=nv;sb("productos?id=eq."+id,"PATCH",{activo:nv}).then(function(){toast(nv?"Visible en la app":"Oculta en la app","success");});}
+  else{var cur=(which==="bajas"?(p.bajas_activo!==false):(p.altas_activo!==false));var nv2=!cur;p[which+"_activo"]=nv2;var d={};d[which+"_activo"]=nv2;sb("productos?id=eq."+id,"PATCH",d).then(function(){toast((which==="bajas"?"Bajas":"Altas")+" "+(nv2?"habilitadas":"deshabilitadas"),"success");});}
+  renderFloresCards(_flores);
+}
+function setStockGen(id,tipo,val){
+  var p=_flores.find(function(x){return x.id===id;});if(!p)return;
+  var n=Math.max(0,parseInt(val)||0);var key=tipo==="bajas"?"stock_bajas_g":"stock_altas_g";p[key]=n;
+  var d={};d[key]=n;sb("productos?id=eq."+id,"PATCH",d).then(function(){toast("Stock actualizado","success");});
+  renderFloresCards(_flores);
+}
+
+/* ===== MEMBRESÍAS (dentro de Catálogo) ===== */
+var _mem=[];var _memEditId=null,_memCuota=0;
+function memVence(s){if(s.membresia_vence)return new Date(s.membresia_vence);if(s.membresia_inicio){var d=new Date(s.membresia_inicio);d.setMonth(d.getMonth()+3);return d;}return null;}
+function loadMembresiasCat(){
+  sb("configuracion?id=eq.1","GET").then(function(d){if(d&&d[0]){var c=d[0];var m10=document.getElementById("mp-10"),m25=document.getElementById("mp-25"),m50=document.getElementById("mp-50");if(m10)m10.value=(c.membresia_precio_10!=null?c.membresia_precio_10:200);if(m25)m25.value=(c.membresia_precio_25!=null?c.membresia_precio_25:500);if(m50)m50.value=(c.membresia_precio_50!=null?c.membresia_precio_50:1000);}});
+  sb("socios?membresia_tipo=not.is.null&order=membresia_inicio.desc","GET").then(function(data){_mem=data||[];renderMemCards();});
+}
+function renderMemCards(){
+  var now=new Date();
+  var act=_mem.filter(function(s){var v=memVence(s);return v&&v>now;});
+  var ven=_mem.filter(function(s){var v=memVence(s);return !v||v<=now;});
+  var st=document.getElementById("mem-stats");
+  if(st)st.innerHTML='<div class="sc green"><div class="sc-hd"><span class="sc-lbl">Activas</span><div class="sc-icon green">✅</div></div><div class="sc-val">'+act.length+'</div><div class="sc-sub">De '+_mem.length+' totales</div></div>'
+    +'<div class="sc blue"><div class="sc-hd"><span class="sc-lbl">Total socios</span><div class="sc-icon blue">👥</div></div><div class="sc-val">'+_mem.length+'</div><div class="sc-sub">Con membresía</div></div>'
+    +'<div class="sc orange"><div class="sc-hd"><span class="sc-lbl">Vencidas</span><div class="sc-icon orange">⚠️</div></div><div class="sc-val" style="color:var(--red)">'+ven.length+'</div><div class="sc-sub">Renovación pendiente</div></div>';
+  var cont=document.getElementById("mem-lista");if(!cont)return;
+  if(!_mem.length){cont.innerHTML='<div class="empty" style="padding:24px;text-align:center;color:var(--text3)">Sin socios con membresía.</div>';return;}
+  var tl={10:"10g · Básica",25:"25g · Media",50:"50g · Completa"};
+  cont.innerHTML=_mem.map(function(s){
+    var v=memVence(s);var vig=v&&v>now;var usadas=s.membresia_entregas_usadas||0;var num=s.membresia_num_anio||1;
+    var estB=!vig?'<span class="badge br">✗ Vencida</span>':'<span class="badge bg">✓ Vigente</span>';
+    var comp=usadas>=3?'<span class="badge bgr">Completó las 3</span>':"";
+    var dots="";for(var i=1;i<=3;i++){dots+='<div class="dot '+(i<=usadas?"on":"")+'" onclick="memDot(\''+s.id+'\','+i+')">'+i+'</div>';}
+    return '<div class="mem-card"><div class="mem-top"><div class="mem-av">'+(s.nombre?s.nombre.charAt(0).toUpperCase():"?")+'</div>'
+      +'<div><div class="mem-name">'+(s.nombre||"")+'</div><div class="mem-meta">'+(s.membresia_inicio?"Ingreso "+fmtDateOnly(s.membresia_inicio):"Sin fecha")+(v?" · vence "+fmtDateOnly(v.toISOString()):"")+' · Membresía Nº '+num+'</div></div>'
+      +'<div class="mem-badges"><span class="badge bp">'+(tl[s.membresia_tipo]||s.membresia_tipo+"g")+'</span>'+estB+comp+'</div></div>'
+      +'<div class="mem-body"><div><div class="mem-cl">Entregas de la membresía</div><div class="dots">'+dots+'<span class="dot-n"><b>'+usadas+'</b>/3</span></div></div>'
+      +'<button class="btn bsm" onclick="memAbrirEdit(\''+s.id+'\')">✏️ Editar</button></div></div>';
+  }).join("");
+}
+function memDot(id,n){
+  var s=_mem.find(function(x){return x.id===id;});if(!s)return;
+  var usadas=s.membresia_entregas_usadas||0;var nv=(usadas===n)?n-1:n;s.membresia_entregas_usadas=nv;
+  sb("socios?id=eq."+id,"PATCH",{membresia_entregas_usadas:nv}).then(function(){toast("Entregas: "+nv+"/3","success");if(typeof loadSocios==="function")loadSocios();});
+  renderMemCards();
+}
+function memAbrirEdit(id){
+  var s=_mem.find(function(x){return x.id===id;});if(!s)return;_memEditId=id;
+  document.getElementById("me-tit").textContent="Editar — "+(s.nombre||"");
+  document.getElementById("me-tipo").value=s.membresia_tipo||10;
+  document.getElementById("me-inicio").value=s.membresia_inicio?String(s.membresia_inicio).slice(0,10):"";
+  document.getElementById("me-num").value=s.membresia_num_anio||1;
+  _memCuota=s.membresia_entregas_usadas||0;document.getElementById("me-cuota").textContent=_memCuota;
+  abrirModal("modal-mem-edit");
+}
+function memStep(d){_memCuota=Math.max(0,Math.min(3,_memCuota+d));document.getElementById("me-cuota").textContent=_memCuota;}
+function memGuardarEdit(){
+  if(!_memEditId)return;
+  var tipo=parseInt(document.getElementById("me-tipo").value);
+  var inicio=document.getElementById("me-inicio").value;
+  var num=parseInt(document.getElementById("me-num").value)||1;
+  var vence=null;if(inicio){var dd=new Date(inicio);dd.setMonth(dd.getMonth()+3);vence=dd.toISOString().slice(0,10);}
+  var datos={membresia_tipo:tipo,membresia_inicio:inicio||null,membresia_vence:vence,membresia_num_anio:num,membresia_entregas_usadas:_memCuota};
+  sb("socios?id=eq."+_memEditId,"PATCH",datos).then(function(){cerrarModal("modal-mem-edit");toast("Membresía actualizada","success");loadMembresiasCat();if(typeof loadSocios==="function")loadSocios();});
+}
+function guardarPreciosMembresia(){
+  var datos={membresia_precio_10:parseFloat(document.getElementById("mp-10").value)||0,membresia_precio_25:parseFloat(document.getElementById("mp-25").value)||0,membresia_precio_50:parseFloat(document.getElementById("mp-50").value)||0};
+  sb("configuracion?id=eq.1","PATCH",datos).then(function(){toast("Precios de membresía guardados","success");});
+}
 
 </script>
 </body>
