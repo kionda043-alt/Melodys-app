@@ -458,7 +458,7 @@ tbody tr:hover{background:var(--surface2);}
     <div class="mb-body">
       <div class="fg"><label class="fgl">Nombre de la promo</label><input class="fgi" id="mpr-nombre" placeholder="Ej: Promo 100g mix"/></div>
       <div class="fg"><label class="fgl">Descripción (opcional)</label><input class="fgi" id="mpr-desc" placeholder="Ej: Armá 100g combinando genéticas"/></div>
-      <div class="fg"><label class="fgl">Aplica a</label><select class="fgs" id="mpr-genetica"><option value="">Todas (mezcla a elección del socio)</option></select></div>
+      <div class="fg"><label class="fgl">Aplica a estas genéticas</label><div id="mpr-gens-list" style="max-height:180px;overflow-y:auto;border:1.5px solid var(--border);border-radius:var(--r);padding:4px 10px;background:var(--surface2)"></div><div style="font-size:.68rem;color:var(--text3);margin-top:5px">Tildá una o varias. Si no tildás ninguna, la promo es mezcla libre de todas las genéticas.</div></div>
       <div class="fr2"><div class="fg"><label class="fgl">Cantidad (g)</label><input type="number" class="fgi" id="mpr-cantidad" value="100"/></div><div class="fg"><label class="fgl">Precio ($)</label><input type="number" class="fgi" id="mpr-precio" value="0"/></div></div>
     </div>
     <div class="mb-ft"><button class="btn" onclick="cerrarModal('modal-promo')">Cancelar</button><button class="btn bp2" onclick="guardarPromo()">Guardar promo</button></div>
@@ -881,13 +881,13 @@ function renderMemCards(){
   }).join("");
 }
 function memDot(id,n){
-  var s=_mem.find(function(x){return x.id===id;});if(!s)return;
+  var s=_mem.find(function(x){return String(x.id)===String(id);});if(!s)return;
   var usadas=s.membresia_entregas_usadas||0;var nv=(usadas===n)?n-1:n;s.membresia_entregas_usadas=nv;
   sb("socios?id=eq."+id,"PATCH",{membresia_entregas_usadas:nv}).then(function(){toast("Entregas: "+nv+"/3","success");if(typeof loadSocios==="function")loadSocios();});
   renderMemCards();
 }
 function memAbrirEdit(id){
-  var s=_mem.find(function(x){return x.id===id;});if(!s)return;_memEditId=id;
+  var s=_mem.find(function(x){return String(x.id)===String(id);});if(!s)return;_memEditId=id;
   document.getElementById("me-tit").textContent="Editar — "+(s.nombre||"");
   document.getElementById("me-tipo").value=s.membresia_tipo||10;
   document.getElementById("me-inicio").value=s.membresia_inicio?String(s.membresia_inicio).slice(0,10):"";
@@ -929,17 +929,23 @@ function cancelarPedido(){
 var _promos=[],_promoEditId=null,_promoGens=[];
 function loadPromosAdmin(){
   sb("productos?categoria=eq.flores&order=nombre.asc","GET").then(function(gs){
-    _promoGens=gs||[];var sel=document.getElementById("mpr-genetica");
-    if(sel)sel.innerHTML='<option value="">Todas (mezcla a elección del socio)</option>'+_promoGens.map(function(g){return '<option value="'+g.id+'">'+g.nombre+'</option>';}).join("");
+    _promoGens=gs||[];var cont=document.getElementById("mpr-gens-list");
+    if(cont)cont.innerHTML=_promoGens.map(function(g){return '<label style="display:flex;align-items:center;gap:8px;padding:6px 2px;font-size:.85rem;cursor:pointer;color:var(--text)"><input type="checkbox" class="mpr-gchk" value="'+g.id+'" style="width:16px;height:16px;accent-color:var(--green)"/> '+g.nombre+'</label>';}).join("");
   });
   sb("promos?order=created_at.desc","GET").then(function(d){_promos=d||[];renderPromosAdmin();});
+}
+function promoGensSel(pr){
+  if(pr&&pr.genetica_ids){try{var a=JSON.parse(pr.genetica_ids);if(Array.isArray(a))return a.map(String);}catch(e){}}
+  if(pr&&pr.genetica_id)return [String(pr.genetica_id)];
+  return [];
 }
 function nombreGenAdmin(id){var g=_promoGens.find(function(x){return String(x.id)===String(id);});return g?g.nombre:"Genética";}
 function renderPromosAdmin(){
   var c=document.getElementById("lista-promos");if(!c)return;
   if(!_promos.length){c.innerHTML='<div class="empty" style="padding:24px;text-align:center;color:var(--text3)">Sin promos. Creá la primera con "+ Nueva promo".</div>';return;}
   c.innerHTML=_promos.map(function(pr){
-    var genTxt=pr.genetica_id?nombreGenAdmin(pr.genetica_id):"Mezcla de genéticas";
+    var idsG=promoGensSel(pr);
+    var genTxt=idsG.length?idsG.map(nombreGenAdmin).join(", "):"Mezcla de genéticas";
     return '<div class="gen-card"><div class="gen-top"><div><div class="gen-name">'+(pr.nombre||"")+'</div>'
       +'<div class="gen-desc">'+(pr.descripcion||"—")+'</div>'
       +'<div style="font-size:.82rem;font-weight:700;color:var(--text2);margin-top:6px">'+pr.cantidad_g+'g · $'+((pr.precio||0).toLocaleString("es-AR"))+' · '+genTxt+'</div></div>'
@@ -951,14 +957,19 @@ function renderPromosAdmin(){
 }
 function abrirModalPromo(id){
   _promoEditId=id;
-  if(id){var pr=_promos.find(function(x){return String(x.id)===String(id);});if(!pr)return;document.getElementById("mpr-tit").textContent="Editar promo";document.getElementById("mpr-nombre").value=pr.nombre||"";document.getElementById("mpr-desc").value=pr.descripcion||"";document.getElementById("mpr-genetica").value=pr.genetica_id||"";document.getElementById("mpr-cantidad").value=pr.cantidad_g||100;document.getElementById("mpr-precio").value=pr.precio||0;}
-  else{document.getElementById("mpr-tit").textContent="Nueva promo";document.getElementById("mpr-nombre").value="";document.getElementById("mpr-desc").value="";document.getElementById("mpr-genetica").value="";document.getElementById("mpr-cantidad").value=100;document.getElementById("mpr-precio").value=0;}
+  var sel=[];
+  if(id){var pr=_promos.find(function(x){return String(x.id)===String(id);});if(!pr)return;document.getElementById("mpr-tit").textContent="Editar promo";document.getElementById("mpr-nombre").value=pr.nombre||"";document.getElementById("mpr-desc").value=pr.descripcion||"";document.getElementById("mpr-cantidad").value=pr.cantidad_g||100;document.getElementById("mpr-precio").value=pr.precio||0;sel=promoGensSel(pr);}
+  else{document.getElementById("mpr-tit").textContent="Nueva promo";document.getElementById("mpr-nombre").value="";document.getElementById("mpr-desc").value="";document.getElementById("mpr-cantidad").value=100;document.getElementById("mpr-precio").value=0;}
+  document.querySelectorAll(".mpr-gchk").forEach(function(chk){chk.checked=sel.indexOf(String(chk.value))>=0;});
   abrirModal("modal-promo");
 }
 function guardarPromo(){
   var nombre=document.getElementById("mpr-nombre").value.trim();
   if(!nombre){toast("Poné un nombre a la promo","error");return;}
-  var datos={nombre:nombre,descripcion:document.getElementById("mpr-desc").value.trim()||null,genetica_id:document.getElementById("mpr-genetica").value||null,cantidad_g:parseInt(document.getElementById("mpr-cantidad").value)||0,precio:parseFloat(document.getElementById("mpr-precio").value)||0};
+  var checked=[];document.querySelectorAll(".mpr-gchk:checked").forEach(function(c){checked.push(c.value);});
+  var genIds=checked.length?JSON.stringify(checked):null;
+  var genId=checked.length===1?checked[0]:null;
+  var datos={nombre:nombre,descripcion:document.getElementById("mpr-desc").value.trim()||null,genetica_id:genId,genetica_ids:genIds,cantidad_g:parseInt(document.getElementById("mpr-cantidad").value)||0,precio:parseFloat(document.getElementById("mpr-precio").value)||0};
   if(_promoEditId){sb("promos?id=eq."+_promoEditId,"PATCH",datos).then(function(){cerrarModal("modal-promo");toast("Promo actualizada","success");loadPromosAdmin();});}
   else{datos.activa=true;sb("promos","POST",datos).then(function(){cerrarModal("modal-promo");toast("Promo creada","success");loadPromosAdmin();});}
 }
