@@ -822,6 +822,8 @@ function renderFloresCards(data){
       +'<button class="btn bsm bic br2" onclick="eliminarProducto(\''+p.id+'\',\'flores\')" title="Eliminar">✕</button></div></div>'
       +'<div class="gen-disp"><span class="gen-disp-l">Visible en la app</span>'
       +'<span class="pill '+(p.activo!==false?"on":"off")+'" onclick="togGenPill(\''+p.id+'\',\'disp\')">'+(p.activo!==false?"✓ Sí":"No")+'</span></div>'
+      +'<div class="gen-disp"><span class="gen-disp-l">🎫 Solo membresía</span>'
+      +'<span class="pill '+(p.solo_membresia?"on":"off")+'" onclick="togGenPill(\''+p.id+'\',\'solomem\')">'+(p.solo_membresia?"✓ Sí":"No")+'</span></div>'
       +'<div class="gen-tipos">'+bloqueTipoGen(p,"bajas")+bloqueTipoGen(p,"altas")+'</div></div>';
   }).join("");
 }
@@ -840,6 +842,7 @@ function bloqueTipoGen(p,tipo){
 function togGenPill(id,which){
   var p=_flores.find(function(x){return x.id===id;});if(!p)return;
   if(which==="disp"){var nv=!(p.activo!==false);p.activo=nv;sb("productos?id=eq."+id,"PATCH",{activo:nv}).then(function(){toast(nv?"Visible en la app":"Oculta en la app","success");});}
+  else if(which==="solomem"){var nvm=!p.solo_membresia;p.solo_membresia=nvm;sb("productos?id=eq."+id,"PATCH",{solo_membresia:nvm}).then(function(){toast(nvm?"Ahora es solo para membresía":"Disponible para todos","success");});}
   else{var cur=(which==="bajas"?(p.bajas_activo!==false):(p.altas_activo!==false));var nv2=!cur;p[which+"_activo"]=nv2;var d={};d[which+"_activo"]=nv2;sb("productos?id=eq."+id,"PATCH",d).then(function(){toast((which==="bajas"?"Bajas":"Altas")+" "+(nv2?"habilitadas":"deshabilitadas"),"success");});}
   renderFloresCards(_flores);
 }
