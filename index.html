@@ -356,7 +356,7 @@ img{display:block;max-width:100%}
   <!-- TIENDA -->
   <div class="screen active" id="s-shop">
     <div class="shop-head">
-      <img src="img/icono-m.webp" class="shop-ico" alt="Melody's Farm"/>
+      <img src="icono-m.webp" class="shop-ico" alt="Melody's Farm"/>
       <div class="shop-hi"><b id="header-socio">Hola</b><span>¿Qué pedimos hoy?</span></div>
       <button class="logout" onclick="doLogout()">Salir</button>
     </div>
@@ -365,28 +365,28 @@ img{display:block;max-width:100%}
 
     <div id="dash-view">
       <div class="cat-tiles">
-        <button class="cat-tile" onclick="goCat('flores')"><div class="stk"><img src="img/cat-flores.webp" alt=""/></div><b>Flores</b><span>Bajas y altas, por gramo</span></button>
-        <button class="cat-tile" onclick="goCat('promos')"><div class="stk"><img src="img/cat-promos.webp" alt=""/></div><b>Promos</b><span>Melodys Fans</span></button>
-        <button class="cat-tile" onclick="goCat('bombones')"><div class="stk"><img src="img/cat-bombones.webp" alt=""/></div><b>Bombones</b><span>Comestibles</span></button>
-        <button class="cat-tile" onclick="goCat('semillas')"><div class="stk"><img src="img/cat-semillas.webp" alt=""/></div><b>Semillas</b><span>Packs de 5, 10 y 20</span></button>
-        <button class="cat-tile" onclick="goCat('esquejes')"><div class="stk"><img src="img/cat-esquejes.webp" alt=""/></div><b>Esquejes</b><span>Plantas vivas</span></button>
-        <button class="cat-tile" onclick="goCat('cremas')"><div class="stk"><img src="img/cat-cremas.webp" alt=""/></div><b>Cremas</b><span>Uso tópico</span></button>
-        <button class="cat-tile" onclick="goCat('hongos')"><div class="stk"><img src="img/cat-hongos.webp" alt=""/></div><b>Hongos</b><span>Microdosis</span></button>
+        <button class="cat-tile" onclick="goCat('flores')"><div class="stk"><img src="cat-flores.webp" alt=""/></div><b>Flores</b><span>Bajas y altas, por gramo</span></button>
+        <button class="cat-tile" onclick="goCat('promos')"><div class="stk"><img src="cat-promos.webp" alt=""/></div><b>Promos</b><span>Melodys Fans</span></button>
+        <button class="cat-tile" onclick="goCat('bombones')"><div class="stk"><img src="cat-bombones.webp" alt=""/></div><b>Bombones</b><span>Comestibles</span></button>
+        <button class="cat-tile" onclick="goCat('semillas')"><div class="stk"><img src="cat-semillas.webp" alt=""/></div><b>Semillas</b><span>Packs de 5, 10 y 20</span></button>
+        <button class="cat-tile" onclick="goCat('esquejes')"><div class="stk"><img src="cat-esquejes.webp" alt=""/></div><b>Esquejes</b><span>Plantas vivas</span></button>
+        <button class="cat-tile" onclick="goCat('cremas')"><div class="stk"><img src="cat-cremas.webp" alt=""/></div><b>Cremas</b><span>Uso tópico</span></button>
+        <button class="cat-tile" onclick="goCat('hongos')"><div class="stk"><img src="cat-hongos.webp" alt=""/></div><b>Hongos</b><span>Microdosis</span></button>
         <button class="cat-tile mem" id="mem-tile" onclick="goScreen('pedidos')"></button>
       </div>
 
       <div class="sec-h">Novedades del club</div>
       <div class="hs">
-        <button class="bn l" style="background:#F3DDB7" onclick="goCat('flores')"><img src="img/ban-geneticas.webp" alt=""/><span class="tx"><b>Genéticas nuevas</b><span>Recién llegadas del cultivo.</span><i>Ver flores</i></span></button>
-        <button class="bn r" style="background:#F6DEB0" onclick="goCat('promos')"><img src="img/ban-promos.webp" alt=""/><span class="tx"><b>Promos Melodys Fans</b><span>Combos del club a precio especial.</span><i>Ver promos</i></span></button>
-        <div class="bn brand"><img src="img/banner-marca.webp" alt="Melody's Farm. Cultivado con amor, cosechado con música."/></div>
+        <button class="bn l" style="background:#F3DDB7" onclick="goCat('flores')"><img src="ban-geneticas.webp" alt=""/><span class="tx"><b>Genéticas nuevas</b><span>Recién llegadas del cultivo.</span><i>Ver flores</i></span></button>
+        <button class="bn r" style="background:#F6DEB0" onclick="goCat('promos')"><img src="ban-promos.webp" alt=""/><span class="tx"><b>Promos Melodys Fans</b><span>Combos del club a precio especial.</span><i>Ver promos</i></span></button>
+        <div class="bn brand"><img src="banner-marca.webp" alt="Melody's Farm. Cultivado con amor, cosechado con música."/></div>
       </div>
     </div>
 
     <div id="cat-view" style="display:none">
       <div class="topbar"><button class="back" onclick="goDash()" aria-label="Volver a la tienda"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
       <div class="cat-title">
-        <div class="stk"><img id="cat-view-img" src="img/cat-flores.webp" alt=""/></div>
+        <div class="stk"><img id="cat-view-img" src="cat-flores.webp" alt=""/></div>
         <div><div class="ttl" id="cat-view-title">Categoría</div><div class="sub" id="cat-view-sub"></div></div>
       </div>
       <div class="products-grid" id="products-grid"><div class="loading-msg">Cargando productos...</div></div>
@@ -401,7 +401,7 @@ img{display:block;max-width:100%}
     </div>
 
     <div id="cart-empty-state" class="cart-empty" style="display:none">
-      <div class="stk"><img src="img/cat-flores.webp" alt=""/></div>
+      <div class="stk"><img src="cat-flores.webp" alt=""/></div>
       <b>Tu carrito está vacío</b>
       <p>Elegí una categoría y sumá lo que quieras pedir.</p>
       <button class="btn" onclick="goScreen('shop')">Ir a la tienda</button>
@@ -534,7 +534,7 @@ img{display:block;max-width:100%}
   <div class="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
     <div class="grab"></div>
     <div class="pm-hero stk">
-      <img id="pm-img" src="img/cat-flores.webp" alt=""/>
+      <img id="pm-img" src="cat-flores.webp" alt=""/>
       <span class="pm-cat-badge" id="pm-cat-badge">Flores</span>
     </div>
     <div class="sheet-hd">
@@ -788,7 +788,7 @@ function getEmoji(nombre, cat) {
 }
 
 // ===== IMÁGENES E ÍCONOS (rediseño) =====
-var IMG_DIR = "img/";
+var IMG_DIR = "";
 var CAT_IMG = { flores:"cat-flores", promos:"cat-promos", bombones:"cat-bombones", semillas:"cat-semillas", esquejes:"cat-esquejes", cremas:"cat-cremas", hongos:"cat-hongos", membresia:"cat-flores", otros:"cat-flores" };
 /* Ilustración de sabor por genética. La clave es el nombre en minúsculas, sin espacios, números ni símbolos
    (así "Choco Rock 2.0" y "Choco Rock" usan la misma). Las que no están acá muestran el cogollo. */
