@@ -510,7 +510,7 @@ img{display:block;max-width:100%}
 <div id="music-bar">
   <div class="mb-disk" id="mb-disk"></div>
   <div class="mb-info">
-    <div class="mb-song" id="mb-song">La Cata</div>
+    <div class="mb-song" id="mb-song">Melody's Farm</div>
     <div class="mb-artist">Melody's Farm</div>
   </div>
   <div class="mb-controls">
@@ -642,6 +642,7 @@ var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 
 // ===== MUSIC =====
 var tracks = [
+  { file: "melodys_farm.mp3", name: "Melody's Farm" },
   { file: "la_cata.mp3", name: "La Cata" },
   { file: "melody_fans.mp3", name: "Melody's Fans" },
   { file: "la_semilla_rebelde.mp3", name: "La Semilla Rebelde" },
@@ -704,6 +705,22 @@ var cart = [];
 var currentCat = "flores";
 var configData = {};
 var MEM_PRECIOS = {10:200, 25:500, 50:1000};
+var LISTAS = [{n:1,nombre:"Lista 1",moneda:"ARS"},{n:2,nombre:"Lista 2",moneda:"ARS"},{n:3,nombre:"Lista 3",moneda:"USD"}];
+var MEMBRESIAS = membresiasDefault();
+/* Entregas totales de la membresía del socio. Las membresías anteriores al cambio no tienen el dato: son de 3. */
+function entTot(s) { return (s && s.membresia_entregas_total) || 3; }
+function membresiasDefault() {
+  return [
+    { id:"m10", nombre:"Básica", gramos:10, precio_usd:MEM_PRECIOS[10], entregas:3, meses:3, activa:true, destacada:false, beneficios:["10 g de flores altas por mes","Stock premium seleccionado","Acceso a eventos del club","Regalos con tu membresía"] },
+    { id:"m25", nombre:"Media", gramos:25, precio_usd:MEM_PRECIOS[25], entregas:3, meses:3, activa:true, destacada:true, beneficios:["25 g de flores altas por mes","Stock premium seleccionado","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"] },
+    { id:"m50", nombre:"Completa", gramos:50, precio_usd:MEM_PRECIOS[50], entregas:3, meses:3, activa:true, destacada:false, beneficios:["50 g de flores altas por mes","Stock premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"] }
+  ];
+}
+function planesActivos() { return MEMBRESIAS.filter(function(m){ return m.activa !== false && parseInt(m.gramos) > 0; }); }
+function precioDesde() {
+  var a = planesActivos().map(function(m){ return parseFloat(m.precio_usd) || 0; }).filter(function(x){ return x > 0; });
+  return a.length ? Math.min.apply(null, a) : 0;
+}
 var productos = [];
 var selectedPago = "efectivo";
 var currentSocio = null;
@@ -731,6 +748,11 @@ function loadConfig() {
       if (d[0].membresia_precio_10 != null) MEM_PRECIOS[10] = d[0].membresia_precio_10;
       if (d[0].membresia_precio_25 != null) MEM_PRECIOS[25] = d[0].membresia_precio_25;
       if (d[0].membresia_precio_50 != null) MEM_PRECIOS[50] = d[0].membresia_precio_50;
+      try { var ls = JSON.parse(d[0].listas_precios || "null"); if (Array.isArray(ls) && ls.length) LISTAS = ls; } catch (e) {}
+      var ms = null;
+      try { ms = JSON.parse(d[0].membresias || "null"); } catch (e) {}
+      MEMBRESIAS = (Array.isArray(ms) && ms.length) ? ms : membresiasDefault();
+      MEMBRESIAS.forEach(function(m){ MEM_PRECIOS[parseInt(m.gramos)] = parseFloat(m.precio_usd) || 0; });
       refreshMembresiaPrecios();
       renderMemTile();
     }
@@ -748,7 +770,10 @@ function getPriceFlores(tipo) {
   return parseFloat(configData[key]) || 0;
 }
 function isLista3() {
-  return currentSocio && currentSocio.lista_precios === 3;
+  /* Nombre histórico: ahora devuelve si la lista del socio cobra las flores en dólares */
+  var n = currentSocio ? (currentSocio.lista_precios || 1) : 1;
+  var l = LISTAS.find(function(x){ return x.n === n; });
+  return l ? l.moneda === "USD" : n === 3;
 }
 function formatFloresPrice(tipo) {
   var p = getPriceFlores(tipo);
@@ -822,24 +847,23 @@ var ICO = {
 var WHATSAPP_CLUB = "";
 
 /* Planes de membresía: mismos textos que tenía la app. Los precios salen de la configuración (MEM_PRECIOS). */
-var PLANES_INFO = [
-  { g:10, desc:"1 entrega mensual de 10 g durante 3 meses.", perks:["10 g de flores altas por mes","Stock premium seleccionado","Acceso a eventos del club","Regalos con tu membresía"] },
-  { g:25, fav:true, desc:"1 entrega mensual de 25 g durante 3 meses. La más elegida del club.", perks:["25 g de flores altas por mes","Stock premium seleccionado","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"] },
-  { g:50, desc:"1 entrega mensual de 50 g durante 3 meses. La experiencia completa Melody's.", perks:["50 g de flores altas por mes","Stock premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"] }
-];
 function planesHTML() {
-  var h = '<div class="mem-intro"><img src="' + IMG_DIR + 'ban-membresia.webp" alt=""><div class="tx"><b>Membresías del club</b><span>3 meses, una entrega por mes. El pago total se abona en la primera entrega.</span></div></div>';
-  h += '<div class="plans">' + PLANES_INFO.map(function(pl) {
-    var usd = MEM_PRECIOS[pl.g];
-    return '<div class="plan' + (pl.fav ? ' fav' : '') + '">' +
-      (pl.fav ? '<span class="tag mem" style="align-self:flex-start;margin-bottom:10px">La más elegida</span>' : '') +
-      '<div class="g">' + pl.g + ' g</div><div class="u">por mes, durante 3 meses</div>' +
+  var planes = planesActivos();
+  var h = '<div class="mem-intro"><img src="' + IMG_DIR + 'ban-membresia.webp" alt=""><div class="tx"><b>Membresías del club</b><span>Una entrega por mes. El pago total se abona en la primera entrega.</span></div></div>';
+  if (!planes.length) return h + '<div class="empty-box" style="margin-top:14px">No hay membresías disponibles por ahora.</div>';
+  h += '<div class="plans">' + planes.map(function(pl) {
+    var g = parseInt(pl.gramos), usd = parseFloat(pl.precio_usd) || 0;
+    var dur = (pl.entregas || 3) + ' entregas en ' + (pl.meses || 3) + ' meses';
+    return '<div class="plan' + (pl.destacada ? ' fav' : '') + '">' +
+      (pl.destacada ? '<span class="tag mem" style="align-self:flex-start;margin-bottom:10px">La más elegida</span>' : '') +
+      '<div class="sub" style="font-weight:600">' + (pl.nombre || '') + '</div>' +
+      '<div class="g">' + g + ' g</div><div class="u">por mes · ' + dur + '</div>' +
       '<div class="usd">USD ' + usd + '</div>' +
-      '<ul class="perks">' + pl.perks.map(function(b){ return '<li>' + ICO.check + '<span>' + b + '</span></li>'; }).join("") + '</ul>' +
-      '<button class="btn" onclick="solicitarMembresia(' + pl.g + ',' + usd + ')">Solicitar ' + pl.g + ' g</button>' +
+      '<ul class="perks">' + (pl.beneficios || []).map(function(b){ return '<li>' + ICO.check + '<span>' + b + '</span></li>'; }).join("") + '</ul>' +
+      '<button class="btn" onclick="solicitarMembresia(' + g + ',' + usd + ')">Solicitar ' + g + ' g</button>' +
     '</div>';
   }).join("") + '</div>';
-  h += '<p class="plans-note">Deslizá para ver los tres planes. Una vez que solicitás, te confirmamos todo por WhatsApp.</p>';
+  h += '<p class="plans-note">' + (planes.length > 1 ? 'Deslizá para ver todos los planes. ' : '') + 'Una vez que solicitás, te confirmamos todo por WhatsApp.</p>';
   return h;
 }
 function centrarPlanDestacado() {
@@ -854,15 +878,16 @@ function renderMemTile() {
   var s = currentSocio;
   if (s && s.membresia_tipo && s.membresia_vence && new Date(s.membresia_vence) > new Date()) {
     var usadas = s.membresia_entregas_usadas || 0;
-    var rest = 3 - usadas;
+    var tot = entTot(s);
+    var rest = tot - usadas;
     var vence = new Date(s.membresia_vence).toLocaleDateString("es-AR", {day:"2-digit",month:"2-digit",year:"numeric"});
     var dots = "";
-    for (var i = 1; i <= 3; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
-    var msg = rest <= 0 ? "Sin entregas disponibles" : (rest === 1 ? "Te queda 1 de 3 entregas" : "Te quedan " + rest + " de 3 entregas");
+    for (var i = 1; i <= tot; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
+    var msg = rest <= 0 ? "Sin entregas disponibles" : (rest === 1 ? "Te queda 1 de " + tot + " entregas" : "Te quedan " + rest + " de " + tot + " entregas");
     el.innerHTML = '<span class="mt-top"><small>Tu membresía</small><span class="big-g">' + s.membresia_tipo + ' g</span><small>por mes</small></span>' +
       '<span class="mt-bot"><span class="mdots">' + dots + '</span><span class="left">' + msg + '</span><small>Vence el ' + vence + '</small></span>';
   } else {
-    el.innerHTML = '<span class="mt-top"><small>Membresías del club</small><span class="big-g sm">Desde USD ' + MEM_PRECIOS[10] + '</span></span>' +
+    el.innerHTML = '<span class="mt-top"><small>Membresías del club</small><span class="big-g sm">Desde USD ' + precioDesde() + '</span></span>' +
       '<ul><li>Flores altas cada mes</li><li>Eventos y regalos</li><li>Visita al cultivo</li></ul><span class="pill">Ver planes</span>';
   }
 }
@@ -1115,7 +1140,7 @@ function loadProducts(cat) {
 function tieneMembresiaActiva() {
   if (!currentSocio || !currentSocio.membresia_tipo || !currentSocio.membresia_vence) return false;
   var v = new Date(currentSocio.membresia_vence);
-  var rest = 3 - (currentSocio.membresia_entregas_usadas || 0);
+  var rest = entTot(currentSocio) - (currentSocio.membresia_entregas_usadas || 0);
   return v > new Date() && rest > 0;
 }
 function renderProducts(cat, data) {
@@ -1125,6 +1150,12 @@ function renderProducts(cat, data) {
     return;
   }
   grid.innerHTML = "";
+  if (cat === "flores") {
+    data = data.map(function(p, i){ return { p:p, i:i }; }).sort(function(a, b){
+      var ma = a.p.solo_membresia ? 1 : 0, mb = b.p.solo_membresia ? 1 : 0;
+      return ma !== mb ? ma - mb : a.i - b.i;
+    }).map(function(x){ return x.p; });
+  }
   data.forEach(function(p) {
     var priceText = "";
     var bajaOk = false, altaOk = false;
@@ -1403,7 +1434,7 @@ function renderCart() {
   if (currentSocio && currentSocio.membresia_tipo && currentSocio.membresia_vence) {
     var now2 = new Date();
     var vence2 = new Date(currentSocio.membresia_vence);
-    var entregasRestantes2 = 3 - (currentSocio.membresia_entregas_usadas || 0);
+    var entregasRestantes2 = entTot(currentSocio) - (currentSocio.membresia_entregas_usadas || 0);
     if (vence2 > now2 && entregasRestantes2 > 0 && totalGramosFlores > 0) {
       tieneMembActiva = true;
       if (usarMembresia) {
@@ -1817,7 +1848,7 @@ function enviarPedido() {
   if (currentSocio && currentSocio.membresia_tipo && currentSocio.membresia_vence) {
     var nowC = new Date();
     var venceC = new Date(currentSocio.membresia_vence);
-    var restC = 3 - (currentSocio.membresia_entregas_usadas || 0);
+    var restC = entTot(currentSocio) - (currentSocio.membresia_entregas_usadas || 0);
     if (usarMembresia && venceC > nowC && restC > 0 && totalGrFC > 0) {
       esMembresiaC = true;
       var grCubC = Math.min(totalGrFC, currentSocio.membresia_tipo);
@@ -2116,10 +2147,11 @@ function perfilMembresiaCard() {
     var vence = new Date(s.membresia_vence);
     var vigente = vence > new Date();
     var usadas = s.membresia_entregas_usadas || 0;
-    var restantes = 3 - usadas;
-    var msg = !vigente ? "Membresía vencida" : (restantes <= 0 ? "Sin entregas disponibles" : (restantes === 1 ? "Te queda 1 entrega (última)" : "Te quedan " + restantes + " de 3 entregas"));
+    var totE = entTot(s);
+    var restantes = totE - usadas;
+    var msg = !vigente ? "Membresía vencida" : (restantes <= 0 ? "Sin entregas disponibles" : (restantes === 1 ? "Te queda 1 entrega (última)" : "Te quedan " + restantes + " de " + totE + " entregas"));
     var dots = "";
-    for (var i = 1; i <= 3; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
+    for (var i = 1; i <= totE; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
     html += '<div class="mem-status">' +
       '<div class="sub">' + (vigente ? 'Membresía activa' : 'Tu membresía') + '</div>' +
       '<div class="ms-g">' + s.membresia_tipo + ' g por mes</div>' +
