@@ -268,6 +268,11 @@ img{display:block;max-width:100%}
 .mm-list li{display:flex;gap:10px;padding:7px 0;font-size:15.5px;line-height:1.4;align-items:flex-start}
 .mm-list .ic{width:20px;height:20px;color:var(--verde);margin-top:2px}
 .mem-note{display:block;font-size:15px;font-weight:600;color:#1F4A24}
+.mem-sub{display:block;font-size:14px;color:#2F5A33;margin-top:8px}
+.mem-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface);border:1.5px solid var(--line);border-radius:24px;padding:4px;margin-top:8px}
+.mem-switch button{min-height:42px;border-radius:20px;font-weight:700;font-size:15px;color:var(--muted)}
+.mem-switch button.on{background:var(--verde);color:#fff}
+.ms-modo-hd{font-weight:700;font-size:15.5px;margin-top:14px}
 .cobro-mem{margin-top:10px;padding:12px 14px;background:#FCEBC0;border-radius:var(--rs);font-size:14.5px;color:#6A4A00;line-height:1.4}
 .cobro-mem b{display:block;font-size:16px;margin-bottom:2px}
 .ms-pago{margin-top:8px;font-size:14.5px;font-weight:600;color:#6A4A00;background:#FCEBC0;border-radius:8px;padding:7px 10px}
@@ -485,7 +490,7 @@ img{display:block;max-width:100%}
       <div><div class="ttl">Preguntas frecuentes</div><div class="sub">Pedidos, pagos y membresías</div></div>
     </div>
     <div class="faq-wrap">
-      <details class="faq"><summary>¿Cómo funciona la membresía?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Dura 3 meses, con una entrega por mes. Elegís entre 10 g, 25 g o 50 g mensuales de flores altas seleccionadas. El pago total se hace en la primera entrega.</p></details>
+      <details class="faq"><summary>¿Cómo funciona la membresía?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Dura 3 meses, con una entrega por mes. Tenés 3 entregas para usar cuando quieras dentro de esos 3 meses, incluso más de una por mes. En cada compra elegís si va con o sin la membresía. El pago total se hace en la primera entrega.</p></details>
       <details class="faq"><summary>¿Cómo pido una membresía?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Desde Mi perfil elegís el plan y tocás Solicitar. Después te confirmamos todo por WhatsApp.</p></details>
       <details class="faq"><summary>¿Qué pasa si pido más gramos de los que cubre mi membresía?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Los gramos que superen tu plan se cobran al precio normal de tu lista. En el carrito podés elegir si usar o no tu membresía en esa compra.</p></details>
       <details class="faq"><summary>¿Cuál es el pedido mínimo?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Las flores se piden de a 5 g por genética. El carrito necesita un mínimo de gramos de bajas o de altas, que te avisamos al armar el pedido. Las promos ya cumplen el mínimo.</p></details>
@@ -928,11 +933,11 @@ function renderMemTile() {
   if (s && s.membresia_tipo && s.membresia_vence && venceSocio(s) > new Date()) {
     var usadas = s.membresia_entregas_usadas || 0;
     var tot = entTot(s);
-    var rest = tot - usadas;
+    var rest = entregasRestantes(s);
     var vence = fmtFecha(venceSocio(s));
     var dots = "";
     for (var i = 1; i <= tot; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
-    var msg = rest <= 0 ? "Sin entregas disponibles" : (_memUsoMes ? "Ya usaste la de este mes" : (rest === 1 ? "Te queda 1 de " + tot + " entregas" : "Te quedan " + rest + " de " + tot + " entregas"));
+    var msg = rest <= 0 ? "Sin entregas disponibles" : (rest === 1 ? "Te queda 1 de " + tot + " entregas" : "Te quedan " + rest + " de " + tot + " entregas");
     el.innerHTML = '<span class="mt-top"><small>Tu membresía</small><span class="big-g">' + s.membresia_tipo + ' g</span><small>por mes</small></span>' +
       '<span class="mt-bot"><span class="mdots">' + dots + '</span><span class="left">' + msg + '</span><small>Vence el ' + vence + '</small></span>';
   } else {
@@ -982,7 +987,7 @@ function fmtNum(n){ return (parseFloat(n)||0).toLocaleString("es-AR"); }
 function genParaPromoOk(g) {
   if (!g) return false;
   if (!(tipoDisponible(g, "baja") || tipoDisponible(g, "alta"))) return false;
-  if (g.solo_membresia && !tieneMembresiaActiva()) return false;
+  if (g.solo_membresia && !membresiaVigente()) return false;
   return true;
 }
 /* Genéticas elegidas en una promo del carrito o de un pedido: [{nombre, grams}] */
@@ -1208,29 +1213,52 @@ function loadProducts(cat) {
   });
 }
 
-/* Un pedido con membresía por mes (calendario). Se cuenta cualquier pedido con membresía no cancelado. */
-var _memUsoMes = false;
-function calcUsoMes(peds) {
-  var hoy = new Date();
-  return (peds || []).some(function(p){
-    if (!p.es_membresia || p.es_solicitud || p.estado === "cancelado" || !p.created_at) return false;
-    var f = new Date(p.created_at);
-    return f.getFullYear() === hoy.getFullYear() && f.getMonth() === hoy.getMonth();
-  });
+/* La membresía se puede usar varias veces en el mismo mes, hasta completar las entregas del plan.
+   Cada pedido con membresía gasta una entrega. Se cuenta al marcarlo Entregado, así que los pedidos
+   con membresía que todavía no se entregaron ("en curso") también se descuentan de las disponibles. */
+var _memEnCurso = 0;
+function calcEnCurso(peds) {
+  return (peds || []).filter(function(p){
+    return p.es_membresia && !p.es_solicitud && p.estado !== "cancelado" && !p.membresia_contada;
+  }).length;
 }
-/* Trae de nuevo el socio (por si el admin cambió algo) y si ya usó la membresía este mes */
+function entregasRestantes(s) {
+  if (!s) return 0;
+  return entTot(s) - (s.membresia_entregas_usadas || 0) - _memEnCurso;
+}
+/* Membresía vigente (sin importar si le quedan entregas): habilita las genéticas "Solo membresía" */
+function membresiaVigente() {
+  var s = currentSocio;
+  return !!(s && s.membresia_tipo && s.membresia_vence && venceSocio(s) > new Date());
+}
+/* Con membresía / sin membresía: lo elige el socio en Mi perfil o en el carrito y queda guardado en su celular */
+function _keyModoMem() { return "melodys_usar_mem_" + (currentSocio ? currentSocio.id : "0"); }
+function cargarModoMem() { try { var v = localStorage.getItem(_keyModoMem()); usarMembresia = v === null ? true : v === "1"; } catch (e) { usarMembresia = true; } }
+function setModoMemSilencioso(v) { usarMembresia = !!v; try { localStorage.setItem(_keyModoMem(), v ? "1" : "0"); } catch (e) {} }
+function setModoMem(v) {
+  usarMembresia = !!v;
+  try { localStorage.setItem(_keyModoMem(), usarMembresia ? "1" : "0"); } catch (e) {}
+  if (document.getElementById("s-cart").classList.contains("active")) renderCart();
+  if (document.getElementById("s-pedidos").classList.contains("active")) { var c = document.getElementById("ms-modo"); if (c) c.outerHTML = modoMemHTML("ms-modo"); }
+  showToast(usarMembresia ? "Tus compras van con la membresía 🎫" : "Tus compras van sin la membresía", "ok");
+}
+function modoMemHTML(id) {
+  return '<div class="mem-switch" id="' + id + '" role="group" aria-label="Usar la membresía">' +
+    '<button type="button" class="' + (usarMembresia ? 'on' : '') + '" onclick="setModoMem(true)">Con membresía</button>' +
+    '<button type="button" class="' + (!usarMembresia ? 'on' : '') + '" onclick="setModoMem(false)">Sin membresía</button></div>';
+}
+/* Trae de nuevo el socio (por si el admin cambió algo) y sus pedidos con membresía en curso */
 function cargarEstadoMembresia() {
   if (!currentSocio) return Promise.resolve();
   return Promise.all([
     sb("socios?id=eq." + currentSocio.id, "GET"),
-    sb("pedidos?socio_id=eq." + currentSocio.id + "&es_membresia=eq.true&select=id,estado,created_at,es_solicitud", "GET")
+    sb("pedidos?socio_id=eq." + currentSocio.id + "&es_membresia=eq.true&select=id,estado,created_at,es_solicitud,membresia_contada", "GET")
   ]).then(function(r){
     if (Array.isArray(r[0]) && r[0][0]) currentSocio = r[0][0];
-    if (Array.isArray(r[1])) _memUsoMes = calcUsoMes(r[1]);
+    if (Array.isArray(r[1])) _memEnCurso = calcEnCurso(r[1]);
     renderMemTile();
   });
 }
-function proximoMesTxt() { var h = new Date(); return fmtFecha(new Date(h.getFullYear(), h.getMonth() + 1, 1)); }
 function planDeGramos(g) { g = parseInt(g); return MEMBRESIAS.find(function(m){ return parseInt(m.gramos) === g; }) || null; }
 /* Monto (USD) de la membresía que el socio todavía no pagó; 0 si no debe nada */
 function cobroMembresiaPendiente() {
@@ -1243,8 +1271,7 @@ function cobroMembresiaPendiente() {
 function tieneMembresiaActiva() {
   if (!currentSocio || !currentSocio.membresia_tipo || !currentSocio.membresia_vence) return false;
   var v = venceSocio(currentSocio);
-  var rest = entTot(currentSocio) - (currentSocio.membresia_entregas_usadas || 0);
-  return v > new Date() && rest > 0;
+  return v > new Date() && entregasRestantes(currentSocio) > 0;
 }
 function renderProducts(cat, data) {
   var grid = document.getElementById("products-grid");
@@ -1447,7 +1474,7 @@ function addToCart() {
   var item = {};
 
   if (cat === "flores") {
-    if (modalProduct.solo_membresia && !tieneMembresiaActiva()) { showToast("🎫 Esta genética es solo para socios con membresía activa", "err"); return; }
+    if (modalProduct.solo_membresia && !membresiaVigente()) { showToast("🎫 Esta genética es solo para socios con membresía activa", "err"); return; }
     var stockTipo = stockDe(modalProduct, modalTipo);
     if (stockTipo !== null) {
       var yaEnCarrito = cart.filter(function(c){ return c.cat==="flores" && c.id===modalProduct.id && c.tipo===modalTipo; })
@@ -1536,7 +1563,6 @@ function calcMembresia(items, usar) {
   var flores = [];
   (items || []).forEach(function(it, idx){ if (it.cat === "flores" && it.grams > 0) flores.push({ it:it, idx:idx }); });
   if (!flores.length || !tieneMembresiaActiva()) return r;
-  if (_memUsoMes) { r.usadaMes = true; return r; }
   r.disponible = true;
   if (!usar) return r;
   r.aplicada = true;
@@ -1643,11 +1669,10 @@ function renderCart() {
     memRow.parentNode.insertBefore(memTgl, memRow);
   }
   if (tieneMembActiva) {
+    var restC = entregasRestantes(currentSocio);
     memTgl.style.display = "block";
-    memTgl.innerHTML = "<label><input type='checkbox' " + (usarMembresia ? "checked" : "") + " onchange='usarMembresia=this.checked;renderCart();'><span>Usar mi membresía en esta compra</span></label>";
-  } else if (mem.usadaMes) {
-    memTgl.style.display = "block";
-    memTgl.innerHTML = "<span class='mem-note'>Ya usaste tu membresía este mes. La próxima entrega se habilita el " + proximoMesTxt() + ".</span>";
+    memTgl.innerHTML = "<span class='mem-note'>¿Esta compra va con tu membresía?</span>" + modoMemHTML("cart-modo") +
+      "<span class='mem-sub'>" + (usarMembresia ? "Usa 1 de tus " + restC + " entrega" + (restC !== 1 ? "s" : "") + " disponible" + (restC !== 1 ? "s" : "") + "." : "Se cobra al precio normal y no gasta entregas.") + "</span>";
   } else {
     memTgl.style.display = "none";
   }
@@ -1927,7 +1952,7 @@ function revalidarStock() {
       if (i.cat !== "flores") return;
       var swOk = i.tipo === "baja" ? (prod.bajas_activo !== false) : (prod.altas_activo !== false);
       if (!swOk) { add(prod.nombre + " (" + i.tipo + "): ya no está disponible, sacalo del carrito"); return; }
-      if (prod.solo_membresia && !tieneMembresiaActiva()) { add(prod.nombre + ": es solo para socios con membresía activa"); return; }
+      if (prod.solo_membresia && !membresiaVigente()) { add(prod.nombre + ": es solo para socios con membresía activa"); return; }
       var k = prod.id + "|" + i.tipo;
       if (!pedido[k]) pedido[k] = { prod: prod, tipo: i.tipo, grams: 0 };
       pedido[k].grams += i.grams;
@@ -1951,7 +1976,7 @@ function revalidarMembresia() {
   return cargarEstadoMembresia().then(function(){
     var ahora = calcMembresia(cart, usarMembresia);
     if (ahora.aplicada && ahora.descuento === antes.descuento) return [];
-    return [{ txt: _memUsoMes ? ("Ya usaste tu membresía este mes. La próxima entrega se habilita el " + proximoMesTxt()) : "Tu membresía cambió. Revisá el total antes de confirmar" }];
+    return [{ txt: entregasRestantes(currentSocio) <= 0 ? "Ya no te quedan entregas de la membresía disponibles" : "Tu membresía cambió. Revisá el total antes de confirmar" }];
   });
 }
 
@@ -2070,7 +2095,7 @@ function enviarPedido() {
     if (r && r[0] && r[0].id) {
       descontarStockFlores(items, r[0].id);
       enviarEmailAdmin(pedidoData, costoEnvioC);
-      if (esMembresiaC) _memUsoMes = true;
+      if (esMembresiaC) _memEnCurso++;
       cart = [];
       updateCartBadge();
       goScreen("success");
@@ -2116,7 +2141,6 @@ function logStockFallo(pedidoId, it, motivo) {
 }
 
 function volverTienda() {
-  usarMembresia = true;
   document.getElementById("input-nombre").value = "";
   document.getElementById("input-inst").value = "";
   var em = document.getElementById("input-email"); if (em) em.value = "";
@@ -2158,6 +2182,7 @@ function doLogin() {
       renderMemTile();
       loadConfig();
       chequearConfirmados();
+      cargarModoMem();
       cargarEstadoMembresia().catch(function(){});
       goDash();
     })
@@ -2166,7 +2191,7 @@ function doLogin() {
 
 function doLogout() {
   currentSocio = null;
-  _memUsoMes = false;
+  _memEnCurso = 0;
   cart = [];
   updateCartBadge();
   document.getElementById("login-user").value = "";
@@ -2243,7 +2268,8 @@ function solicitarMembresia(gramos) {
     '<p class="mm-lead">Antes de activarla, te contamos cómo funciona:</p>' +
     '<ul class="mm-list">' +
       '<li>' + ICO.check + '<span><b>Se activa ahora mismo.</b> Ya podés hacer tu primer pedido usando la membresía.</span></li>' +
-      '<li>' + ICO.check + '<span><b>' + ent + ' entregas en ' + meses + ' meses, una por mes.</b> En cada pedido la membresía cubre hasta ' + g + ' g de flores.</span></li>' +
+      '<li>' + ICO.check + '<span><b>' + ent + ' entregas para usar en ' + meses + ' meses.</b> Las usás cuando quieras, incluso más de una por mes. En cada pedido con la membresía te cubre hasta ' + g + ' g de flores.</span></li>' +
+      '<li>' + ICO.check + '<span>En cada compra elegís si va <b>con o sin la membresía</b>.</span></li>' +
       '<li>' + ICO.check + '<span><b>El pago total es de USD ' + usd.toLocaleString("es-AR") + '.</b> Se abona cuando recibís tu primer pedido con la membresía.</span></li>' +
       '<li>' + ICO.check + '<span>Vence el ' + vence + '.</span></li>' +
     '</ul>';
@@ -2276,7 +2302,8 @@ function confirmarMembresia() {
   sbChk("socios?id=eq." + currentSocio.id, "PATCH", datos).then(function(r) {
     if (!r || !r[0]) throw new Error("Supabase no aplicó el cambio");
     currentSocio = r[0];
-    _memUsoMes = false;
+    _memEnCurso = 0;
+    setModoMemSilencioso(true);
     var nota = "MEMBRESÍA ACTIVADA DESDE LA APP: " + g + "g — USD " + usd + " (se cobra en la primera entrega)";
     var aviso = {
       socio: currentSocio.nombre,
@@ -2374,8 +2401,9 @@ function perfilMembresiaCard() {
     var vigente = vence > new Date();
     var usadas = s.membresia_entregas_usadas || 0;
     var totE = entTot(s);
-    var restantes = totE - usadas;
-    var msg = !vigente ? "Membresía vencida" : (restantes <= 0 ? "Sin entregas disponibles" : (_memUsoMes ? "Ya usaste la entrega de este mes. La próxima se habilita el " + proximoMesTxt() : (restantes === 1 ? "Te queda 1 entrega (última)" : "Te quedan " + restantes + " de " + totE + " entregas")));
+    var restantes = entregasRestantes(s);
+    var msg = !vigente ? "Membresía vencida" : (restantes <= 0 ? "Sin entregas disponibles" : (restantes === 1 ? "Te queda 1 entrega (última)" : "Te quedan " + restantes + " de " + totE + " entregas"));
+    var enCursoTxt = (vigente && _memEnCurso > 0) ? '<div class="sub">' + (_memEnCurso === 1 ? "1 pedido con la membresía en camino" : _memEnCurso + " pedidos con la membresía en camino") + '</div>' : '';
     var cobroP = vigente ? cobroMembresiaPendiente() : 0;
     var dots = "";
     for (var i = 1; i <= totE; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
@@ -2383,10 +2411,11 @@ function perfilMembresiaCard() {
       '<div class="sub">' + (vigente ? 'Membresía activa' : 'Tu membresía') + '</div>' +
       '<div class="ms-g">' + s.membresia_tipo + ' g por mes</div>' +
       '<div class="dots">' + dots + '</div>' +
-      '<div class="ms-msg">' + msg + '</div>' +
-      (vigente ? '<div class="sub">Vence el ' + fmtFecha(vence) + '</div>' : '') +
+      '<div class="ms-msg">' + msg + '</div>' + enCursoTxt +
+      (vigente ? '<div class="sub">Vence el ' + fmtFecha(vence) + '. Podés usar tus entregas cuando quieras hasta esa fecha, incluso más de una por mes.</div>' : '') +
       (cobroP > 0 ? '<div class="ms-pago">Pago pendiente: USD ' + cobroP.toLocaleString("es-AR") + ', se abona en tu primera entrega</div>' : '') +
-      (vigente && restantes > 0 && !_memUsoMes ? '<button class="btn" onclick="goScreen(\'shop\');goCat(\'flores\')">Elegir flores</button>' : '') +
+      (vigente && restantes > 0 ? '<div class="ms-modo-hd">Mis compras</div>' + modoMemHTML("ms-modo") + '<div class="sub" style="margin-top:6px">Lo podés cambiar también en el carrito antes de confirmar.</div>' : '') +
+      (vigente && restantes > 0 ? '<button class="btn" onclick="goScreen(\'shop\');goCat(\'flores\')">Elegir flores</button>' : '') +
       '</div>';
     if (vigente) return html;
     html += '<div class="pc-h">Renová tu membresía</div>';
@@ -2476,7 +2505,6 @@ function repetirPedido(id) {
       return;
     }
     cart = r.cart;
-    usarMembresia = true;
     updateCartBadge();
     goScreen("cart");
     var avisos = r.quitados.concat(r.ajustados);
@@ -2498,7 +2526,7 @@ function armarRepeticion(items, catalogo, promosAct) {
   var out = { cart: [], quitados: [], ajustados: [], preciosCambiaron: false };
   var usadoStock = {};
   var floresCat = catalogo.filter(function(x){ return x.categoria === "flores"; });
-  var memOk = tieneMembresiaActiva();
+  var memOk = membresiaVigente();
   function buscarProd(it) {
     var lista = catalogo.filter(function(x){ return x.categoria === it.cat; });
     if (it.id != null) return lista.find(function(x){ return String(x.id) === String(it.id); }) || null;
