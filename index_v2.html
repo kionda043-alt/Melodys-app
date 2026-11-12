@@ -387,6 +387,7 @@ img{display:block;max-width:100%}
     <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
     <button class="login-btn" id="login-btn" onclick="doLogin()">Ingresar</button>
     <div class="login-err" id="login-err"></div>
+    <button class="btn sec" id="ver-btn" style="display:none;margin-top:14px" onclick="entrarVistaPrevia()">Entrar a mirar (sin cuenta)</button>
   </div>
 </div>
 
@@ -885,6 +886,7 @@ window.addEventListener("load", function() {
   loadConfig();
   updateCartBadge();
   restaurarSesion();
+  if (/[?&]ver=1/.test(location.search)) document.getElementById("ver-btn").style.display = "flex";
 });
 
 // ===== CONFIG =====
@@ -1948,7 +1950,20 @@ function setPago(tipo, el) {
 var subdivPersonas = [];
 var subdivTotalGramos = 0;
 
+var MODO_VER = false;
+/* Vista previa: entra sin cuenta para recorrer la app. No envía pedidos ni activa membresías. */
+function entrarVistaPrevia() {
+  MODO_VER = true;
+  entrarConSocio({ id: 0, nombre: "Vista previa", lista_precios: 1, activo: true }, true);
+  showToast("Vista previa: podés recorrer todo, no se envía nada", "ok");
+}
+function frenoVistaPrevia() {
+  if (!MODO_VER) return false;
+  avisar("Estás en vista previa\nAcá se enviaría el pedido al club.\nPara probarlo de verdad hay que entrar con usuario y contraseña.");
+  return true;
+}
 function confirmarPedido() {
+  if (frenoVistaPrevia()) return;
   var nombre = currentSocio ? currentSocio.nombre : document.getElementById("input-nombre").value.trim();
   if (!nombre) { showToast("Ingresá tu nombre", "err"); return; }
   if (!cart.length) { showToast("El carrito está vacío", "err"); return; }
@@ -2347,6 +2362,7 @@ function restaurarSesion() {
   }).catch(mostrarLogin);
 }
 function volverAlLogin(msg) {
+  MODO_VER = false;
   currentSocio = null;
   _memEnCurso = 0;
   cart = [];
@@ -2435,6 +2451,7 @@ function closeMemModal() {
   document.getElementById("mem-modal").classList.remove("open");
 }
 function confirmarMembresia() {
+  if (frenoVistaPrevia()) { closeMemModal(); return; }
   var pl = _memSolicitada;
   if (!pl || !currentSocio) return;
   var ok = document.getElementById("mm-ok");
