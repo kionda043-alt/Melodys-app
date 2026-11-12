@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="robots" content="noindex"/>
+<meta name="theme-color" content="#F2E8D9"/>
+<title>Melody's Farm — Admin (vista previa del rediseño)</title>
+<link rel="icon" type="image/png" href="favicon-admin.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#F2E8D9;--surface:#FBF6EE;--ink:#2E2016;--ink2:#4B3A2B;--muted:#6F5C4A;--line:#DCCBB4;--chip:#E8DAC5;
+  --acc:#E8724A;--acc-d:#B24B27;--verde:#2F6B35;--verde-cl:#7BC47F;--verde-bg:#E3F2E3;--verde-tx:#1F4A24;
+  --amarillo:#F5C842;--am-bg:#FCEBC0;--am-tx:#6A4A00;--rojo-bg:#F8DDD3;--rojo-tx:#8E2F1B;
+  --hf:'Fraunces',Georgia,serif;--bf:'Source Sans 3',system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#E6DBCB}
+body{font-family:var(--bf);font-size:16px;line-height:1.45;color:var(--ink);background:var(--bg);min-height:100vh;min-height:100dvh}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid var(--verde);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.ic{width:22px;height:22px;flex:0 0 auto}
+
+/* aviso de demo */
+.demo-bar{background:var(--ink);color:#F2E8D9;font-size:13.5px;text-align:center;padding:7px 12px}
+.demo-bar b{color:var(--amarillo)}
+
+/* estructura */
+.app{display:flex;min-height:calc(100dvh - 34px)}
+.side{display:none}
+.main{flex:1;min-width:0;padding:16px 16px 96px;max-width:1080px;margin:0 auto;width:100%}
+.head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.head img{width:44px;height:44px}
+.head .t{flex:1;min-width:0}
+.head .t b{display:block;font-family:var(--hf);font-size:24px;line-height:1.1}
+.head .t span{font-size:14px;color:var(--muted)}
+.head .out{font-size:14px;font-weight:600;color:var(--muted);padding:8px 13px;border-radius:18px;border:1px solid var(--line)}
+.page{display:none;animation:entra .22s ease both}
+.page.on{display:block}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{font-family:var(--hf);font-size:20px;line-height:1.2;margin:22px 0 10px}
+.sub{font-size:14.5px;color:var(--muted)}
+
+/* menú inferior (celular) */
+.nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(6,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));z-index:50}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11.5px;font-weight:600;color:var(--muted);position:relative;min-width:0}
+.nav button.on{color:var(--acc-d)}
+.nav .dot{position:absolute;top:0;left:calc(50% + 6px);min-width:19px;height:19px;line-height:19px;border-radius:10px;background:var(--acc);color:var(--ink);font-size:11.5px;font-weight:700;padding:0 5px}
+.nav button:active .ic{transform:translateY(-2px) scale(1.08)}
+.nav .ic{transition:transform .15s ease}
+
+/* tarjetas y números */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.kpi small{display:block;font-size:13.5px;color:var(--muted);font-weight:600}
+.kpi b{display:block;font-family:var(--hf);font-size:26px;line-height:1.15;margin-top:2px}
+.kpi span{font-size:13.5px;color:var(--muted)}
+.kpi.dest{background:var(--verde);border-color:var(--verde);color:#F7F1E6}
+.kpi.dest small,.kpi.dest span{color:#DDEBD8}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:24px;background:var(--acc);color:var(--ink);font-weight:700;font-size:16px;transition:transform .12s ease}
+.btn.sec{background:transparent;border:1.5px solid var(--ink)}
+.btn.peligro{background:transparent;border:1.5px solid var(--rojo-tx);color:var(--rojo-tx)}
+.btn.full{width:100%}
+.btn:active,.chipb:active,.row:active{transform:scale(.97)}
+.est{font-size:13px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap}
+.est.pend{background:var(--am-bg);color:var(--am-tx)}
+.est.ok{background:var(--verde-bg);color:var(--verde-tx)}
+.est.env{background:#FBDDCB;color:#7A3212}
+.est.off{background:var(--chip);color:var(--muted)}
+.tag{display:inline-block;font-size:13px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--chip)}
+.tag.mem{background:var(--am-bg);color:var(--am-tx)}
+
+/* filtros */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chipb{flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:14.5px;transition:transform .12s ease}
+.chipb.on{background:var(--ink);border-color:var(--ink);color:#FBF6EE}
+.buscar{width:100%;min-height:46px;padding:10px 14px;border:1.5px solid var(--line);border-radius:23px;background:var(--surface);outline:none;margin-bottom:10px}
+.buscar:focus{border-color:var(--acc)}
+
+/* pedidos */
+.ped{cursor:pointer;transition:transform .12s ease}
+.ped .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ped .nm{font-weight:700;font-size:17px}
+.ped .it{font-size:14.5px;color:var(--ink2);margin:6px 0 8px}
+.ped .bot{display:flex;justify-content:space-between;align-items:center;font-size:14.5px;color:var(--muted)}
+.ped .bot b{font-size:17px;color:var(--ink)}
+
+/* listas */
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);transition:transform .12s ease}
+.row:last-child{border-bottom:0}
+.row .im{width:54px;height:54px;border-radius:14px;background:var(--bg);flex:0 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.row .im img{width:100%;height:100%;object-fit:contain;padding:6%}
+.row .av{width:44px;height:44px;border-radius:50%;background:var(--chip);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink2)}
+.row .mid{flex:1;min-width:0}
+.row .mid b{display:block;font-weight:600;line-height:1.25}
+.row .mid span{font-size:14px;color:var(--muted)}
+.row .r{text-align:right;font-size:14px;color:var(--muted);flex:0 0 auto}
+.row .r b{display:block;color:var(--ink);font-size:15.5px}
+.stock{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+
+/* barras */
+.bars{display:flex;align-items:flex-end;gap:8px;height:130px;padding-top:6px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%;font-size:12.5px;color:var(--muted);font-weight:600}
+.bars i{display:block;width:100%;border-radius:8px 8px 3px 3px;background:var(--verde-cl);animation:crece .5s ease both;transform-origin:bottom}
+.bars .hoy i{background:var(--acc)}
+@keyframes crece{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mon b{font-family:var(--hf);font-size:24px;display:block}
+
+/* hoja y confirmación */
+.velo{position:fixed;inset:0;background:rgba(43,29,18,.45);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.velo.on{display:flex}
+.hoja{width:100%;max-width:520px;max-height:90dvh;overflow-y:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:0 18px calc(18px + env(safe-area-inset-bottom,0px));animation:sube .25s ease}
+@keyframes sube{from{transform:translateY(100%)}to{transform:none}}
+.grab{width:40px;height:4px;border-radius:3px;background:var(--line);margin:10px auto 12px}
+.hoja h3{font-family:var(--hf);font-size:24px;line-height:1.15}
+.linea{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+.linea:last-of-type{border-bottom:0}
+.total{display:flex;justify-content:space-between;align-items:center;border-top:1.5px solid var(--ink);margin-top:6px;padding-top:10px;font-weight:700;font-size:19px}
+.nota{background:var(--am-bg);color:var(--am-tx);border-radius:12px;padding:10px 12px;font-size:14.5px;margin:12px 0}
+.campo{display:block;margin:14px 0}
+.campo span{display:block;font-size:15px;font-weight:600;margin-bottom:6px}
+.campo input,.campo textarea{width:100%;min-height:48px;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);outline:none}
+.campo input:focus,.campo textarea:focus{border-color:var(--acc)}
+.acciones{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.velo.centro{align-items:center;padding:20px}
+.dialogo{width:100%;max-width:380px;background:var(--bg);border-radius:20px;padding:20px;animation:entra .2s ease}
+.dialogo h3{font-family:var(--hf);font-size:21px;line-height:1.2;margin-bottom:6px}
+.dialogo p{color:var(--ink2);font-size:15.5px}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#1F4A24;color:#F2E8D9;padding:12px 16px;border-radius:12px;font-size:15px;opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:88%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* computadora: menú lateral */
+@media (min-width:900px){
+  .nav{display:none}
+  .side{display:flex;flex-direction:column;gap:4px;width:232px;flex:0 0 232px;background:var(--surface);border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100dvh}
+  .side .logo{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:0 6px}
+  .side .logo img{width:42px;height:42px}
+  .side .logo b{font-family:var(--hf);font-size:19px;line-height:1.1}
+  .side .logo span{display:block;font-size:13px;color:var(--muted);font-family:var(--bf);font-weight:400}
+  .side button{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;font-weight:600;color:var(--ink2);text-align:left}
+  .side button.on{background:var(--ink);color:#FBF6EE}
+  .side button:hover:not(.on){background:var(--chip)}
+  .side .cnt{margin-left:auto;background:var(--acc);color:var(--ink);border-radius:10px;font-size:12px;font-weight:700;padding:1px 7px}
+  .main{padding:26px 32px 40px}
+  .kpis{grid-template-columns:repeat(4,1fr)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  .grid2 .card{margin-bottom:0}
+  .velo{align-items:center}
+  .hoja{border-radius:20px}
+  #toast{bottom:30px}
+  .head .out{display:none}
+}
+</style>
+</head>
+<body>
+<div class="demo-bar"><b>Vista previa del rediseño.</b> Datos inventados: nada de lo que toques acá cambia la base.</div>
+
+<div class="app">
+  <aside class="side" id="side"></aside>
+
+  <main class="main">
+    <div class="head">
+      <img src="icono-m.webp" alt=""/>
+      <div class="t"><b id="titulo">Hola, Lucas</b><span id="subt">Jueves 12 de noviembre</span></div>
+      <button class="out" onclick="toast('En el admin real: cerrar sesión')">Salir</button>
+    </div>
+
+    <!-- INICIO -->
+    <section class="page on" id="p-inicio">
+      <div class="kpis">
+        <div class="kpi dest"><small>Pedidos por confirmar</small><b>3</b><span>El más viejo, hace 2 h</span></div>
+        <div class="kpi"><small>Envíos de hoy</small><b>5</b><span>20 a 23 hs</span></div>
+        <div class="kpi"><small>Ventas del mes</small><b>$1.284.000</b><span>+ USD 700</span></div>
+        <div class="kpi"><small>Socios activos</small><b>46</b><span>12 con membresía</span></div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <h2>Para hacer ahora</h2>
+          <div class="card">
+            <div class="row" onclick="ir('pedidos')" style="cursor:pointer"><div class="av" style="background:var(--am-bg);color:var(--am-tx)">3</div><div class="mid"><b>Pedidos esperando confirmación</b><span>Tocá para verlos</span></div></div>
+            <div class="row" onclick="ir('catalogo')" style="cursor:pointer"><div class="av" style="background:var(--rojo-bg);color:var(--rojo-tx)">2</div><div class="mid"><b>Genéticas con poco stock</b><span>Choco Rock (altas), ICC (bajas)</span></div></div>
+            <div class="row" onclick="ir('socios')" style="cursor:pointer"><div class="av" style="background:var(--verde-bg);color:var(--verde-tx)">1</div><div class="mid"><b>Membresía por vencer</b><span>Vence en 6 días</span></div></div>
+          </div>
+        </div>
+        <div>
+          <h2>Ventas de la semana</h2>
+          <div class="card">
+            <div class="bars">
+              <div><i style="height:38%"></i>Vie</div><div><i style="height:52%"></i>Sáb</div><div><i style="height:20%"></i>Dom</div><div><i style="height:44%"></i>Lun</div><div><i style="height:88%"></i>Mar</div><div><i style="height:30%"></i>Mié</div><div class="hoy"><i style="height:64%"></i>Hoy</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PEDIDOS -->
+    <section class="page" id="p-pedidos">
+      <div class="chips" id="f-ped">
+        <button class="chipb on" data-f="todos">Todos</button>
+        <button class="chipb" data-f="pend">Pendientes · 3</button>
+        <button class="chipb" data-f="ok">Confirmados</button>
+        <button class="chipb" data-f="env">En envío</button>
+        <button class="chipb" data-f="off">Entregados</button>
+      </div>
+      <div id="lista-ped"></div>
+    </section>
+
+    <!-- ENVÍOS -->
+    <section class="page" id="p-envios">
+      <div class="chips"><button class="chipb on">Hoy · jueves</button><button class="chipb">Martes 17</button><button class="chipb">Jueves 19</button></div>
+      <div class="card">
+        <div class="row"><div class="av">1</div><div class="mid"><b>Sofía R.</b><span>Palermo · 30 g · efectivo</span></div><div class="r"><b>20:00</b><span class="est env">En envío</span></div></div>
+        <div class="row"><div class="av">2</div><div class="mid"><b>Martín G.</b><span>Villa Crespo · Promo 100 g · transferencia</span></div><div class="r"><b>20:30</b><span class="est ok">Confirmado</span></div></div>
+        <div class="row"><div class="av">3</div><div class="mid"><b>Carla M.</b><span>Caballito · 25 g membresía</span></div><div class="r"><b>21:15</b><span class="est ok">Confirmado</span></div></div>
+        <div class="row"><div class="av">4</div><div class="mid"><b>Diego P.</b><span>Almagro · 20 g + bombones</span></div><div class="r"><b>22:00</b><span class="est ok">Confirmado</span></div></div>
+      </div>
+      <button class="btn sec full" onclick="toast('En el admin real: arma la hoja de ruta')">Ver hoja de ruta</button>
+    </section>
+
+    <!-- CATÁLOGO -->
+    <section class="page" id="p-catalogo">
+      <div class="chips"><button class="chipb on">Flores</button><button class="chipb">Promos</button><button class="chipb">Bombones</button><button class="chipb">Semillas</button><button class="chipb">Esquejes</button><button class="chipb">Cremas</button><button class="chipb">Hongos</button><button class="chipb">Precios</button></div>
+      <input class="buscar" type="search" placeholder="Buscar genética" aria-label="Buscar genética"/>
+      <div class="card">
+        <div class="row"><div class="im"><img src="gen-choco-rock.webp" alt=""/></div><div class="mid"><b>Choco Rock</b><div class="stock"><span class="tag">Bajas 120 g</span><span class="tag" style="background:var(--rojo-bg);color:var(--rojo-tx)">Altas 15 g</span></div></div><button class="chipb" onclick="toast('En el admin real: editar genética')">Editar</button></div>
+        <div class="row"><div class="im"><img src="gen-icc.webp" alt=""/></div><div class="mid"><b>ICC</b><div class="stock"><span class="tag" style="background:var(--rojo-bg);color:var(--rojo-tx)">Bajas 10 g</span><span class="tag">Altas 80 g</span></div></div><button class="chipb" onclick="toast('En el admin real: editar genética')">Editar</button></div>
+        <div class="row"><div class="im"><img src="gen-tangie-funk.webp" alt=""/></div><div class="mid"><b>Tangie Funk</b><div class="stock"><span class="tag">Bajas 200 g</span><span class="tag">Altas 95 g</span></div></div><button class="chipb" onclick="toast('En el admin real: editar genética')">Editar</button></div>
+        <div class="row"><div class="im"><img src="gen-electro-diesel.webp" alt=""/></div><div class="mid"><b>Electro Diesel</b><div class="stock"><span class="tag">Altas 60 g</span><span class="tag mem">Solo membresía</span></div></div><button class="chipb" onclick="toast('En el admin real: editar genética')">Editar</button></div>
+      </div>
+      <button class="btn full" onclick="toast('En el admin real: nueva genética')">Agregar genética</button>
+    </section>
+
+    <!-- SOCIOS -->
+    <section class="page" id="p-socios">
+      <input class="buscar" type="search" placeholder="Buscar por nombre, usuario o teléfono" aria-label="Buscar socio"/>
+      <div class="chips"><button class="chipb on">Todos · 46</button><button class="chipb">Con membresía · 12</button><button class="chipb">Pausados · 2</button></div>
+      <div class="card">
+        <div class="row"><div class="av">SR</div><div class="mid"><b>Sofía R.</b><span>sofi.r · Lista 1</span></div><div class="r"><span class="tag mem">25 g · quedan 2</span></div></div>
+        <div class="row"><div class="av">MG</div><div class="mid"><b>Martín G.</b><span>martin.g · Lista 2</span></div><div class="r"><span class="tag">Sin membresía</span></div></div>
+        <div class="row"><div class="av">CM</div><div class="mid"><b>Carla M.</b><span>carla.m · Lista 1</span></div><div class="r"><span class="tag mem">50 g · vence en 6 días</span></div></div>
+        <div class="row"><div class="av">DP</div><div class="mid"><b>Diego P.</b><span>diego.p · Lista 3 (USD)</span></div><div class="r"><span class="est off">Pausado</span></div></div>
+      </div>
+      <button class="btn full" onclick="toast('En el admin real: alta de socio')">Nuevo socio</button>
+    </section>
+
+    <!-- NÚMEROS (historial + contabilidad) -->
+    <section class="page" id="p-numeros">
+      <div class="chips"><button class="chipb on">Noviembre</button><button class="chipb">Octubre</button><button class="chipb">Septiembre</button><button class="chipb">Este año</button></div>
+      <div class="dos">
+        <div class="card mon"><span class="sub">Pesos</span><b>$1.284.000</b><span class="sub">38 ventas</span></div>
+        <div class="card mon"><span class="sub">Dólares</span><b>USD 700</b><span class="sub">2 membresías</span></div>
+      </div>
+      <h2>Por día de la semana</h2>
+      <div class="card"><div class="bars">
+        <div><i style="height:22%"></i>Lun</div><div class="hoy"><i style="height:92%"></i>Mar</div><div><i style="height:30%"></i>Mié</div><div><i style="height:80%"></i>Jue</div><div><i style="height:36%"></i>Vie</div><div><i style="height:40%"></i>Sáb</div><div><i style="height:14%"></i>Dom</div>
+      </div></div>
+      <h2>Últimas ventas</h2>
+      <div class="card">
+        <div class="row"><div class="mid"><b>Sofía R.</b><span>11/11 · 30 g flores · efectivo</span></div><div class="r"><b>$54.000</b></div></div>
+        <div class="row"><div class="mid"><b>Carla M.</b><span>11/11 · Membresía 50 g · manual</span></div><div class="r"><b>USD 500</b></div></div>
+        <div class="row"><div class="mid"><b>Martín G.</b><span>10/11 · Promo 100 g · transferencia</span></div><div class="r"><b>$150.000</b></div></div>
+      </div>
+      <div class="acciones"><button class="btn sec" onclick="toast('En el admin real: cargar venta manual')">Venta manual</button><button class="btn sec" onclick="toast('En el admin real: descarga el Excel')">Exportar Excel</button></div>
+    </section>
+  </main>
+</div>
+
+<nav class="nav" id="nav"></nav>
+
+<!-- HOJA DE PEDIDO -->
+<div class="velo" id="hoja-ped" onclick="if(event.target===this)cerrar('hoja-ped')">
+  <div class="hoja" role="dialog" aria-modal="true" aria-labelledby="hp-nombre">
+    <div class="grab"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <div><h3 id="hp-nombre"></h3><div class="sub" id="hp-meta"></div></div>
+      <span class="est" id="hp-est"></span>
+    </div>
+    <div style="margin-top:12px" id="hp-items"></div>
+    <div class="total"><span>Total</span><span id="hp-total"></span></div>
+    <div class="nota" id="hp-nota"></div>
+    <div id="hp-form">
+      <label class="campo"><span>Día y hora de envío</span><input type="datetime-local" value="2026-11-12T20:30"/></label>
+      <label class="campo"><span>Nota interna <span class="sub">(opcional)</span></span><textarea rows="2" placeholder="Solo la ve el admin"></textarea></label>
+      <button class="btn full" onclick="confirmarPedido()">Confirmar pedido</button>
+      <div class="acciones">
+        <button class="btn sec" onclick="toast('En el admin real: abre WhatsApp con el socio')">WhatsApp</button>
+        <button class="btn peligro" onclick="pedirCancelar()">Cancelar pedido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMACIÓN PROPIA (reemplaza el cartel del navegador) -->
+<div class="velo centro" id="dlg" onclick="if(event.target===this)cerrar('dlg')">
+  <div class="dialogo" role="alertdialog" aria-modal="true" aria-labelledby="dlg-t">
+    <h3 id="dlg-t">¿Cancelar este pedido?</h3>
+    <p>Se devuelve el stock de las flores y el pedido se archiva. El socio lo va a ver como cancelado.</p>
+    <div class="acciones"><button class="btn sec" onclick="cerrar('dlg')">No, volver</button><button class="btn peligro" onclick="cancelarPedido()">Sí, cancelar</button></div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+function svg(d){return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';}
+var SECC=[
+  {id:"inicio",n:"Inicio",t:"Hola, Lucas",s:"Jueves 12 de noviembre",i:svg('<path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/>')},
+  {id:"pedidos",n:"Pedidos",t:"Pedidos",s:"Confirmá, coordiná y seguí cada pedido",c:3,i:svg('<path d="M7 4h10l1 16H6z"/><path d="M9.5 9h5M9.5 13h5"/>')},
+  {id:"envios",n:"Envíos",t:"Envíos",s:"Lo que sale cada día de reparto",i:svg('<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17.5" cy="17.5" r="1.7"/>')},
+  {id:"catalogo",n:"Catálogo",t:"Catálogo",s:"Productos, stock y precios",i:svg('<path d="M12 21c-5-3-7-7-7-11 3 0 5 1 7 3 2-2 4-3 7-3 0 4-2 8-7 11z"/><path d="M12 13v8"/>')},
+  {id:"socios",n:"Socios",t:"Socios",s:"Fichas, accesos y membresías",i:svg('<circle cx="9" cy="8" r="3.2"/><path d="M3 19c1-4.2 11-4.2 12 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 5.6M17.5 14.6c2 .5 3.2 1.9 3.5 4.4"/>')},
+  {id:"numeros",n:"Números",t:"Números",s:"Historial de ventas y contabilidad",i:svg('<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>')}
+];
+var actual="inicio";
+function pintarMenus(){
+  document.getElementById("nav").innerHTML=SECC.map(function(x){return '<button class="'+(x.id===actual?'on':'')+'" onclick="ir(\''+x.id+'\')">'+x.i+x.n+(x.c?'<span class="dot">'+x.c+'</span>':'')+'</button>';}).join("");
+  document.getElementById("side").innerHTML='<div class="logo"><img src="icono-m.webp" alt=""/><b>Melody\'s Farm<span>Panel del club</span></b></div>'+
+    SECC.map(function(x){return '<button class="'+(x.id===actual?'on':'')+'" onclick="ir(\''+x.id+'\')">'+x.i+x.n+(x.c?'<span class="cnt">'+x.c+'</span>':'')+'</button>';}).join("");
+}
+function ir(id){
+  actual=id;
+  document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("on",p.id==="p-"+id);});
+  var s=SECC.find(function(x){return x.id===id;});
+  document.getElementById("titulo").textContent=s.t;document.getElementById("subt").textContent=s.s;
+  pintarMenus();window.scrollTo(0,0);
+}
+
+var EST={pend:["Pendiente","pend"],ok:["Confirmado","ok"],env:["En envío","env"],off:["Entregado","off"],canc:["Cancelado","off"]};
+var PEDIDOS=[
+  {id:1,n:"Sofía R.",h:"Hoy 09:12",e:"pend",pago:"Efectivo",dia:"Jueves 20 a 23 hs",items:[["Choco Rock · baja · 20 g","$36.000"],["ICC · alta · 10 g","$28.000"]],tot:"$64.000",nota:"Llamar antes de llegar."},
+  {id:2,n:"Martín G.",h:"Hoy 08:40",e:"pend",pago:"Transferencia",dia:"Jueves 20 a 23 hs",items:[["Promo Melodys Fans 100 g","$150.000"]],tot:"$150.000",nota:"Tangie Funk 50 g, G-Funk 50 g."},
+  {id:3,n:"Carla M.",h:"Hoy 07:55",e:"pend",pago:"Efectivo",dia:"Martes 20 a 23 hs",items:[["Tangie Funk · alta · 25 g (membresía)","$0"],["Bombones 1/2 docena","$18.000"]],tot:"$18.000",nota:"En esta entrega se cobra la membresía: USD 500."},
+  {id:4,n:"Diego P.",h:"Ayer 22:10",e:"ok",pago:"Efectivo",dia:"Jueves 22:00",items:[["G-Funk · baja · 20 g","$36.000"]],tot:"$36.000",nota:""},
+  {id:5,n:"Lucía F.",h:"Ayer 19:30",e:"env",pago:"Transferencia",dia:"Jueves 20:00",items:[["LPP · alta · 15 g","$42.000"]],tot:"$42.000",nota:""},
+  {id:6,n:"Pablo T.",h:"Martes",e:"off",pago:"Efectivo",dia:"Martes 21:00",items:[["Semillas pack 10 u","$40.000"]],tot:"$40.000",nota:""}
+];
+var filtro="todos",abierto=null;
+function pintarPedidos(){
+  var l=PEDIDOS.filter(function(p){return filtro==="todos"||p.e===filtro;});
+  document.getElementById("lista-ped").innerHTML=l.length?l.map(function(p){
+    return '<div class="card ped" onclick="abrirPedido('+p.id+')"><div class="top"><span class="nm">'+p.n+'</span><span class="est '+EST[p.e][1]+'">'+EST[p.e][0]+'</span></div>'+
+      '<div class="it">'+p.items.map(function(i){return i[0];}).join(" · ")+'</div>'+
+      '<div class="bot"><span>'+p.h+' · '+p.pago+'</span><b>'+p.tot+'</b></div></div>';
+  }).join(""):'<div class="card sub" style="text-align:center;padding:26px">No hay pedidos en este estado.</div>';
+}
+document.getElementById("f-ped").addEventListener("click",function(e){
+  var b=e.target.closest(".chipb");if(!b)return;
+  filtro=b.getAttribute("data-f");this.querySelectorAll(".chipb").forEach(function(x){x.classList.toggle("on",x===b);});pintarPedidos();
+});
+document.querySelectorAll(".chips:not(#f-ped)").forEach(function(c){c.addEventListener("click",function(e){
+  var b=e.target.closest(".chipb");if(!b)return;c.querySelectorAll(".chipb").forEach(function(x){x.classList.toggle("on",x===b);});
+});});
+function abrirPedido(id){
+  var p=PEDIDOS.find(function(x){return x.id===id;});abierto=p;
+  document.getElementById("hp-nombre").textContent=p.n;
+  document.getElementById("hp-meta").textContent=p.h+" · "+p.pago+" · "+p.dia;
+  var e=document.getElementById("hp-est");e.textContent=EST[p.e][0];e.className="est "+EST[p.e][1];
+  document.getElementById("hp-items").innerHTML=p.items.map(function(i){return '<div class="linea"><span>'+i[0]+'</span><b>'+i[1]+'</b></div>';}).join("");
+  document.getElementById("hp-total").textContent=p.tot;
+  var n=document.getElementById("hp-nota");n.textContent=p.nota;n.style.display=p.nota?"block":"none";
+  document.getElementById("hp-form").style.display=p.e==="pend"?"block":"none";
+  document.getElementById("hoja-ped").classList.add("on");
+}
+function cerrar(id){document.getElementById(id).classList.remove("on");}
+function confirmarPedido(){abierto.e="ok";cerrar("hoja-ped");pintarPedidos();toast("Pedido de "+abierto.n+" confirmado");}
+function pedirCancelar(){document.getElementById("dlg").classList.add("on");}
+function cancelarPedido(){abierto.e="canc";cerrar("dlg");cerrar("hoja-ped");pintarPedidos();toast("Pedido cancelado. Se devolvió el stock");}
+var tt;function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("on");},2400);}
+document.addEventListener("touchstart",function(){},{passive:true});
+pintarMenus();pintarPedidos();
+</script>
+</body>
+</html>
