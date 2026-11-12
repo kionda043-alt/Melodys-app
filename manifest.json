@@ -1,0 +1,26 @@
+{
+  "name": "Melody's Farm",
+  "short_name": "Melody's",
+  "description": "Club Melody's Farm — pedidos y membresías",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2E8D9",
+  "theme_color": "#F2E8D9",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

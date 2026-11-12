@@ -1,0 +1,2818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#F2E8D9"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<title>Melody's Farm</title>
+<link rel="icon" href="favicon-socios.ico"/>
+<link rel="icon" type="image/png" href="favicon-socios.png"/>
+<link rel="apple-touch-icon" href="favicon-socios.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#F2E8D9;--surface:#FBF6EE;--ink:#2E2016;--ink2:#4B3A2B;--muted:#6F5C4A;--line:#DCCBB4;--chip:#E8DAC5;
+  --acc:#E8724A;--acc-ink:#2E2016;--verde:#2F6B35;--verde-cl:#7BC47F;--amarillo:#F5C842;
+  --hf:'Fraunces',Georgia,serif;--bf:'Source Sans 3',system-ui,-apple-system,sans-serif;
+  --rb:26px;--rs:14px;--rc:18px;
+  /* compatibilidad con estilos heredados */
+  --cream:#F2E8D9;--orange:#E8724A;--yellow:#F5C842;--green:#7BC47F;--green2:#2F6B35;--dark:#2E2016;--gray:#6F5C4A;--gray2:#9A8A78;--border:#DCCBB4;--white:#FBF6EE;--r:14px;--r2:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;overflow:hidden;background:#E6DBCB}
+body{font-family:var(--bf);font-size:16px;line-height:1.45;background:var(--bg);color:var(--ink);max-width:430px;width:100%;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid var(--verde);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.ic{width:24px;height:24px;flex:0 0 auto}
+
+/* ===== ESTRUCTURA ===== */
+#main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);padding-bottom:20px}
+#main::-webkit-scrollbar{display:none}
+.screen{display:none}
+.screen.active{display:block}
+.loading-msg{text-align:center;color:var(--muted);padding:40px 20px;font-size:15.5px}
+.sub{font-size:15px;color:var(--muted)}
+.ttl{font-family:var(--hf);font-size:28px;line-height:1.15;font-weight:700}
+.sec-h{font-family:var(--hf);font-size:22px;font-weight:700;line-height:1.2;margin:28px 18px 12px}
+.pc-h{font-family:var(--hf);font-size:21px;font-weight:700;line-height:1.2;margin:26px 0 10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:var(--rb);background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:17px;text-decoration:none}
+.btn.sec{background:transparent;border:1.5px solid var(--ink)}
+.btn:disabled{opacity:.5}
+.tag{display:inline-block;font-size:13px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.mem{background:#FCEBC0;color:#6A4A00}
+.tag.off{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.stk{background:var(--surface);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stk img{width:100%;height:100%;object-fit:contain;padding:7%}
+.back{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:22px}
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 12px 10px}
+.dots{display:flex;gap:6px;margin:12px 0 8px}
+.dots i{flex:1;height:8px;border-radius:4px;background:var(--line)}
+.dots i.u{background:var(--verde-cl)}
+
+/* ===== TIENDA ===== */
+.shop-head{display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 18px 8px}
+.shop-ico{width:52px;height:52px;flex:0 0 auto}
+.shop-hi{flex:1;min-width:0}
+.shop-hi b{display:block;font-family:var(--hf);font-size:24px;line-height:1.1}
+.shop-hi span{font-size:15px;color:var(--muted)}
+.logout{font-size:14px;font-weight:600;color:var(--muted);padding:7px 12px;border-radius:18px;border:1px solid var(--line)}
+#aviso-confirmado{margin:10px 18px 0;padding:12px 14px;border-radius:var(--rs);background:#E3F2E3;border:1.5px solid var(--verde-cl);cursor:pointer}
+.aviso{display:flex;align-items:center;gap:10px;color:#1F4A24}
+.aviso b{display:block;font-size:16px}
+.aviso span{font-size:14px}
+.aviso .ic{color:var(--verde)}
+.aviso .x{margin-left:auto;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#1F4A24}
+.cat-tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 18px 0}
+.cat-tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:10px 12px 14px;text-align:left;display:flex;flex-direction:column}
+.cat-tile .stk{height:112px;background:transparent}
+.cat-tile b{font-family:var(--hf);font-size:19px;line-height:1.2;margin-top:4px}
+.cat-tile span{font-size:14px;color:var(--muted)}
+.cat-tile.mem{background:var(--verde);color:#F7F1E6;border-color:var(--verde);justify-content:space-between;gap:8px;min-height:190px}
+.cat-tile.mem span,.cat-tile.mem small{color:#DDEBD8}
+.cat-tile.mem small{display:block;font-size:13.5px;font-weight:600}
+.cat-tile.mem .mt-top,.cat-tile.mem .mt-bot{display:block}
+.cat-tile.mem .big-g{display:block;font-family:var(--hf);font-size:30px;font-weight:700;line-height:1;margin-top:2px;color:#fff}
+.cat-tile.mem .big-g.sm{font-size:23px;line-height:1.1}
+.cat-tile.mem .mdots{display:flex;gap:5px;margin:4px 0 4px}
+.cat-tile.mem .mdots i{flex:1;height:8px;border-radius:4px;background:rgba(247,241,230,.28)}
+.cat-tile.mem .mdots i.u{background:var(--amarillo)}
+.cat-tile.mem .left{display:block;font-weight:700;font-size:15.5px;color:#fff;line-height:1.25}
+.cat-tile.mem ul{list-style:none;font-size:14px;color:#DDEBD8;line-height:1.35}
+.cat-tile.mem .pill{align-self:flex-start;background:var(--amarillo);color:var(--ink);border-radius:16px;padding:6px 12px;font-weight:700;font-size:14px}
+.hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:18px;padding:2px 18px 8px;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.bn{position:relative;overflow:hidden;border-radius:var(--rc);min-height:172px;display:flex;align-items:center;text-align:left;border:1px solid rgba(46,32,22,.08);flex:0 0 90%;scroll-snap-align:center}
+.bn img{position:absolute;top:0;height:100%;width:58%;object-fit:cover}
+.bn.r img{right:0;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 38%);mask-image:linear-gradient(to right,transparent 0,#000 38%)}
+.bn.l img{left:0;-webkit-mask-image:linear-gradient(to left,transparent 0,#000 38%);mask-image:linear-gradient(to left,transparent 0,#000 38%)}
+.bn .tx{position:relative;width:58%;padding:18px}
+.bn.l .tx{margin-left:auto;padding-left:6px}
+.bn .tx b{display:block;font-family:var(--hf);font-size:21px;line-height:1.15;font-weight:700}
+.bn .tx span{display:block;font-size:14.5px;color:var(--ink2);margin:4px 0 12px;line-height:1.3}
+.bn .tx i{font-style:normal;display:inline-block;background:var(--ink);color:#FBF6EE;border-radius:18px;padding:8px 14px;font-weight:700;font-size:14.5px}
+.bn.brand{background:#F3DDB0}
+.bn.brand img{position:static;width:100%;height:auto;-webkit-mask-image:none;mask-image:none}
+
+/* ===== CATEGORÍA ===== */
+.cat-title{display:flex;align-items:center;gap:14px;padding:0 18px 12px}
+.cat-title .stk{width:72px;height:72px;background:transparent;flex:0 0 auto}
+.cat-title .stk img{padding:0}
+.products-grid{padding:0 18px}
+.pr-row{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center;cursor:pointer}
+.pr-row .im{width:96px;height:96px;border-radius:16px;flex:0 0 auto}
+.pr-row .mid{flex:1;min-width:0}
+.pr-row .nm{font-family:var(--hf);font-weight:600;font-size:19px;line-height:1.2}
+.pr-row .ds{font-size:14.5px;color:var(--muted);margin:2px 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pr-row .tg{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.addb{width:40px;height:40px;border-radius:20px;background:var(--acc);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.promo-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+.promo-card.agot{opacity:.7}
+.promo-card .pimg{position:absolute;right:-6px;top:-6px;width:110px;height:110px;background:transparent}
+.promo-card .pimg img{padding:0}
+.promo-card .lbl{font-size:13.5px;font-weight:700;color:#B24B27;margin-bottom:2px}
+.promo-card .agot-lbl{color:var(--muted)}
+.promo-card .nm{font-family:var(--hf);font-size:23px;font-weight:700;line-height:1.15;margin-right:100px}
+.promo-card .pr{font-size:17px;font-weight:700;margin:6px 0 4px}
+.promo-card .ds{font-size:15px;color:var(--ink2)}
+.promo-card .gen{font-size:14.5px;color:var(--muted);margin:4px 0 12px}
+.promo-card .quedan{display:inline-block;background:#FCEBC0;color:#6A4A00;border-radius:6px;padding:3px 8px;font-size:13.5px;font-weight:700;margin-bottom:12px}
+.empty-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:24px 18px;text-align:center;color:var(--muted);font-size:15px}
+.empty-box b{display:block;color:var(--ink);font-family:var(--hf);font-size:19px;margin-bottom:4px}
+
+/* ===== CARRITO ===== */
+.cart-body{margin:0 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:4px 14px}
+.cart-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.cart-item:last-child{border-bottom:0}
+.cart-item .im{width:52px;height:52px;border-radius:12px;flex:0 0 auto;background:var(--bg)}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-weight:600;line-height:1.25}
+.ci-detail{font-size:14.5px;color:var(--muted)}
+.ci-price{font-weight:700;white-space:nowrap}
+.ci-remove{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--muted);margin-right:-8px;flex:0 0 auto}
+.cart-empty{text-align:center;padding:40px 30px}
+.cart-empty .stk{width:130px;height:130px;margin:0 auto 12px;background:transparent}
+.cart-empty b{display:block;font-family:var(--hf);font-size:22px;margin-bottom:6px}
+.cart-empty p{color:var(--muted);margin-bottom:20px}
+.cart-warn{margin:12px 18px 0;padding:11px 14px;background:#FCEBC0;border-radius:var(--rs);font-size:15px;color:#6A4A00;font-weight:600}
+.cart-sum{padding:12px 20px 0}
+.sum-row{justify-content:space-between;align-items:center;padding:7px 0;font-size:15.5px}
+.sum-row.mem-row{color:var(--verde);font-weight:600}
+.mem-toggle{padding:12px 14px;background:#E3F2E3;border-radius:var(--rs);margin-bottom:8px}
+.mem-toggle label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:15.5px;font-weight:600;color:#1F4A24}
+.mem-toggle input{width:20px;height:20px;accent-color:var(--verde);flex-shrink:0}
+.cart-total-box{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:4px;padding-top:12px}
+.ctb-label{font-size:19px;font-weight:700}
+.ctb-val{font-size:22px;font-weight:700}
+.cart-form{padding:0 18px}
+.cart-form .pc-h{margin:24px 0 12px}
+.field{display:block;margin-bottom:14px}
+.field>span{display:block;font-size:15px;font-weight:600;margin-bottom:6px}
+.field small{display:block;font-size:13.5px;color:var(--muted);margin-top:5px}
+.nombre-input,.inst-input{width:100%;min-height:48px;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--rs);background:var(--surface);font-size:16px;outline:none;resize:vertical}
+.nombre-input:focus,.inst-input:focus{border-color:var(--acc)}
+#dia-opts{display:flex;gap:8px;flex-wrap:wrap}
+.dia-opt{min-height:48px;min-width:110px;padding:8px 16px;border-radius:24px;border:1.5px solid var(--line);background:var(--surface);text-align:left;line-height:1.2}
+.dia-opt b{display:block;font-size:15.5px}
+.dia-opt small{font-size:13px;color:var(--muted)}
+.dia-opt.active{background:var(--ink);border-color:var(--ink);color:#FBF6EE}
+.dia-opt.active small{color:#E9DCCB}
+.dia-opt.disabled{opacity:.4;cursor:not-allowed}
+#dia-aviso{font-size:14px;color:#B24B27;font-weight:600;margin-top:8px}
+.pago-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pago-opt{min-height:50px;border-radius:25px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px}
+.pago-opt.active{background:var(--ink);border-color:var(--ink);color:#FBF6EE}
+#transfer-data{margin-top:12px;background:var(--chip);border-radius:var(--rs);padding:14px}
+.td-alias{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1.5px solid var(--acc);border-radius:12px;padding:12px;margin-bottom:10px}
+.td-alias small{display:block;font-size:13px;color:var(--muted);font-weight:600}
+#td-alias{font-size:17px;font-weight:700;word-break:break-all}
+#copy-alias-btn{flex-shrink:0;background:var(--ink);color:#FBF6EE;border-radius:18px;padding:9px 14px;font-weight:700;font-size:14px}
+.td-row{display:flex;justify-content:space-between;gap:10px;font-size:15px;padding:5px 0;border-bottom:1px solid var(--line)}
+.td-row:last-of-type{border-bottom:0}
+.td-row span{color:var(--muted);flex-shrink:0}
+.td-row b{text-align:right;word-break:break-all}
+.td-note{font-size:14px;color:var(--muted);margin-top:8px}
+.confirm-wrap{padding:24px 18px 8px}
+
+/* ===== PERFIL ===== */
+#pedidos-content{padding:0 18px 24px}
+.mem-status{background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:18px;margin-top:4px}
+.mem-status .ms-g{font-family:var(--hf);font-size:28px;font-weight:700;line-height:1.15}
+.mem-status .ms-msg{font-weight:700;font-size:16px}
+.mem-status .btn{margin-top:14px}
+.mem-intro{position:relative;overflow:hidden;border-radius:var(--rc);min-height:150px;display:flex;align-items:center;background:#F1DCB9;margin-top:4px}
+.mem-intro img{position:absolute;left:0;top:0;height:100%;width:58%;object-fit:cover;-webkit-mask-image:linear-gradient(to left,transparent 0,#000 38%);mask-image:linear-gradient(to left,transparent 0,#000 38%)}
+.mem-intro .tx{position:relative;width:60%;margin-left:auto;padding:16px 16px 16px 4px}
+.mem-intro b{display:block;font-family:var(--hf);font-size:21px;line-height:1.15}
+.mem-intro span{display:block;font-size:14.5px;color:var(--ink2);margin-top:4px;line-height:1.3}
+.plans{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:18px;padding:14px 18px 10px;margin:0 -18px;scrollbar-width:none}
+.plans::-webkit-scrollbar{display:none}
+.plan{flex:0 0 80%;scroll-snap-align:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:20px 18px;display:flex;flex-direction:column}
+.plan.fav{border:2px solid var(--acc)}
+.plan .g{font-family:var(--hf);font-size:44px;font-weight:700;line-height:1}
+.plan .u{font-size:15px;color:var(--muted);margin:2px 0 12px}
+.plan .usd{font-size:20px;font-weight:700}
+.plan .btn{margin-top:auto}
+.perks{list-style:none;margin:12px 0 16px}
+.perks li{display:flex;gap:10px;padding:5px 0;font-size:15.5px;align-items:flex-start}
+.perks .ic{width:20px;height:20px;color:var(--verde);margin-top:2px}
+.plans-note{font-size:14px;color:var(--muted)}
+.repeat-btn{margin-top:18px}
+.ped-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:14px 16px;margin-bottom:10px}
+.ped-card.conf{border:2px solid var(--verde-cl)}
+.ped-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.ped-top span{font-size:14.5px;color:var(--muted);font-weight:600}
+.ped-items{border-top:1px solid var(--line);padding-top:8px}
+.ped-items div{font-size:15px;padding:2px 0}
+.ped-items em{font-style:normal;color:var(--muted)}
+.ped-envio{font-size:14.5px;color:var(--verde);font-weight:600;margin-top:8px}
+.ped-ok{font-size:14.5px;color:#1F4A24;font-weight:700;margin-top:8px;background:#E3F2E3;border-radius:8px;padding:7px 10px}
+.est{font-size:13px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap}
+.est.ok{background:#E3F2E3;color:#1F4A24}
+.est.pend{background:#FCEBC0;color:#6A4A00}
+.est.off{background:var(--chip);color:var(--muted)}
+
+/* ===== AYUDA ===== */
+.faq-wrap{padding:0 18px 24px}
+.faq{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 0;font-weight:600;font-size:16.5px;cursor:pointer}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .ic{color:var(--muted);transition:transform .2s}
+.faq[open] summary .ic{transform:rotate(90deg)}
+.faq p{padding:0 0 16px;color:var(--ink2);font-size:15.5px;line-height:1.55}
+.faq-contact{background:var(--surface);border:1px solid var(--line);border-radius:var(--rc);padding:18px;margin-top:24px;text-align:center}
+.faq-contact b{display:block;font-family:var(--hf);font-size:20px}
+.faq-contact p{color:var(--muted);margin:4px 0 14px}
+
+/* ===== PEDIDO ENVIADO ===== */
+#s-success{text-align:center;padding:60px 28px 30px}
+#s-success.active{display:block}
+.success-logo{width:120px;margin:0 auto 18px}
+.success-title{font-family:var(--hf);font-size:28px;font-weight:700;margin-bottom:8px}
+.success-sub{color:var(--muted);margin-bottom:24px}
+#s-success .btn{margin-bottom:10px}
+
+/* ===== MÚSICA ===== */
+#music-bar{display:flex;align-items:center;gap:10px;padding:8px 12px 8px 14px;background:var(--ink);color:#F2E8D9;flex-shrink:0}
+.mb-disk{width:34px;height:34px;border-radius:50%;flex:0 0 auto;background:radial-gradient(circle,#F5C842 0 5%,#E8724A 6% 26%,#1A120C 27% 100%);box-shadow:inset 0 0 0 3px #2B2019}
+.mb-disk.playing{animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mb-info{flex:1;min-width:0}
+.mb-song{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-artist{font-size:12.5px;color:#CDBFAE}
+.mb-controls{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.mbc-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:#F2E8D9}
+.mbc-play{width:40px;height:40px;border-radius:50%;background:var(--amarillo);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.mbc-btn .ic,.mbc-play .ic{width:20px;height:20px}
+
+/* ===== MENÚ INFERIOR ===== */
+#bottom-nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));flex-shrink:0}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:12.5px;font-weight:600;color:var(--muted);position:relative}
+.nav-item.active{color:#B24B27}
+#cart-badge,#nav-badge{position:absolute;top:0;left:calc(50% + 6px);min-width:19px;height:19px;line-height:19px;border-radius:10px;background:var(--acc);color:var(--acc-ink);font-size:11.5px;font-weight:700;text-align:center;padding:0 5px;display:none;align-items:center;justify-content:center}
+
+/* ===== HOJAS (modales) ===== */
+@keyframes sube{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#prod-modal,#promo-builder,#subdiv-modal,#mem-modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center}
+#subdiv-modal{z-index:110}
+#prod-modal.open,#promo-builder.open,#subdiv-modal.open,#mem-modal.open{display:flex}
+.mm-lead{font-size:15.5px;color:var(--ink2);margin:6px 0 4px}
+.mm-list{list-style:none;margin:8px 0 18px}
+.mm-list li{display:flex;gap:10px;padding:7px 0;font-size:15.5px;line-height:1.4;align-items:flex-start}
+.mm-list .ic{width:20px;height:20px;color:var(--verde);margin-top:2px}
+.mem-note{display:block;font-size:15px;font-weight:600;color:#1F4A24}
+.mem-sub{display:block;font-size:14px;color:#2F5A33;margin-top:8px}
+.mem-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface);border:1.5px solid var(--line);border-radius:24px;padding:4px;margin-top:8px}
+.mem-switch button{min-height:42px;border-radius:20px;font-weight:700;font-size:15px;color:var(--muted)}
+.mem-switch button.on{background:var(--verde);color:#fff}
+.ms-modo-hd{font-weight:700;font-size:15.5px;margin-top:14px}
+.cobro-mem{margin-top:10px;padding:12px 14px;background:#FCEBC0;border-radius:var(--rs);font-size:14.5px;color:#6A4A00;line-height:1.4}
+.cobro-mem b{display:block;font-size:16px;margin-bottom:2px}
+.ms-pago{margin-top:8px;font-size:14.5px;font-weight:600;color:#6A4A00;background:#FCEBC0;border-radius:8px;padding:7px 10px}
+.pm-overlay,.pb-overlay,.sd-overlay{position:absolute;inset:0;background:rgba(43,29,18,.45)}
+.pm-sheet,.pb-sheet,.sd-sheet{position:relative;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:0 18px calc(18px + env(safe-area-inset-bottom,0px));animation:sube .25s ease}
+.grab{width:40px;height:4px;border-radius:3px;background:var(--line);margin:10px auto 12px}
+.sheet-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.sheet-x{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--muted);margin-right:-8px;flex:0 0 auto;border-radius:20px}
+.pm-hero{border-radius:var(--rc);aspect-ratio:4/3;margin-bottom:14px;position:relative}
+.pm-cat-badge{position:absolute;left:12px;top:12px;background:var(--ink);color:#FBF6EE;font-size:13px;font-weight:700;padding:3px 10px;border-radius:12px}
+.pm-title{font-family:var(--hf);font-size:26px;font-weight:700;line-height:1.15}
+.pm-desc{font-size:15.5px;color:var(--muted);margin-top:4px}
+.pm-section{font-size:15px;font-weight:600;margin:18px 0 8px}
+.tipo-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tipo-opt{min-height:56px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);padding:8px 14px;display:flex;flex-direction:column;justify-content:center;cursor:pointer}
+.tipo-opt-label{font-weight:700;font-size:16px}
+.tipo-opt-price{font-size:14px;color:var(--muted)}
+.tipo-opt.active{background:var(--ink);border-color:var(--ink);color:#FBF6EE}
+.tipo-opt.active .tipo-opt-price{color:#E9DCCB}
+.gramos-opts{display:flex;gap:8px;flex-wrap:wrap}
+.gr-opt{min-width:62px;min-height:44px;border-radius:22px;border:1.5px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer;padding:0 12px}
+.gr-opt.active{background:var(--ink);border-color:var(--ink);color:#FBF6EE}
+.qty-wrap{display:flex;align-items:center;gap:18px}
+.qty-btn{width:46px;height:46px;border-radius:23px;border:1.5px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center}
+.qty-val{font-size:20px;font-weight:700;min-width:28px;text-align:center}
+.pm-add-btn{margin-top:22px}
+.pb-total-bar{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--rs);padding:10px 14px;margin:12px 0 4px;font-size:15.5px}
+#promo-total{font-weight:700;color:#B24B27}
+.pb-title{font-family:var(--hf);font-size:24px;font-weight:700;line-height:1.15}
+.pb-sub{font-size:15px;color:var(--muted)}
+.pb-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.pb-row .stk{width:48px;height:48px;border-radius:12px;background:var(--surface);flex:0 0 auto}
+.pb-row .stk img{padding:4%}
+.pb-row .nm{flex:1;font-weight:600;font-size:16px}
+.pb-step{display:flex;align-items:center;gap:8px}
+.pb-step button{width:38px;height:38px;border-radius:19px;border:1.5px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center}
+.pb-step span{min-width:44px;text-align:center;font-weight:700}
+.pb-footer{padding-top:14px}
+.sd-title{font-family:var(--hf);font-size:24px;font-weight:700;line-height:1.15}
+.sd-sub{font-size:15px;color:var(--muted)}
+.sd-progress{margin:14px 0 6px;font-size:15px}
+.sd-bar{height:8px;border-radius:4px;background:var(--line);margin-top:6px;overflow:hidden}
+.sd-bar-fill{height:100%;width:0;background:var(--verde-cl);transition:width .2s}
+.sd-empty{text-align:center;padding:16px;color:var(--muted);font-size:15px}
+.sd-person{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.sd-person-name{font-weight:600}
+.sd-person-g{font-size:14.5px;color:var(--muted)}
+.sd-person-del{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.sd-add-row{display:flex;gap:8px;margin-top:12px}
+.sd-input,.sd-input-g{min-height:48px;padding:10px 12px;border:1.5px solid var(--line);border-radius:var(--rs);background:var(--surface);font-size:16px;min-width:0}
+.sd-input{flex:1}
+.sd-input-g{width:92px}
+.sd-add-btn{width:48px;height:48px;border-radius:24px;background:var(--acc);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.sd-footer{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.sd-footer .btn{min-height:50px;font-size:16px}
+
+/* ===== AVISOS ===== */
+#toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#2B1D12;color:#F2E8D9;padding:12px 16px;border-radius:12px;font-size:15px;opacity:0;pointer-events:none;transition:.2s;z-index:1100;max-width:88%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast.ok{background:#1F4A24}
+#toast.err{background:#8E2F1B}
+
+/* ===== INGRESO (sin cambios de lógica) ===== */
+#login-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;overflow-y:auto}
+.login-logo{width:200px;height:200px;border-radius:50%;object-fit:cover;margin:0 auto 24px}
+.login-form{width:100%;max-width:340px}
+.login-welcome{font-family:var(--hf);font-size:26px;font-weight:700;text-align:center;margin-bottom:18px}
+.login-label{display:block;font-size:15px;font-weight:600;margin-bottom:6px}
+.login-input{width:100%;min-height:50px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--rs);padding:12px 14px;font-size:16px;outline:none;margin-bottom:14px}
+.login-input:focus{border-color:var(--acc)}
+.login-btn{width:100%;min-height:52px;border-radius:var(--rb);background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:17px;margin-top:4px}
+.login-err{color:#8E2F1B;font-size:15px;font-weight:600;text-align:center;margin-top:12px;min-height:20px}
+
+/* ===== v2: aviso propio, buscador ===== */
+#aviso-modal{position:fixed;inset:0;z-index:1200;display:none;align-items:flex-end;justify-content:center}
+#aviso-modal.open{display:flex}
+#aviso-modal .av-t{font-family:var(--hf);font-size:22px;font-weight:700;line-height:1.2;margin:4px 0 10px}
+#aviso-modal ul{list-style:none;margin:0 0 6px}
+#aviso-modal li{padding:9px 0;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.4}
+#aviso-modal li:last-child{border-bottom:0}
+#aviso-modal p{font-size:15.5px;color:var(--ink2);margin:8px 0}
+#aviso-modal .btn{margin-top:14px}
+.buscador{width:100%;min-height:46px;padding:10px 14px;border:1.5px solid var(--line);border-radius:23px;background:var(--surface);font-size:16px;outline:none;margin:0 0 4px}
+.buscador:focus{border-color:var(--acc)}
+.sin-res{text-align:center;color:var(--muted);padding:24px 10px;font-size:15px;display:none}
+.login-form.restaurando{visibility:hidden}
+/* ===== v2: movimientos suaves (se apagan solos si el celular pide menos movimiento) ===== */
+.btn,.login-btn,.cat-tile,.bn,.addb,.pr-row,.pago-opt,.dia-opt,.gr-opt,.tipo-opt,.qty-btn,.mbc-play,.mbc-btn,.logout,.back,.sheet-x{transition:transform .12s ease,background-color .15s ease,border-color .15s ease,opacity .15s ease}
+.btn:active,.login-btn:active,.addb:active,.pago-opt:active,.dia-opt:active,.gr-opt:active,.tipo-opt:active,.qty-btn:active,.mbc-play:active,.mbc-btn:active,.logout:active,.back:active,.sheet-x:active{transform:scale(.95)}
+.cat-tile:active,.bn:active{transform:scale(.975)}
+.pr-row:active{transform:scale(.99)}
+.nav-item .ic{transition:transform .15s ease}
+.nav-item:active .ic{transform:translateY(-2px) scale(1.08)}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.screen.active,#dash-view,#cat-view{animation:entra .22s ease both}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+#cart-badge.bump{animation:bump .35s ease}
+</style>
+</head>
+<body>
+
+<!-- INGRESO (lógica sin cambios) -->
+<div id="login-screen">
+  <img src="logo.png" class="login-logo" alt="Melody's Farm"/>
+  <div class="login-form" id="login-form">
+    <div class="login-welcome">Bienvenide 🌿</div>
+    <label class="login-label" for="login-user">Usuario</label>
+    <input class="login-input" id="login-user" type="text" placeholder="usuario" autocomplete="username"/>
+    <label class="login-label" for="login-pass">Contraseña</label>
+    <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Ingresar</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- PRINCIPAL -->
+<div id="main">
+
+  <!-- TIENDA -->
+  <div class="screen active" id="s-shop">
+    <div class="shop-head">
+      <img src="icono-m.webp" class="shop-ico" alt="Melody's Farm"/>
+      <div class="shop-hi"><b id="header-socio">Hola</b><span>¿Qué pedimos hoy?</span></div>
+      <button class="logout" onclick="doLogout()">Salir</button>
+    </div>
+
+    <div id="aviso-confirmado" onclick="goScreen('pedidos')" style="display:none"></div>
+
+    <div id="dash-view">
+      <div class="cat-tiles">
+        <button class="cat-tile" onclick="goCat('flores')"><div class="stk"><img src="cat-flores.webp" alt=""/></div><b>Flores</b><span>Bajas y altas, por gramo</span></button>
+        <button class="cat-tile" onclick="goCat('promos')"><div class="stk"><img src="cat-promos.webp" alt=""/></div><b>Promos</b><span>Melodys Fans</span></button>
+        <button class="cat-tile" onclick="goCat('bombones')"><div class="stk"><img src="cat-bombones.webp" alt=""/></div><b>Bombones</b><span>Comestibles</span></button>
+        <button class="cat-tile" onclick="goCat('semillas')"><div class="stk"><img src="cat-semillas.webp" alt=""/></div><b>Semillas</b><span>Packs de 5, 10 y 20</span></button>
+        <button class="cat-tile" onclick="goCat('esquejes')"><div class="stk"><img src="cat-esquejes.webp" alt=""/></div><b>Esquejes</b><span>Plantas vivas</span></button>
+        <button class="cat-tile" onclick="goCat('cremas')"><div class="stk"><img src="cat-cremas.webp" alt=""/></div><b>Cremas</b><span>Uso tópico</span></button>
+        <button class="cat-tile" onclick="goCat('hongos')"><div class="stk"><img src="cat-hongos.webp" alt=""/></div><b>Hongos</b><span>Microdosis</span></button>
+        <button class="cat-tile mem" id="mem-tile" onclick="goScreen('pedidos')"></button>
+      </div>
+
+      <div class="sec-h">Novedades del club</div>
+      <div class="hs">
+        <button class="bn l" style="background:#F3DDB7" onclick="goCat('flores')"><img src="ban-geneticas.webp" alt=""/><span class="tx"><b>Genéticas nuevas</b><span>Recién llegadas del cultivo.</span><i>Ver flores</i></span></button>
+        <button class="bn r" style="background:#F6DEB0" onclick="goCat('promos')"><img src="ban-promos.webp" alt=""/><span class="tx"><b>Promos Melodys Fans</b><span>Combos del club a precio especial.</span><i>Ver promos</i></span></button>
+        <div class="bn brand"><img src="banner-marca.webp" alt="Melody's Farm. Cultivado con amor, cosechado con música."/></div>
+      </div>
+    </div>
+
+    <div id="cat-view" style="display:none">
+      <div class="topbar"><button class="back" onclick="goDash()" aria-label="Volver a la tienda"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+      <div class="cat-title">
+        <div class="stk"><img id="cat-view-img" src="cat-flores.webp" alt=""/></div>
+        <div><div class="ttl" id="cat-view-title">Categoría</div><div class="sub" id="cat-view-sub"></div></div>
+      </div>
+      <div class="products-grid" id="products-grid"><div class="loading-msg">Cargando productos...</div></div>
+    </div>
+  </div>
+
+  <!-- CARRITO -->
+  <div class="screen" id="s-cart">
+    <div class="topbar">
+      <button class="back" onclick="goScreen('shop')" aria-label="Volver a la tienda"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div><div class="ttl">Tu pedido</div><div class="sub" id="cart-sub">0 productos</div></div>
+    </div>
+
+    <div id="cart-empty-state" class="cart-empty" style="display:none">
+      <div class="stk"><img src="cat-flores.webp" alt=""/></div>
+      <b>Tu carrito está vacío</b>
+      <p>Elegí una categoría y sumá lo que quieras pedir.</p>
+      <button class="btn" onclick="goScreen('shop')">Ir a la tienda</button>
+    </div>
+
+    <div id="cart-content" style="display:none">
+      <div class="cart-body" id="cart-items-list"></div>
+      <div id="cart-min-warning" class="cart-warn" style="display:none"></div>
+
+      <div class="cart-sum">
+        <div id="cart-envio-row" class="sum-row" style="display:none">
+          <span>Envío <span class="sub">(pedido de menos de 20 g)</span></span>
+          <span id="cart-envio-val" style="font-weight:700"></span>
+        </div>
+        <div class="cart-total-box">
+          <div class="ctb-label">Total</div>
+          <div class="ctb-val" id="cart-total-val">$0</div>
+        </div>
+      </div>
+
+      <div class="cart-form">
+        <div class="pc-h">Datos de entrega</div>
+        <label class="field"><span>Nombre</span>
+          <input class="nombre-input" id="input-nombre" type="text" placeholder="Ej: María García" autocomplete="name"/>
+        </label>
+        <label class="field"><span>Instrucciones de entrega <span class="sub">(opcional)</span></span>
+          <textarea class="inst-input" id="input-inst" rows="2" placeholder="Ej: llamar antes, entregar a la tarde"></textarea>
+        </label>
+        <label class="field"><span>Email para el aviso de entrega</span>
+          <input class="nombre-input" id="input-email" type="email" placeholder="tucorreo@email.com" autocomplete="email"/>
+          <small>Te avisamos el día que recibís tu pedido.</small>
+        </label>
+
+        <div class="pc-h">¿Qué día lo recibís?</div>
+        <div id="dia-opts"></div>
+        <div id="dia-aviso" style="display:none"></div>
+
+        <div class="pc-h">Forma de pago</div>
+        <div class="pago-opts">
+          <button class="pago-opt active" onclick="setPago('efectivo',this)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>Efectivo</button>
+          <button class="pago-opt" onclick="setPago('transferencia',this)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h14l-3-3"/><path d="M20 15H6l3 3"/></svg>Transferencia</button>
+        </div>
+        <div id="transfer-data" style="display:none">
+          <div class="td-alias">
+            <div style="min-width:0"><small>Alias</small><div id="td-alias">GRANJA.ALTURA.CLAVE</div></div>
+            <button onclick="copiarAlias()" id="copy-alias-btn">Copiar</button>
+          </div>
+          <div class="td-row"><span>Banco</span><b>Banco Galicia</b></div>
+          <div class="td-row"><span>Titular</span><b>Jesica Alexandra Ciabattari</b></div>
+          <div class="td-row"><span>CUIL</span><b>27336332325</b></div>
+          <div class="td-row"><span>CBU</span><b>0070056630004035658172</b></div>
+          <div class="td-note">Una vez que transfieras, te confirmamos por WhatsApp.</div>
+        </div>
+      </div>
+
+      <div class="confirm-wrap">
+        <button class="btn" id="confirm-btn" onclick="confirmarPedido()">Confirmar pedido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div class="screen" id="s-pedidos">
+    <div class="topbar" style="padding-left:18px">
+      <div><div class="ttl">Mi perfil</div><div class="sub">Membresía y estado de tus pedidos</div></div>
+    </div>
+    <div id="pedidos-content"><div class="loading-msg">Cargando tus pedidos...</div></div>
+  </div>
+
+  <!-- AYUDA -->
+  <div class="screen" id="s-faq">
+    <div class="topbar" style="padding-left:18px">
+      <div><div class="ttl">Preguntas frecuentes</div><div class="sub">Pedidos, pagos y membresías</div></div>
+    </div>
+    <div class="faq-wrap">
+      <details class="faq"><summary>¿Cómo funciona la membresía?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Dura 3 meses, con una entrega por mes. Tenés 3 entregas para usar cuando quieras dentro de esos 3 meses, incluso más de una por mes. En cada compra elegís si va con o sin la membresía. El pago total se hace en la primera entrega.</p></details>
+      <details class="faq"><summary>¿Cómo pido una membresía?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Desde Mi perfil elegís el plan y tocás Solicitar. Después te confirmamos todo por WhatsApp.</p></details>
+      <details class="faq"><summary>¿Qué pasa si pido más gramos de los que cubre mi membresía?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Los gramos que superen tu plan se cobran al precio normal de tu lista. En el carrito podés elegir si usar o no tu membresía en esa compra.</p></details>
+      <details class="faq"><summary>¿Cuál es el pedido mínimo?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Las flores se piden de a 5 g por genética. El carrito necesita un mínimo de gramos de bajas o de altas, que te avisamos al armar el pedido. Las promos ya cumplen el mínimo.</p></details>
+      <details class="faq"><summary>¿Cuánto sale el envío?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Los pedidos de menos de 20 g de flores suman un costo de envío, que ves en el carrito antes de confirmar.</p></details>
+      <details class="faq"><summary>¿Cómo pago?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>En efectivo o por transferencia. Si elegís transferencia, los datos aparecen en el carrito y te confirmamos por WhatsApp.</p></details>
+      <details class="faq"><summary>¿Cuándo recibo mi pedido?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Al confirmar elegís uno de los días de entrega disponibles. Si dejás tu email, te avisamos el día que llega.</p></details>
+      <details class="faq"><summary>¿Cuánto tardan los esquejes?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Están listos en unos 20 días. Se piden de a 5 unidades (<span id="faq-esq5">$50.000</span>) o 10 unidades (<span id="faq-esq10">$80.000</span>).</p></details>
+      <details class="faq"><summary>¿Qué es subdividir flores?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Al confirmar un pedido con flores podés repartir los gramos entre varias personas, para que cada una reciba su parte separada. Es opcional.</p></details>
+      <details class="faq"><summary>¿Qué son las Promos Melodys Fans?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Son combos del club a precio especial. En algunas elegís cómo repartir los gramos entre las genéticas disponibles. Tienen cupo mensual.</p></details>
+      <div class="faq-contact" id="faq-contact" style="display:none">
+        <b>¿No encontraste tu respuesta?</b>
+        <p>Escribinos y te respondemos a la brevedad.</p>
+        <a class="btn sec" id="faq-wa" href="#" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.5-4A8 8 0 1 1 8 18.5z"/></svg>Escribir por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PEDIDO ENVIADO -->
+  <div class="screen" id="s-success">
+    <img src="logo.png" class="success-logo" alt=""/>
+    <div class="success-title">¡Pedido enviado!</div>
+    <div class="success-sub">Lo registramos correctamente. Te escribimos por WhatsApp para coordinar. Podés seguir el estado desde Mi perfil.</div>
+    <button class="btn" onclick="volverTienda();goScreen('pedidos')">Ver mis pedidos</button>
+    <button class="btn sec" onclick="volverTienda()">Volver a la tienda</button>
+  </div>
+
+</div>
+
+<!-- MÚSICA -->
+<div id="music-bar">
+  <div class="mb-disk" id="mb-disk"></div>
+  <div class="mb-info">
+    <div class="mb-song" id="mb-song">Melody's Farm</div>
+    <div class="mb-artist">Melody's Farm</div>
+  </div>
+  <div class="mb-controls">
+    <button class="mbc-btn" onclick="prevTrack()" aria-label="Tema anterior"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v14"/><path d="M19 5.5v13L9 12z" fill="currentColor"/></svg></button>
+    <button class="mbc-play" id="mb-play-btn" onclick="togglePlay()" aria-label="Reproducir o pausar"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button>
+    <button class="mbc-btn" onclick="nextTrack()" aria-label="Tema siguiente"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 5v14"/><path d="M5 5.5v13L15 12z" fill="currentColor"/></svg></button>
+  </div>
+</div>
+
+<!-- MENÚ INFERIOR -->
+<div id="bottom-nav">
+  <button class="nav-item active" id="nav-shop" onclick="goScreen('shop')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h16l-1.6-5H5.6z"/><path d="M5 10v9h14v-9"/><path d="M10 19v-5h4v5"/></svg>Tienda</button>
+  <button class="nav-item" id="nav-cart" onclick="goScreen('cart')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1 12H7z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>Carrito<span id="cart-badge">0</span></button>
+  <button class="nav-item" id="nav-pedidos" onclick="goScreen('pedidos')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-4.2 12.5-4.2 14 0"/></svg>Mi perfil<span id="nav-badge">1</span></button>
+  <button class="nav-item" id="nav-faq" onclick="goScreen('faq')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4"/><circle cx="12" cy="16.8" r=".7" fill="currentColor"/></svg>Ayuda</button>
+</div>
+
+<!-- FICHA DE PRODUCTO -->
+<div id="prod-modal">
+  <div class="pm-overlay" onclick="closeModal()"></div>
+  <div class="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+    <div class="grab"></div>
+    <div class="pm-hero stk">
+      <img id="pm-img" src="cat-flores.webp" alt=""/>
+      <span class="pm-cat-badge" id="pm-cat-badge">Flores</span>
+    </div>
+    <div class="sheet-hd">
+      <div class="pm-title" id="pm-title">—</div>
+      <button class="sheet-x" onclick="closeModal()" aria-label="Cerrar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="pm-desc" id="pm-desc"></div>
+
+    <div id="pm-flores-opts">
+      <div class="pm-section">Tipo</div>
+      <div class="tipo-opts">
+        <div class="tipo-opt active" id="tipo-baja" onclick="setTipo('baja')">
+          <span class="tipo-opt-label">Baja</span>
+          <span class="tipo-opt-price" id="tipo-baja-price">—</span>
+        </div>
+        <div class="tipo-opt" id="tipo-alta" onclick="setTipo('alta')">
+          <span class="tipo-opt-label">Alta</span>
+          <span class="tipo-opt-price" id="tipo-alta-price">—</span>
+        </div>
+      </div>
+      <div class="pm-section">Gramos</div>
+      <div class="gramos-opts" id="gramos-opts">
+        <div class="gr-opt active" onclick="setGramos(5,this)">5 g</div>
+        <div class="gr-opt" onclick="setGramos(10,this)">10 g</div>
+        <div class="gr-opt" onclick="setGramos(15,this)">15 g</div>
+        <div class="gr-opt" onclick="setGramos(20,this)">20 g</div>
+        <div class="gr-opt" onclick="setGramos(25,this)">25 g</div>
+        <div class="gr-opt" onclick="setGramos(30,this)">30 g</div>
+      </div>
+    </div>
+
+    <div id="pm-other-opts" style="display:none">
+      <div class="pm-section" id="pm-qty-label">Cantidad</div>
+      <div class="qty-wrap">
+        <button class="qty-btn" onclick="changeQty(-1)" aria-label="Restar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <div class="qty-val" id="pm-qty">1</div>
+        <button class="qty-btn" onclick="changeQty(1)" aria-label="Sumar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+    </div>
+
+    <button class="btn pm-add-btn" id="pm-add-btn" onclick="addToCart()">Agregar al carrito</button>
+  </div>
+</div>
+
+<!-- Se conserva vacío: la lógica de membresía lo sigue cerrando -->
+<!-- CONFIRMAR MEMBRESÍA -->
+<div id="mem-modal">
+  <div class="pm-overlay" onclick="closeMemModal()"></div>
+  <div class="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="mm-title">
+    <div class="grab"></div>
+    <div class="sheet-hd">
+      <div class="pm-title" id="mm-title">Membresía</div>
+      <button class="sheet-x" onclick="closeMemModal()" aria-label="Cerrar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="mm-body"></div>
+    <button class="btn" id="mm-ok" onclick="confirmarMembresia()">Sí, activar mi membresía</button>
+    <button class="btn sec" style="margin-top:10px" onclick="closeMemModal()">Ahora no</button>
+  </div>
+</div>
+
+<!-- ARMAR PROMO -->
+<div id="promo-builder">
+  <div class="pb-overlay" onclick="cerrarPromoBuilder()"></div>
+  <div class="pb-sheet" role="dialog" aria-modal="true" aria-labelledby="pb-title">
+    <div class="grab"></div>
+    <div class="sheet-hd">
+      <div>
+        <div class="pb-title" id="pb-title">Armá tu promo</div>
+        <div class="pb-sub" id="pb-sub">Elegí los gramos entre las genéticas</div>
+      </div>
+      <button class="sheet-x" onclick="cerrarPromoBuilder()" aria-label="Cerrar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="pb-total-bar"><span>Seleccionado</span><span id="promo-total">0g / 100g</span></div>
+    <div class="pb-body" id="promo-builder-rows"></div>
+    <div class="pb-footer">
+      <button class="btn" id="promo-confirm-btn" onclick="confirmarPromo()" disabled style="opacity:.5">Agregar promo</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUBDIVIDIR PEDIDO -->
+<div id="subdiv-modal">
+  <div class="sd-overlay"></div>
+  <div class="sd-sheet" role="dialog" aria-modal="true" aria-labelledby="sd-title">
+    <div class="grab"></div>
+    <div class="sheet-hd">
+      <div>
+        <div class="sd-title" id="sd-title">Subdividir flores</div>
+        <div class="sd-sub" id="sd-sub">Repartí los gramos entre personas</div>
+      </div>
+      <button class="sheet-x" onclick="cerrarSubdiv()" aria-label="Cerrar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="sd-progress">
+      <span id="sd-asignado">0g</span> de <span id="sd-total">0g</span> asignados
+      <div class="sd-bar"><div class="sd-bar-fill" id="sd-bar-fill"></div></div>
+    </div>
+    <div class="sd-list" id="sd-list"></div>
+    <div class="sd-add-row">
+      <input id="sd-nombre" type="text" placeholder="Nombre de la persona" class="sd-input"/>
+      <input id="sd-gramos" type="number" placeholder="Gramos" class="sd-input-g" min="5" step="5" inputmode="numeric"/>
+      <button onclick="agregarPersonaSubdiv()" class="sd-add-btn" aria-label="Agregar persona"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div class="sd-footer">
+      <button class="btn sec" onclick="confirmarSinSubdiv()">Sin subdividir</button>
+      <button class="btn" id="sd-confirm-btn" onclick="confirmarConSubdiv()">Confirmar pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- AVISO (reemplaza los carteles del navegador) -->
+<div id="aviso-modal">
+  <div class="sd-overlay" onclick="cerrarAviso()"></div>
+  <div class="sd-sheet" role="alertdialog" aria-modal="true" aria-labelledby="av-t">
+    <div class="grab"></div>
+    <div class="av-t" id="av-t"></div>
+    <div id="av-body"></div>
+    <button class="btn" onclick="cerrarAviso()">Entendido</button>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<audio id="audio-player" preload="auto" onerror="console.log('Audio no encontrado')"></audio>
+
+
+<script>
+var SB_URL = "https://yktentykedjlasoewedn.supabase.co";
+var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrdGVudHlrZWRqbGFzb2V3ZWRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTY1NjksImV4cCI6MjA5MTQ5MjU2OX0.HFD2SZqCw9MMGUVYbF_wTGCkfNcO9PsafCfPptqtApA";
+
+// ===== MUSIC =====
+var tracks = [
+  { file: "aprovecha.mp3", name: "Aprovecha" },
+  { file: "carnaval_de_melodys_farm.mp3", name: "Carnaval de Melody's Faaarm" },
+  { file: "melodys_farm.mp3", name: "Melody's Farm" },
+  { file: "la_cata.mp3", name: "La Cata" },
+  { file: "melody_fans.mp3", name: "Melody's Fans" },
+  { file: "la_semilla_rebelde.mp3", name: "La Semilla Rebelde" },
+  { file: "jardin_de_luz.mp3", name: "Jardín de Luz" }
+];
+var currentTrack = 0;
+var isPlaying = false;
+var audio = document.getElementById("audio-player");
+
+function loadTrack(i) {
+  audio.src = tracks[i].file;
+  document.getElementById("mb-song").textContent = tracks[i].name;
+}
+
+function togglePlay() {
+  if (isPlaying) {
+    audio.pause();
+    isPlaying = false;
+    document.getElementById("mb-play-btn").innerHTML = ICO.play;
+    document.getElementById("mb-disk").classList.remove("playing");
+  } else {
+    audio.play().catch(function(){});
+    isPlaying = true;
+    document.getElementById("mb-play-btn").innerHTML = ICO.pause;
+    document.getElementById("mb-disk").classList.add("playing");
+  }
+}
+
+function prevTrack() {
+  currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+  loadTrack(currentTrack);
+  if (isPlaying) audio.play().catch(function(){});
+}
+
+function nextTrack() {
+  currentTrack = (currentTrack + 1) % tracks.length;
+  loadTrack(currentTrack);
+  if (isPlaying) audio.play().catch(function(){});
+}
+
+audio.addEventListener("ended", function() { nextTrack(); });
+
+// ===== SUPABASE =====
+/* ===== SESIÓN (login seguro de Supabase) =====
+   La sesión queda guardada en el celular: el socio no tiene que ingresar cada vez. */
+var SESION = null, _refrescando = null;
+var SESION_KEY = "melodys_sesion_v2";
+var MAIL_SOCIOS = "@socios.melodys.invalid";
+function guardarSesion(d) {
+  if (d && d.access_token) {
+    SESION = {
+      access_token: d.access_token,
+      refresh_token: d.refresh_token,
+      expires_at: d.expires_at || (Math.floor(Date.now() / 1000) + (d.expires_in || 3600)),
+      uid: (d.user && d.user.id) || (SESION ? SESION.uid : null)
+    };
+  } else { SESION = null; }
+  try { if (SESION) localStorage.setItem(SESION_KEY, JSON.stringify(SESION)); else localStorage.removeItem(SESION_KEY); } catch (e) {}
+}
+function leerSesion() {
+  try { var x = JSON.parse(localStorage.getItem(SESION_KEY) || "null"); if (x && x.access_token && x.refresh_token && x.uid) SESION = x; } catch (e) {}
+}
+function authPost(q, body, token) {
+  return fetch(SB_URL + "/auth/v1/" + q, {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Authorization": "Bearer " + (token || SB_KEY), "Content-Type": "application/json" },
+    body: JSON.stringify(body || {})
+  }).then(function(r) {
+    return r.text().then(function(t) {
+      var d = null; try { d = t ? JSON.parse(t) : null; } catch (e) {}
+      return { ok: r.ok, status: r.status, data: d };
+    });
+  });
+}
+function refrescarSesion() {
+  if (!SESION) return Promise.resolve(false);
+  if (_refrescando) return _refrescando;
+  _refrescando = authPost("token?grant_type=refresh_token", { refresh_token: SESION.refresh_token }).then(function(r) {
+    _refrescando = null;
+    if (r.ok && r.data && r.data.access_token) { guardarSesion(r.data); return true; }
+    if (r.status === 400 || r.status === 401 || r.status === 403) { guardarSesion(null); sesionVencida(); }
+    return false;
+  }, function() { _refrescando = null; return false; });
+  return _refrescando;
+}
+function tokenVigente() {
+  if (!SESION) return Promise.resolve(null);
+  if (SESION.expires_at - Math.floor(Date.now() / 1000) > 60) return Promise.resolve(SESION.access_token);
+  return refrescarSesion().then(function() { return SESION ? SESION.access_token : null; });
+}
+function sbRaw(path, method, body, reintento) {
+  /* El cupo mensual de promos ya no lee los pedidos de todos los socios: usa una función de la base */
+  if (path.indexOf("pedidos?select=estado,created_at,items") === 0) { path = "rpc/pedidos_promos_mes"; method = "POST"; body = {}; }
+  return tokenVigente().then(function(tok) {
+    var opts = {
+      method: method || "GET",
+      headers: { "apikey": SB_KEY, "Authorization": "Bearer " + (tok || SB_KEY), "Content-Type": "application/json", "Prefer": "return=representation" }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    return fetch(SB_URL + "/rest/v1/" + path, opts);
+  }).then(function(r) {
+    if (r.status === 401 && !reintento && SESION) {
+      return refrescarSesion().then(function(ok) { return ok ? sbRaw(path, method, body, true) : r; });
+    }
+    return r;
+  });
+}
+function sb(path, method, body) {
+  return sbRaw(path, method, body).then(function(r) { return r.json(); });
+}
+/* Llama a una función de la base. Si la base la rechaza, el error trae el mensaje para mostrar */
+function rpc(nombre, args) { return sbChk("rpc/" + nombre, "POST", args || {}); }
+
+// ===== STATE =====
+var cart = [];
+var currentCat = "flores";
+var configData = {};
+var MEM_PRECIOS = {10:200, 25:500, 50:1000};
+var LISTAS = [{n:1,nombre:"Lista 1",moneda:"ARS"},{n:2,nombre:"Lista 2",moneda:"ARS"},{n:3,nombre:"Lista 3",moneda:"USD"}];
+var MEMBRESIAS = membresiasDefault();
+/* Entregas totales de la membresía del socio. Las membresías anteriores al cambio no tienen el dato: son de 3. */
+function entTot(s) { return (s && s.membresia_entregas_total) || 3; }
+/* Las fechas de membresía se guardan como AAAA-MM-DD: se leen en hora local para no correrse un día */
+function fechaLocal(v, finDelDia) {
+  if (!v) return null;
+  var m = String(v).slice(0, 10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return new Date(v);
+  return finDelDia ? new Date(+m[1], +m[2] - 1, +m[3], 23, 59, 59) : new Date(+m[1], +m[2] - 1, +m[3]);
+}
+function venceSocio(s) { return (s && s.membresia_vence) ? fechaLocal(s.membresia_vence, true) : null; }
+function fmtFecha(d) { return d ? d.toLocaleDateString("es-AR", {day:"2-digit",month:"2-digit",year:"numeric"}) : ""; }
+function pad2(n) { return ("0" + n).slice(-2); }
+function ymdLocal(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+function sumarMeses(ymd, meses) { var d = fechaLocal(ymd); d.setMonth(d.getMonth() + meses); return ymdLocal(d); }
+/* Monedas: cada pedido es en una sola moneda */
+function monSym(m) { return m === "USD" ? "USD " : "$"; }
+function fmtPlata(n, m) { return monSym(m) + (Math.round(n) || 0).toLocaleString("es-AR"); }
+/* Igual que sb() pero avisa si Supabase rechaza el cambio */
+function sbChk(path, method, body) {
+  return sbRaw(path, method, body).then(function(r) {
+    return r.text().then(function(t) {
+      var d = null; try { d = t ? JSON.parse(t) : null; } catch (e) {}
+      if (!r.ok) throw new Error((d && (d.message || d.details)) || ("error " + r.status));
+      return d;
+    });
+  });
+}
+function membresiasDefault() {
+  return [
+    { id:"m10", nombre:"Básica", gramos:10, precio_usd:MEM_PRECIOS[10], entregas:3, meses:3, activa:true, destacada:false, beneficios:["10 g de flores altas por mes","Stock premium seleccionado","Acceso a eventos del club","Regalos con tu membresía"] },
+    { id:"m25", nombre:"Media", gramos:25, precio_usd:MEM_PRECIOS[25], entregas:3, meses:3, activa:true, destacada:true, beneficios:["25 g de flores altas por mes","Stock premium seleccionado","Acceso a eventos del club","Regalos con tu membresía","Visita al cultivo y sala"] },
+    { id:"m50", nombre:"Completa", gramos:50, precio_usd:MEM_PRECIOS[50], entregas:3, meses:3, activa:true, destacada:false, beneficios:["50 g de flores altas por mes","Stock premium exclusivo","Acceso VIP a todos los eventos","Regalos especiales","Visita al cultivo y sala","Acceso anticipado a nuevas genéticas"] }
+  ];
+}
+function planesActivos() { return MEMBRESIAS.filter(function(m){ return m.activa !== false && parseInt(m.gramos) > 0; }); }
+function precioDesde() {
+  var a = planesActivos().map(function(m){ return parseFloat(m.precio_usd) || 0; }).filter(function(x){ return x > 0; });
+  return a.length ? Math.min.apply(null, a) : 0;
+}
+var productos = [];
+var selectedPago = "efectivo";
+var currentSocio = null;
+var ADMIN_EMAIL = "melodysfarmarg@gmail.com";
+
+// Modal state
+var modalProduct = null;
+var modalTipo = "baja";
+var modalGramos = 1;
+var modalQty = 1;
+
+// ===== INIT =====
+window.addEventListener("load", function() {
+  loadTrack(0);
+  loadConfig();
+  updateCartBadge();
+  restaurarSesion();
+});
+
+// ===== CONFIG =====
+function loadConfig() {
+  sb("configuracion?id=eq.1", "GET").then(function(d) {
+    if (d && d[0]) {
+      configData = d[0];
+      if (d[0].membresia_precio_10 != null) MEM_PRECIOS[10] = d[0].membresia_precio_10;
+      if (d[0].membresia_precio_25 != null) MEM_PRECIOS[25] = d[0].membresia_precio_25;
+      if (d[0].membresia_precio_50 != null) MEM_PRECIOS[50] = d[0].membresia_precio_50;
+      try { var ls = JSON.parse(d[0].listas_precios || "null"); if (Array.isArray(ls) && ls.length) LISTAS = ls; } catch (e) {}
+      var ms = null;
+      try { ms = JSON.parse(d[0].membresias || "null"); } catch (e) {}
+      MEMBRESIAS = (Array.isArray(ms) && ms.length) ? ms : membresiasDefault();
+      MEMBRESIAS.forEach(function(m){ MEM_PRECIOS[parseInt(m.gramos)] = parseFloat(m.precio_usd) || 0; });
+      refreshMembresiaPrecios();
+      aplicarPacks(d[0].precios_packs);
+      aplicarWhatsapp(d[0].whatsapp_club);
+      renderMemTile();
+    }
+  });
+}
+function refreshMembresiaPrecios() {
+  var els = document.querySelectorAll(".mem-plan-price");
+  var vals = [MEM_PRECIOS[10], MEM_PRECIOS[25], MEM_PRECIOS[50]];
+  els.forEach(function(el, i) { if (vals[i] != null) el.textContent = "USD " + vals[i]; });
+}
+
+function getPriceFlores(tipo) {
+  var lista = currentSocio ? (currentSocio.lista_precios || 1) : 1;
+  var key = "flores_" + tipo + "_lista" + lista;
+  return parseFloat(configData[key]) || 0;
+}
+function isLista3() {
+  /* Nombre histórico: ahora devuelve si la lista del socio cobra las flores en dólares */
+  var n = currentSocio ? (currentSocio.lista_precios || 1) : 1;
+  var l = LISTAS.find(function(x){ return x.n === n; });
+  return l ? l.moneda === "USD" : n === 3;
+}
+function formatFloresPrice(tipo) {
+  var p = getPriceFlores(tipo);
+  if (p <= 0) return "Consultar precio";
+  return isLista3() ? "USD " + p.toLocaleString("es-AR") + "/g" : "$" + p.toLocaleString("es-AR") + "/g";
+}
+function getProductPrice(p) {
+  var lista = currentSocio ? (currentSocio.lista_precios || 1) : 1;
+  if (p.moneda === "USD") return p["precio_lista" + lista + "_usd"] || p.precio_lista1_usd || 0;
+  return p["precio_lista" + lista + "_ars"] || p.precio_lista1_ars || 0;
+}
+
+// ===== PRODUCTS =====
+var catEmojis = { flores:"🌿", bombones:"🍫", semillas:"🌱", esquejes:"🪴", cremas:"🧴", hongos:"🍄", otros:"📦", membresia:"🎫" };
+var strainEmojis = {
+  "choco rock":"🍫", "choco rock 2.0":"🍫",
+  "lemon blues":"🍋",
+  "tangie funk":"🍊", "tangie funk 2.0":"🍊",
+  "purple rock":"🍇", "purple trap 2.0":"🍇",
+  "g-funk":"🎵",
+  "afrolope":"🌍",
+  "electrodiesel":"⚡",
+  "grape gas":"🍇",
+  "icc":"🍦",
+  "london pound punch":"🍰",
+  "indie red 2.0":"🌹",
+  "manicura fina":"✂️",
+  "dry sift - kief":"💎",
+  "microdosis 0.10gr x10":"💊",
+  "microdosis 0.20gr x10":"💊",
+  "bombones 1/2 docena":"🍫",
+  "bombón x unidad":"🍫"
+};
+function getEmoji(nombre, cat) {
+  var key = (nombre || "").toLowerCase();
+  return strainEmojis[key] || catEmojis[cat] || "📦";
+}
+
+// ===== IMÁGENES E ÍCONOS (rediseño) =====
+var IMG_DIR = "";
+var CAT_IMG = { flores:"cat-flores", promos:"cat-promos", bombones:"cat-bombones", semillas:"cat-semillas", esquejes:"cat-esquejes", cremas:"cat-cremas", hongos:"cat-hongos", membresia:"cat-flores", otros:"cat-flores" };
+/* Ilustración de sabor por genética. La clave es el nombre en minúsculas, sin espacios, números ni símbolos
+   (así "Choco Rock 2.0" y "Choco Rock" usan la misma). Las que no están acá muestran el cogollo. */
+var GEN_IMG = {
+  chocorock:"gen-choco-rock", chocoog:"gen-choco-og", icc:"gen-icc",
+  lpp:"gen-lpp", londonpoundpunch:"gen-lpp", gfunk:"gen-g-funk",
+  tangiefunk:"gen-tangie-funk", reggaeacid:"gen-reggae-acid", electrodiesel:"gen-electro-diesel"
+};
+function normNombre(n) { return (n || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, ""); }
+function imgFor(nombre, cat) {
+  if (cat === "flores") { var k = normNombre(nombre); if (GEN_IMG[k]) return IMG_DIR + GEN_IMG[k] + ".webp"; }
+  return IMG_DIR + (CAT_IMG[cat] || "cat-flores") + ".webp";
+}
+function thumbHTML(nombre, cat, cls) {
+  return '<div class="stk ' + (cls || "") + '"><img src="' + imgFor(nombre, cat) + '" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'' + IMG_DIR + 'cat-flores.webp\'"></div>';
+}
+function sinFuego(n) { return String(n || "").replace(/^\uD83D\uDD25\s*/, ""); }
+function svgI(d) { return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
+var ICO = {
+  plus: svgI('<path d="M12 5v14M5 12h14"/>'),
+  close: svgI('<path d="M6 6l12 12M18 6L6 18"/>'),
+  check: svgI('<path d="M5 12.5l4.5 4.5L19 7"/>'),
+  trash: svgI('<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/>'),
+  redo: svgI('<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>'),
+  ok: svgI('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>'),
+  play: '<svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  pause: '<svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1"/><rect x="13.5" y="5" width="4" height="14" rx="1"/></svg>'
+};
+/* Número de WhatsApp del club para el botón de Ayuda (solo dígitos, con código de país, ej: 5491112345678).
+   Si queda vacío, el botón no se muestra. */
+var WHATSAPP_CLUB = "";
+function aplicarWhatsapp(n) {
+  n = String(n || "").replace(/\D/g, "");
+  WHATSAPP_CLUB = n;
+  var c = document.getElementById("faq-contact"); if (!c) return;
+  if (n) { document.getElementById("faq-wa").href = "https://wa.me/" + n; c.style.display = "block"; }
+  else { c.style.display = "none"; }
+}
+/* Precios de packs (esquejes y semillas). Si en la configuración no hay nada cargado, valen estos */
+var PACKS = { esquejes: { 5: 50000, 10: 80000 }, semillas: { 5: 25000, 10: 40000, 20: 65000 } };
+function packEsq(u) { return u >= 10 ? PACKS.esquejes[10] : PACKS.esquejes[5]; }
+function txtEsq() { return "5 u $" + PACKS.esquejes[5].toLocaleString("es-AR") + " · 10 u $" + PACKS.esquejes[10].toLocaleString("es-AR"); }
+function aplicarPacks(raw) {
+  var p = null; try { p = raw ? JSON.parse(raw) : null; } catch (e) {}
+  if (p && typeof p === "object") {
+    ["esquejes", "semillas"].forEach(function(k) {
+      if (!p[k] || typeof p[k] !== "object") return;
+      Object.keys(PACKS[k]).forEach(function(u) { var v = parseFloat(p[k][u]); if (v > 0) PACKS[k][u] = v; });
+    });
+  }
+  var a = document.getElementById("faq-esq5"), b = document.getElementById("faq-esq10");
+  if (a) a.textContent = "$" + PACKS.esquejes[5].toLocaleString("es-AR");
+  if (b) b.textContent = "$" + PACKS.esquejes[10].toLocaleString("es-AR");
+}
+
+/* Planes de membresía: mismos textos que tenía la app. Los precios salen de la configuración (MEM_PRECIOS). */
+function planesHTML() {
+  var planes = planesActivos();
+  var h = '<div class="mem-intro"><img src="' + IMG_DIR + 'ban-membresia.webp" alt=""><div class="tx"><b>Membresías del club</b><span>Una entrega por mes. Se activa al toque y el pago total se abona en la primera entrega.</span></div></div>';
+  if (!planes.length) return h + '<div class="empty-box" style="margin-top:14px">No hay membresías disponibles por ahora.</div>';
+  h += '<div class="plans">' + planes.map(function(pl) {
+    var g = parseInt(pl.gramos), usd = parseFloat(pl.precio_usd) || 0;
+    var dur = (pl.entregas || 3) + ' entregas en ' + (pl.meses || 3) + ' meses';
+    return '<div class="plan' + (pl.destacada ? ' fav' : '') + '">' +
+      (pl.destacada ? '<span class="tag mem" style="align-self:flex-start;margin-bottom:10px">La más elegida</span>' : '') +
+      '<div class="sub" style="font-weight:600">' + (pl.nombre || '') + '</div>' +
+      '<div class="g">' + g + ' g</div><div class="u">por mes · ' + dur + '</div>' +
+      '<div class="usd">USD ' + usd + '</div>' +
+      '<ul class="perks">' + (pl.beneficios || []).map(function(b){ return '<li>' + ICO.check + '<span>' + b + '</span></li>'; }).join("") + '</ul>' +
+      '<button class="btn" onclick="solicitarMembresia(' + g + ')">Quiero ' + g + ' g</button>' +
+    '</div>';
+  }).join("") + '</div>';
+  h += '<p class="plans-note">' + (planes.length > 1 ? 'Deslizá para ver todos los planes. ' : '') + 'La membresía se activa en el momento y el pago total se hace en tu primera entrega.</p>';
+  return h;
+}
+function centrarPlanDestacado() {
+  var pl = document.querySelector(".plans .plan.fav");
+  if (pl && pl.parentNode) pl.parentNode.scrollLeft = pl.offsetLeft - 18;
+}
+
+/* Tarjeta de membresía de la portada */
+function renderMemTile() {
+  var el = document.getElementById("mem-tile");
+  if (!el) return;
+  var s = currentSocio;
+  if (s && s.membresia_tipo && s.membresia_vence && venceSocio(s) > new Date()) {
+    var usadas = s.membresia_entregas_usadas || 0;
+    var tot = entTot(s);
+    var rest = entregasRestantes(s);
+    var vence = fmtFecha(venceSocio(s));
+    var dots = "";
+    for (var i = 1; i <= tot; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
+    var msg = rest <= 0 ? "Sin entregas disponibles" : (rest === 1 ? "Te queda 1 de " + tot + " entregas" : "Te quedan " + rest + " de " + tot + " entregas");
+    el.innerHTML = '<span class="mt-top"><small>Tu membresía</small><span class="big-g">' + s.membresia_tipo + ' g</span><small>por mes</small></span>' +
+      '<span class="mt-bot"><span class="mdots">' + dots + '</span><span class="left">' + msg + '</span><small>Vence el ' + vence + '</small></span>';
+  } else {
+    el.innerHTML = '<span class="mt-top"><small>Membresías del club</small><span class="big-g sm">Desde USD ' + precioDesde() + '</span></span>' +
+      '<ul><li>Flores altas cada mes</li><li>Eventos y regalos</li><li>Visita al cultivo</li></ul><span class="pill">Ver planes</span>';
+  }
+}
+
+var catLabels = { flores:"Flores", bombones:"Bombones", semillas:"Semillas", esquejes:"Esquejes", cremas:"Cremas", hongos:"Hongos", otros:"Otros", membresia:"Membresía" };
+
+function goDash() {
+  document.getElementById("dash-view").style.display = "block";
+  document.getElementById("cat-view").style.display = "none";
+  document.getElementById("main") && (document.getElementById("main").scrollTop = 0);
+}
+
+var catTitles = {flores:"Flores", bombones:"Bombones", semillas:"Semillas", esquejes:"Esquejes", cremas:"Cremas", hongos:"Hongos", membresia:"Membresías", promos:"Promos Melodys Fans"};
+var catSubs = {flores:"Bajas y altas, por gramo", bombones:"Comestibles", semillas:"Packs de 5, 10 y 20", esquejes:"Plantas vivas", cremas:"Uso tópico", hongos:"Microdosis", membresia:"Planes del club", promos:"Ofertas del club"};
+
+function goCat(cat) {
+  currentCat = cat;
+  document.getElementById("dash-view").style.display = "none";
+  document.getElementById("cat-view").style.display = "block";
+  document.getElementById("cat-view-title").textContent = catTitles[cat] || cat;
+  document.getElementById("cat-view-sub").textContent = catSubs[cat] || "";
+  document.getElementById("cat-view-img").src = imgFor("", cat);
+  var m = document.getElementById("main");
+  if (m) m.scrollTop = 0;
+  loadProducts(cat);
+}
+
+function renderMembresia() {
+  var grid = document.getElementById("products-grid");
+  grid.innerHTML = planesHTML();
+  centrarPlanDestacado();
+}
+
+// ===== PROMOS =====
+var promoSeleccion = []; // {nombre, grams}
+var promoActual = null;   // promo elegida
+var promosCache = [];
+var floresPromoCache = [];
+function nombreGenetica(id){ var g = floresPromoCache.find(function(x){return String(x.id)===String(id);}); return g ? g.nombre : null; }
+function promoGeneticasIds(pr){ if(pr && pr.genetica_ids){ try{ var a=JSON.parse(pr.genetica_ids); if(Array.isArray(a)) return a.map(String); }catch(e){} } if(pr && pr.genetica_id) return [String(pr.genetica_id)]; return []; }
+function fmtNum(n){ return (parseFloat(n)||0).toLocaleString("es-AR"); }
+/* Una genética se puede elegir en una promo si tiene baja o alta disponible y, si es "solo membresía", el socio tiene membresía activa */
+function genParaPromoOk(g) {
+  if (!g) return false;
+  if (!(tipoDisponible(g, "baja") || tipoDisponible(g, "alta"))) return false;
+  if (g.solo_membresia && !membresiaVigente()) return false;
+  return true;
+}
+/* Genéticas elegidas en una promo del carrito o de un pedido: [{nombre, grams}] */
+function promoSeleccionDe(it) {
+  if (it && Array.isArray(it.promoItems) && it.promoItems.length) {
+    return it.promoItems.map(function(x){ return { nombre: String(x.nombre || ""), grams: parseInt(x.grams) || 0 }; });
+  }
+  var out = [];
+  String((it && it.promoDetalle) || "").split(",").forEach(function(parte){
+    var m = parte.trim().match(/^(.+?)\s+(\d+)\s*g$/i);
+    if (m) out.push({ nombre: m[1].trim(), grams: parseInt(m[2]) });
+  });
+  return out;
+}
+
+function renderPromos() {
+  promoSeleccion = [];
+  var grid = document.getElementById("products-grid");
+  grid.innerHTML = '<div id="promos-cont"><div class="loading-msg">Cargando promos...</div></div>';
+  Promise.all([
+    sb("promos?activa=eq.true&order=created_at.desc", "GET"),
+    sb("productos?categoria=eq.flores&activo=eq.true&order=nombre.asc", "GET"),
+    sb("pedidos?select=estado,created_at,items", "GET")
+  ]).then(function(res){
+    promosCache = Array.isArray(res[0]) ? res[0] : [];
+    floresPromoCache = Array.isArray(res[1]) ? res[1] : [];
+    calcPromoUsos(Array.isArray(res[2]) ? res[2] : []);
+    var cont = document.getElementById("promos-cont");
+    if (!cont) return;
+    if (!promosCache.length) {
+      cont.innerHTML = '<div class="empty-box"><b>No hay promos activas por ahora</b>Volvé pronto.</div>';
+      return;
+    }
+    cont.innerHTML = promosCache.map(function(pr){
+      var idsG = promoGeneticasIds(pr);
+      var genTxt = idsG.length===1 ? (nombreGenetica(idsG[0]) || "Genética seleccionada") : (idsG.length>1 ? idsG.map(function(g){return nombreGenetica(g)||"?";}).join(", ") : "Mezcla de genéticas a elección");
+      var agot = promoAgotada(pr);
+      var lim = pr.limite_mensual || 0;
+      var restan = lim > 0 ? Math.max(0, lim - usosDePromo(pr)) : 0;
+      var cinta = agot
+        ? '<div class="lbl agot-lbl">Agotada por este mes</div>'
+        : '<div class="lbl">Stock limitado</div>';
+      var aviso = (!agot && lim > 0 && restan <= 2)
+        ? '<div class="quedan">' + (restan === 1 ? 'Queda 1 disponible' : 'Quedan ' + restan + ' disponibles') + ' este mes</div>'
+        : '';
+      var btn = agot
+        ? '<button class="btn sec" disabled>Agotada, volvé el mes que viene</button>'
+        : '<button class="btn" onclick="seleccionarPromo(\'' + pr.id + '\')">' + ICO.plus + 'Agregar promo</button>';
+      return '<div class="promo-card' + (agot ? ' agot' : '') + '">' +
+        '<div class="stk pimg"><img src="' + IMG_DIR + 'cat-promos.webp" alt=""></div>' +
+        cinta +
+        '<div class="nm">' + pr.nombre + '</div>' +
+        '<div class="pr">' + pr.cantidad_g + ' g · $' + fmtNum(pr.precio) + '</div>' +
+        (pr.descripcion ? '<div class="ds">' + pr.descripcion + '</div>' : '') +
+        '<div class="gen">' + genTxt + '</div>' +
+        aviso + btn +
+      '</div>';
+    }).join("");
+  });
+}
+
+/* ===== CUPO MENSUAL DE PROMOS ===== */
+var promoUsos = {};
+function calcPromoUsos(peds){
+  promoUsos = {};
+  var hoy = new Date(), y = hoy.getFullYear(), m = hoy.getMonth();
+  var validos = { confirmado:1, en_envio:1, entregado:1 };
+  (peds || []).forEach(function(p){
+    if (!validos[p.estado] || !p.created_at) return;
+    var f = new Date(p.created_at);
+    if (f.getFullYear() !== y || f.getMonth() !== m) return;
+    (p.items || []).forEach(function(it){
+      if (it.cat !== "promos") return;
+      var k = it.promo_id != null ? ("id:" + it.promo_id) : ("nom:" + (it.name || "").replace(/^\uD83D\uDD25\s*/, ""));
+      promoUsos[k] = (promoUsos[k] || 0) + (it.qty || 1);
+    });
+  });
+}
+function usosDePromo(pr){
+  return (promoUsos["id:" + pr.id] || 0) + (promoUsos["nom:" + (pr.nombre || "")] || 0);
+}
+function promoAgotada(pr){
+  var lim = pr.limite_mensual || 0;
+  if (lim <= 0) return false;
+  var enCarrito = cart.filter(function(c){ return c.cat === "promos" && String(c.promo_id) === String(pr.id); }).length;
+  return (usosDePromo(pr) + enCarrito) >= lim;
+}
+
+function seleccionarPromo(id) {
+  promoActual = promosCache.find(function(x){ return String(x.id)===String(id); });
+  if (!promoActual) return;
+  if (promoAgotada(promoActual)) { showToast("Esta promo ya se agotó por este mes", "err"); promoActual = null; return; }
+  promoSeleccion = [];
+  var gens = promoGeneticasIds(promoActual);
+  promoActual._gens = gens;
+  if (!puedeAgregarMoneda("ARS")) { promoActual = null; return; }
+  if (gens.length === 1) {
+    var genUnica = floresPromoCache.find(function(x){ return String(x.id) === String(gens[0]); });
+    if (!genParaPromoOk(genUnica)) { showToast("La genética de esta promo no está disponible ahora", "err"); promoActual = null; return; }
+    var nom = genUnica.nombre;
+    cart.push({ id:"promo-"+Date.now(), promo_id:promoActual.id, name:"🔥 "+promoActual.nombre, cat:"promos", tipo:"promo", grams:promoActual.cantidad_g, qty:1, precio:promoActual.precio, moneda:"ARS", promoDetalle: nom+" "+promoActual.cantidad_g+"g", promoItems: [{ nombre: nom, grams: promoActual.cantidad_g }] });
+    updateCartBadge();
+    showToast("¡Promo agregada al carrito! 🔥", "ok");
+  } else {
+    abrirPromoBuilder();
+  }
+}
+
+function abrirPromoBuilder() {
+  if (!promoActual) return;
+  promoSeleccion = [];
+  var gensFiltro = promoActual._gens || [];
+  var lista = (gensFiltro.length ? floresPromoCache.filter(function(p){ return gensFiltro.indexOf(String(p.id))>=0; }) : floresPromoCache).filter(genParaPromoOk);
+  if (!lista.length) { showToast("No hay genéticas disponibles", "err"); return; }
+  var t = document.getElementById("pb-title"); if (t) t.textContent = promoActual.nombre;
+  var s = document.getElementById("pb-sub"); if (s) s.textContent = "Elegí " + promoActual.cantidad_g + " g entre las genéticas";
+  var rows = "";
+  lista.forEach(function(p){
+    var key = p.nombre;
+    rows += '<div class="pb-row">' + thumbHTML(p.nombre, "flores", "") +
+      '<div class="nm">' + p.nombre + '</div>' +
+      '<div class="pb-step">' +
+      '<button onclick="promoAdj(\''+ key.replace(/'/g,"") +'\',-5)" aria-label="Restar 5 g"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>' +
+      '<span id="' + keyId(key) + '">0g</span>' +
+      '<button onclick="promoAdj(\''+ key.replace(/'/g,"") +'\',5)" aria-label="Sumar 5 g">' + ICO.plus + '</button>' +
+      '</div></div>';
+  });
+  document.getElementById("promo-builder-rows").innerHTML = rows;
+  updatePromoTotal();
+  document.getElementById("promo-builder").classList.add("open");
+}
+
+function keyId(key){ return "promo-g-" + btoa(unescape(encodeURIComponent(key))).replace(/=/g,""); }
+
+function promoAdj(nombre, delta) {
+  var target = promoActual ? promoActual.cantidad_g : 100;
+  var existing = promoSeleccion.find(function(x){ return x.nombre===nombre; });
+  var current = existing ? existing.grams : 0;
+  var totalActual = promoSeleccion.reduce(function(a,x){return a+x.grams;},0);
+  var nuevo = current + delta;
+  if (nuevo < 0) nuevo = 0;
+  if (delta > 0 && totalActual + delta > target) { showToast("La promo es de " + target + "g", "err"); return; }
+  if (existing) { existing.grams = nuevo; if (nuevo===0) promoSeleccion = promoSeleccion.filter(function(x){return x.nombre!==nombre;}); }
+  else if (nuevo > 0) promoSeleccion.push({nombre:nombre, grams:nuevo});
+  var el = document.getElementById(keyId(nombre));
+  if (el) el.textContent = nuevo + "g";
+  updatePromoTotal();
+}
+
+function updatePromoTotal() {
+  var target = promoActual ? promoActual.cantidad_g : 100;
+  var total = promoSeleccion.reduce(function(a,x){return a+x.grams;},0);
+  document.getElementById("promo-total").textContent = total + "g / " + target + "g";
+  var btn = document.getElementById("promo-confirm-btn");
+  btn.disabled = total !== target;
+  btn.style.opacity = total === target ? "1" : ".5";
+  btn.textContent = "Agregar promo — $" + fmtNum(promoActual ? promoActual.precio : 0);
+}
+
+function cerrarPromoBuilder() {
+  document.getElementById("promo-builder").classList.remove("open");
+}
+
+function confirmarPromo() {
+  if (!promoActual) return;
+  var target = promoActual.cantidad_g;
+  var total = promoSeleccion.reduce(function(a,x){return a+x.grams;},0);
+  if (total !== target) { showToast("Tenés que elegir " + target + "g", "err"); return; }
+  var detalle = promoSeleccion.map(function(x){ return x.nombre + " " + x.grams + "g"; }).join(", ");
+  cart.push({
+    id: "promo-" + Date.now(),
+    promo_id: promoActual.id,
+    name: "🔥 " + promoActual.nombre,
+    cat: "promos",
+    tipo: "promo",
+    grams: target,
+    qty: 1,
+    precio: promoActual.precio,
+    moneda: "ARS",
+    promoDetalle: detalle,
+    promoItems: JSON.parse(JSON.stringify(promoSeleccion))
+  });
+  updateCartBadge();
+  cerrarPromoBuilder();
+  showToast("¡Promo agregada al carrito! 🔥", "ok");
+}
+
+function memCard(titulo, precio, desc, beneficios, gramos, precioUSD) {
+  var bList = '<ul class="perks">' + beneficios.map(function(b){ return '<li>' + ICO.check + '<span>' + b + '</span></li>'; }).join("") + '</ul>';
+  var btnHtml = gramos ? '<button class="btn" onclick="solicitarMembresia(' + gramos + ',' + precioUSD + ')">Solicitar membresía ' + gramos + ' g</button>' : '';
+  return '<div class="plan" style="flex:none;margin-bottom:12px"><div class="g" style="font-size:26px">' + titulo + '</div><div class="usd" style="margin-top:6px">' + precio + '</div>' +
+    '<div class="sub" style="margin-top:6px">' + desc + '</div>' + bList + btnHtml + '</div>';
+}
+
+function stockDe(p, tipo) {
+  var v = tipo === "baja" ? p.stock_bajas_g : p.stock_altas_g;
+  if (v === null || v === undefined || v === "") return null;
+  var n = parseInt(v);
+  return isNaN(n) ? null : n;
+}
+function tipoDisponible(p, tipo) {
+  var sw = tipo === "baja" ? (p.bajas_activo !== false) : (p.altas_activo !== false);
+  if (!sw) return false;
+  var st = stockDe(p, tipo);
+  if (st === null) return true;
+  return st > 0;
+}
+function loadProducts(cat) {
+  var grid = document.getElementById("products-grid");
+  grid.innerHTML = '<div class="loading-msg">Cargando...</div>';
+  if (cat === "membresia") { renderMembresia(); return; }
+  if (cat === "promos") { renderPromos(); return; }
+  /* Cada categoría es independiente: no se comparten productos entre pestañas */
+  sb("productos?categoria=eq." + cat + "&activo=eq.true&order=nombre.asc", "GET").then(function(data) {
+    if (!Array.isArray(data)) {
+      grid.innerHTML = '<div class="loading-msg">Error al conectar con la base de datos.</div>';
+      return;
+    }
+    productos = data;
+    renderProducts(cat, productos);
+  }).catch(function() {
+    grid.innerHTML = '<div class="loading-msg">Sin conexión. Intentá de nuevo.</div>';
+  });
+}
+
+/* La membresía se puede usar varias veces en el mismo mes, hasta completar las entregas del plan.
+   Cada pedido con membresía gasta una entrega. Se cuenta al marcarlo Entregado, así que los pedidos
+   con membresía que todavía no se entregaron ("en curso") también se descuentan de las disponibles. */
+var _memEnCurso = 0;
+function calcEnCurso(peds) {
+  return (peds || []).filter(function(p){
+    return p.es_membresia && !p.es_solicitud && p.estado !== "cancelado" && !p.membresia_contada;
+  }).length;
+}
+function entregasRestantes(s) {
+  if (!s) return 0;
+  return entTot(s) - (s.membresia_entregas_usadas || 0) - _memEnCurso;
+}
+/* Membresía vigente (sin importar si le quedan entregas): habilita las genéticas "Solo membresía" */
+function membresiaVigente() {
+  var s = currentSocio;
+  return !!(s && s.membresia_tipo && s.membresia_vence && venceSocio(s) > new Date());
+}
+/* Con membresía / sin membresía: lo elige el socio en Mi perfil o en el carrito y queda guardado en su celular */
+function _keyModoMem() { return "melodys_usar_mem_" + (currentSocio ? currentSocio.id : "0"); }
+function cargarModoMem() { try { var v = localStorage.getItem(_keyModoMem()); usarMembresia = v === null ? true : v === "1"; } catch (e) { usarMembresia = true; } }
+function setModoMemSilencioso(v) { usarMembresia = !!v; try { localStorage.setItem(_keyModoMem(), v ? "1" : "0"); } catch (e) {} }
+function setModoMem(v) {
+  usarMembresia = !!v;
+  try { localStorage.setItem(_keyModoMem(), usarMembresia ? "1" : "0"); } catch (e) {}
+  if (document.getElementById("s-cart").classList.contains("active")) renderCart();
+  if (document.getElementById("s-pedidos").classList.contains("active")) { var c = document.getElementById("ms-modo"); if (c) c.outerHTML = modoMemHTML("ms-modo"); }
+  showToast(usarMembresia ? "Tus compras van con la membresía 🎫" : "Tus compras van sin la membresía", "ok");
+}
+function modoMemHTML(id) {
+  return '<div class="mem-switch" id="' + id + '" role="group" aria-label="Usar la membresía">' +
+    '<button type="button" class="' + (usarMembresia ? 'on' : '') + '" onclick="setModoMem(true)">Con membresía</button>' +
+    '<button type="button" class="' + (!usarMembresia ? 'on' : '') + '" onclick="setModoMem(false)">Sin membresía</button></div>';
+}
+/* Trae de nuevo el socio (por si el admin cambió algo) y sus pedidos con membresía en curso */
+function cargarEstadoMembresia() {
+  if (!currentSocio) return Promise.resolve();
+  return Promise.all([
+    sb("socios?id=eq." + currentSocio.id, "GET"),
+    sb("pedidos?socio_id=eq." + currentSocio.id + "&es_membresia=eq.true&select=id,estado,created_at,es_solicitud,membresia_contada", "GET")
+  ]).then(function(r){
+    if (Array.isArray(r[0]) && r[0][0]) { currentSocio = r[0][0]; delete currentSocio.password; }
+    if (Array.isArray(r[1])) _memEnCurso = calcEnCurso(r[1]);
+    renderMemTile();
+  });
+}
+function planDeGramos(g) { g = parseInt(g); return MEMBRESIAS.find(function(m){ return parseInt(m.gramos) === g; }) || null; }
+/* Monto (USD) de la membresía que el socio todavía no pagó; 0 si no debe nada */
+function cobroMembresiaPendiente() {
+  var s = currentSocio;
+  if (!s || !s.membresia_pago_pendiente) return 0;
+  var m = parseFloat(s.membresia_monto_usd);
+  if (!(m > 0)) { var pl = planDeGramos(s.membresia_tipo); m = pl ? (parseFloat(pl.precio_usd) || 0) : 0; }
+  return m;
+}
+function tieneMembresiaActiva() {
+  if (!currentSocio || !currentSocio.membresia_tipo || !currentSocio.membresia_vence) return false;
+  var v = venceSocio(currentSocio);
+  return v > new Date() && entregasRestantes(currentSocio) > 0;
+}
+function renderProducts(cat, data) {
+  var grid = document.getElementById("products-grid");
+  if (!data || !data.length) {
+    grid.innerHTML = '<div class="loading-msg">Sin productos en esta categoría todavía.</div>';
+    return;
+  }
+  grid.innerHTML = "";
+  if (cat === "flores" && data.length >= 6) {
+    var bus = document.createElement("input");
+    bus.type = "search"; bus.className = "buscador"; bus.placeholder = "Buscar genética"; bus.setAttribute("aria-label", "Buscar genética");
+    var sinRes = document.createElement("div"); sinRes.className = "sin-res"; sinRes.textContent = "No encontramos esa genética.";
+    bus.addEventListener("input", function() {
+      var q = normNombre(bus.value), hay = 0;
+      grid.querySelectorAll(".pr-row").forEach(function(row) {
+        var ok = !q || normNombre(row.getAttribute("data-n")).indexOf(q) >= 0;
+        row.style.display = ok ? "" : "none"; if (ok) hay++;
+      });
+      sinRes.style.display = hay ? "none" : "block";
+    });
+    grid.appendChild(bus); grid.appendChild(sinRes);
+  }
+  if (cat === "flores") {
+    data = data.map(function(p, i){ return { p:p, i:i }; }).sort(function(a, b){
+      var ma = a.p.solo_membresia ? 1 : 0, mb = b.p.solo_membresia ? 1 : 0;
+      return ma !== mb ? ma - mb : a.i - b.i;
+    }).map(function(x){ return x.p; });
+  }
+  data.forEach(function(p) {
+    var priceText = "";
+    var bajaOk = false, altaOk = false;
+    if (cat === "flores") {
+      bajaOk = tipoDisponible(p, "baja");
+      altaOk = tipoDisponible(p, "alta");
+      if (!bajaOk && !altaOk) {
+        priceText = "Sin stock";
+      } else {
+        var tipoRef = bajaOk ? "baja" : "alta";
+        priceText = formatFloresPrice(tipoRef);
+      }
+    } else if (cat === "esquejes") {
+      priceText = txtEsq();
+    } else if (cat === "semillas") {
+      var pr2 = getProductPrice(p);
+      priceText = pr2 > 0 ? "Pack: $" + pr2.toLocaleString("es-AR") + "/u" : "Consultar precio";
+    } else {
+      var pr = getProductPrice(p);
+      var mon = p.moneda === "USD" ? "USD " : "$";
+      priceText = pr > 0 ? mon + pr.toLocaleString("es-AR") : "Consultar precio";
+    }
+
+    var tags = "";
+    var sinStock = false;
+    if (cat === "flores") {
+      if (!bajaOk && !altaOk) {
+        sinStock = true;
+        tags = '<span class="tag off">Sin stock</span>';
+      } else {
+        tags += bajaOk ? '<span class="tag">Baja ' + formatFloresPrice("baja") + '</span>' : '<span class="tag off">Sin bajas</span>';
+        tags += altaOk ? '<span class="tag">Alta ' + formatFloresPrice("alta") + '</span>' : '<span class="tag off">Sin altas</span>';
+      }
+      if (p.solo_membresia) tags += '<span class="tag mem">Solo membresía</span>';
+    } else {
+      tags = '<span class="tag">' + priceText + '</span>';
+    }
+
+    var div = document.createElement("div");
+    div.className = "pr-row";
+    div.setAttribute("data-n", p.nombre || "");
+    div.innerHTML =
+      thumbHTML(p.nombre, cat, "im") +
+      '<div class="mid">' +
+        '<div class="nm">' + p.nombre + '</div>' +
+        (p.descripcion ? '<div class="ds">' + p.descripcion + '</div>' : '') +
+        '<div class="tg">' + tags + '</div>' +
+      '</div>' +
+      (sinStock ? '' : '<button class="addb prod-add" aria-label="Agregar ' + String(p.nombre).replace(/"/g, "") + '">' + ICO.plus + '</button>');
+
+    var addB = div.querySelector(".prod-add");
+    if (addB) addB.addEventListener("click", function(e) {
+      e.stopPropagation();
+      openModal(p, cat);
+    });
+    div.addEventListener("click", function() { openModal(p, cat); });
+    grid.appendChild(div);
+  });
+}
+
+// ===== MODAL =====
+function openModal(p, cat) {
+  modalProduct = p;
+  modalTipo = "baja";
+  modalGramos = 5;
+  modalQty = 1;
+
+  document.getElementById("pm-img").src = imgFor(p.nombre, cat);
+  document.getElementById("pm-cat-badge").textContent = catLabels[cat] || cat;
+  document.getElementById("pm-title").textContent = p.nombre;
+  document.getElementById("pm-desc").textContent = p.descripcion || "";
+
+  if (cat === "flores") {
+    document.getElementById("pm-flores-opts").style.display = "block";
+    document.getElementById("pm-other-opts").style.display = "none";
+    updateTipoPrices();
+    document.querySelectorAll(".gr-opt").forEach(function(g, i) {
+      g.classList.toggle("active", i === 0);
+    });
+    modalGramos = 5;
+    // Set initial tipo based on availability
+    var bajaOk = tipoDisponible(p, "baja");
+    var altaOk = tipoDisponible(p, "alta");
+    setTipo(bajaOk ? "baja" : "alta");
+    var bajaBt = document.getElementById("tipo-baja");
+    var altaBt = document.getElementById("tipo-alta");
+    if (!bajaOk) { bajaBt.style.opacity=".4"; bajaBt.style.pointerEvents="none"; document.getElementById("tipo-baja-price").textContent="Sin stock"; }
+    else { bajaBt.style.opacity=""; bajaBt.style.pointerEvents=""; }
+    if (!altaOk) { altaBt.style.opacity=".4"; altaBt.style.pointerEvents="none"; document.getElementById("tipo-alta-price").textContent="Sin stock"; }
+    else { altaBt.style.opacity=""; altaBt.style.pointerEvents=""; }
+  } else if (cat === "esquejes") {
+    document.getElementById("pm-flores-opts").style.display = "none";
+    document.getElementById("pm-other-opts").style.display = "block";
+    document.getElementById("pm-qty-label").textContent = "Cantidad (5 o 10 unidades)";
+    document.getElementById("pm-qty").textContent = "5";
+    modalQty = 5;
+  } else if (cat === "semillas") {
+    document.getElementById("pm-flores-opts").style.display = "none";
+    document.getElementById("pm-other-opts").style.display = "block";
+    document.getElementById("pm-qty-label").textContent = "Pack (5 · 10 · 20 unidades)";
+    document.getElementById("pm-qty").textContent = "5";
+    modalQty = 5;
+  } else {
+    document.getElementById("pm-flores-opts").style.display = "none";
+    document.getElementById("pm-other-opts").style.display = "block";
+    if (document.getElementById("pm-qty-label")) document.getElementById("pm-qty-label").textContent = "Cantidad";
+    document.getElementById("pm-qty").textContent = "1";
+    modalQty = 1;
+  }
+
+  updateAddBtn();
+  document.getElementById("prod-modal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("prod-modal").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function updateTipoPrices() {
+  document.getElementById("tipo-baja-price").textContent = formatFloresPrice("baja") || "—";
+  document.getElementById("tipo-alta-price").textContent = formatFloresPrice("alta") || "—";
+}
+
+function setTipo(tipo) {
+  modalTipo = tipo;
+  document.getElementById("tipo-baja").classList.toggle("active", tipo === "baja");
+  document.getElementById("tipo-alta").classList.toggle("active", tipo === "alta");
+  updateAddBtn();
+}
+
+function setGramos(g, el) {
+  modalGramos = g;
+  document.querySelectorAll(".gr-opt").forEach(function(x) { x.classList.remove("active"); });
+  el.classList.add("active");
+  updateAddBtn();
+}
+
+function changeQty(delta) {
+  if (currentCat === "esquejes") {
+    modalQty = modalQty === 5 ? 10 : 5;
+  } else if (currentCat === "semillas") {
+    var packs = [5, 10, 20];
+    var idx2 = packs.indexOf(modalQty);
+    idx2 = Math.max(0, Math.min(packs.length-1, idx2 + delta));
+    modalQty = packs[idx2];
+  } else {
+    modalQty = Math.max(1, modalQty + delta);
+  }
+  document.getElementById("pm-qty").textContent = modalQty;
+  updateAddBtn();
+}
+
+function updateAddBtn() {
+  var btn = document.getElementById("pm-add-btn");
+  if (!modalProduct) return;
+  var cat = currentCat;
+  var total = 0;
+  if (cat === "flores") {
+    var pxg = getPriceFlores(modalTipo);
+    total = pxg * modalGramos;
+    var currency = isLista3() ? "USD " : "$";
+    btn.textContent = total > 0 ? "Agregar — " + currency + total.toLocaleString("es-AR") : "Agregar al carrito";
+  } else if (cat === "esquejes") {
+    var precioEsq = packEsq(modalQty);
+    var unidEsq = modalQty >= 10 ? "10u" : "5u";
+    btn.textContent = "Agregar " + unidEsq + " — $" + precioEsq.toLocaleString("es-AR");
+  } else {
+    var pr = getProductPrice(modalProduct);
+    if (currentCat === "semillas") {
+      var semPrices = PACKS.semillas;
+      var semLabel = "Pack " + modalQty + "u";
+      var semTotal = semPrices[modalQty] || (pr * modalQty);
+      btn.textContent = "Agregar " + semLabel + " — $" + semTotal.toLocaleString("es-AR");
+    } else {
+      total = pr * modalQty;
+      var mon = modalProduct.moneda === "USD" ? "USD " : "$";
+      btn.textContent = total > 0 ? "Agregar — " + mon + total.toLocaleString("es-AR") : "Agregar al carrito";
+    }
+  }
+}
+
+function addToCart() {
+  if (!modalProduct) return;
+  var cat = currentCat;
+  var item = {};
+
+  if (cat === "flores") {
+    if (modalProduct.solo_membresia && !membresiaVigente()) { showToast("🎫 Esta genética es solo para socios con membresía activa", "err"); return; }
+    var stockTipo = stockDe(modalProduct, modalTipo);
+    if (stockTipo !== null) {
+      var yaEnCarrito = cart.filter(function(c){ return c.cat==="flores" && c.id===modalProduct.id && c.tipo===modalTipo; })
+                            .reduce(function(a,c){ return a + (c.grams||0); }, 0);
+      var disp = stockTipo - yaEnCarrito;
+      if (disp <= 0) { showToast("Esta genética no tiene stock disponible", "err"); return; }
+      if (disp < modalGramos) { showToast("Solo quedan " + disp + "g de esta genética — ajustá la cantidad", "err"); return; }
+    }
+    var pxg = getPriceFlores(modalTipo);
+    item = {
+      id: modalProduct.id,
+      name: modalProduct.nombre,
+      cat: cat,
+      tipo: modalTipo,
+      grams: modalGramos,
+      qty: 1,
+      precio: pxg * modalGramos,
+      moneda: isLista3() ? "USD" : "ARS"
+    };
+  } else if (cat === "esquejes") {
+    var precioEsqC = packEsq(modalQty);
+    item = {
+      id: modalProduct.id,
+      name: modalProduct.nombre + " — Esqueje",
+      cat: cat,
+      tipo: "esqueje (" + modalQty + "u · 20 días)",
+      grams: 1,
+      qty: 1,
+      precio: precioEsqC,
+      moneda: "ARS"
+    };
+  } else if (cat === "semillas") {
+    var semPricesAC = PACKS.semillas;
+    var prSemAC = getProductPrice(modalProduct);
+    item = {
+      id: modalProduct.id,
+      name: modalProduct.nombre,
+      cat: cat,
+      tipo: "Pack " + modalQty + "u",
+      grams: 1,
+      qty: modalQty,
+      precio: semPricesAC[modalQty] || (prSemAC * modalQty),
+      moneda: "ARS"
+    };
+  } else {
+    var pr = getProductPrice(modalProduct);
+    item = {
+      id: modalProduct.id,
+      name: modalProduct.nombre,
+      cat: cat,
+      tipo: "unidad",
+      grams: 1,
+      qty: modalQty,
+      precio: pr * modalQty,
+      moneda: modalProduct.moneda || "ARS"
+    };
+  }
+
+  if (!puedeAgregarMoneda(monedaItem(item))) return;
+  cart.push(item);
+  updateCartBadge();
+  closeModal();
+  showToast("Agregado al carrito ✓", "ok");
+}
+
+// ===== CART =====
+function updateCartBadge() {
+  var badge = document.getElementById("cart-badge");
+  if (cart.length > 0) {
+    badge.textContent = cart.length;
+    badge.style.display = "flex";
+    badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump");
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+function minBajas() { var v = (typeof configData !== "undefined" && configData) ? configData.min_bajas_g : null; return (v != null && v !== "") ? parseInt(v) : 20; }
+function minAltas() { var v = (typeof configData !== "undefined" && configData) ? configData.min_altas_g : null; return (v != null && v !== "") ? parseInt(v) : 10; }
+var usarMembresia = true;
+
+/* ===== MEMBRESÍA =====
+   Cubre hasta los gramos del plan del socio: primero las altas y, si sobran gramos, las bajas.
+   Cada gramo se descuenta a su precio real (sin promedios). Las promos no entran en la membresía. */
+function calcMembresia(items, usar) {
+  var r = { disponible:false, aplicada:false, tope:0, gAltas:0, gBajas:0, descuento:0, porIdx:{} };
+  var flores = [];
+  (items || []).forEach(function(it, idx){ if (it.cat === "flores" && it.grams > 0) flores.push({ it:it, idx:idx }); });
+  if (!flores.length || !tieneMembresiaActiva()) return r;
+  r.disponible = true;
+  if (!usar) return r;
+  r.aplicada = true;
+  r.tope = parseInt(currentSocio.membresia_tipo) || 0;
+  var resto = r.tope;
+  ["alta", "baja"].forEach(function(tipo){
+    flores.forEach(function(f){
+      if (f.it.tipo !== tipo || resto <= 0) return;
+      var g = Math.min(f.it.grams, resto);
+      var d = Math.round((f.it.precio || 0) * g / f.it.grams);
+      resto -= g;
+      r.porIdx[f.idx] = { g:g, desc:d };
+      r.descuento += d;
+      if (tipo === "alta") r.gAltas += g; else r.gBajas += g;
+    });
+  });
+  return r;
+}
+function calcEnvio(totalGrFlores, mem, moneda) {
+  /* El costo de envío está cargado en pesos: los pedidos en dólares no lo suman */
+  if (moneda === "USD") return 0;
+  if (mem.aplicada && totalGrFlores <= mem.tope) return 0;
+  return (totalGrFlores > 0 && totalGrFlores < 20) ? (parseFloat(configData.costo_envio) || 0) : 0;
+}
+function monedaItem(it) { return it.moneda || (it.cat === "flores" ? (isLista3() ? "USD" : "ARS") : "ARS"); }
+function monedaCarrito() { return cart.length ? monedaItem(cart[0]) : null; }
+function puedeAgregarMoneda(m) {
+  var mc = monedaCarrito();
+  if (mc && mc !== m) { showToast("Tu carrito está en " + (mc === "USD" ? "dólares" : "pesos") + ". Los productos en " + (m === "USD" ? "dólares" : "pesos") + " van en un pedido aparte", "err"); return false; }
+  return true;
+}
+function memDesgloseTxt(mem) {
+  var p = [];
+  if (mem.gAltas) p.push(mem.gAltas + "g altas");
+  if (mem.gBajas) p.push(mem.gBajas + "g bajas");
+  return p.join(" + ");
+}
+
+function renderCart() {
+  var subtotal = cart.reduce(function(a, i) { return a + i.precio; }, 0);
+  var floresItems = cart.filter(function(i){return i.cat==="flores";});
+  var totalGramosFlores = floresItems.reduce(function(a,i){return a+i.grams;},0);
+  var floresSubtotal = floresItems.reduce(function(a,i){return a+i.precio;},0);
+
+  // Membresía (altas primero, después bajas, cada gramo a su precio)
+  var mem = calcMembresia(cart, usarMembresia);
+  var membershipDiscount = mem.descuento;
+  var tieneMembActiva = mem.disponible;
+  var monC = monedaCarrito() || "ARS";
+  var costoEnvio = calcEnvio(totalGramosFlores, mem, monC);
+  var total = subtotal - membershipDiscount + costoEnvio;
+
+  document.getElementById("cart-sub").textContent = cart.length + " producto" + (cart.length !== 1 ? "s" : "");
+  document.getElementById("cart-total-val").textContent = fmtPlata(total, monC);
+
+  // Minimum warning
+  var floresC = cart.filter(function(i){return i.cat==="flores";});
+  var grB = floresC.filter(function(i){return i.tipo==="baja";}).reduce(function(a,i){return a+i.grams;},0);
+  var grA = floresC.filter(function(i){return i.tipo==="alta";}).reduce(function(a,i){return a+i.grams;},0);
+  var hayPromo = cart.some(function(i){return i.cat==="promos";});
+  var minB = minBajas(), minA = minAltas();
+  var minWarn = document.getElementById("cart-min-warning");
+  if (floresC.length > 0 && !hayPromo && grB < minB && grA < minA) {
+    minWarn.style.display = "block";
+    if (grB > 0 && grA === 0) minWarn.textContent = "Mínimo " + minB + "g de bajas — te faltan " + (minB-grB) + "g";
+    else if (grA > 0 && grB === 0) minWarn.textContent = "Mínimo " + minA + "g de altas — te faltan " + (minA-grA) + "g";
+    else minWarn.textContent = "Mínimo: " + minB + "g de bajas o " + minA + "g de altas";
+  } else {
+    minWarn.style.display = "none";
+  }
+
+  // Shipping row
+  var envioRow = document.getElementById("cart-envio-row");
+  if (costoEnvio > 0) {
+    envioRow.style.display = "flex";
+    document.getElementById("cart-envio-val").textContent = fmtPlata(costoEnvio, monC);
+  } else {
+    envioRow.style.display = "none";
+  }
+
+  // Membership discount row
+  var memRow = document.getElementById("cart-mem-row");
+  if (!memRow) {
+    memRow = document.createElement("div");
+    memRow.id = "cart-mem-row";
+    memRow.className = "sum-row mem-row";
+    memRow.style.display = "none";
+    envioRow.parentNode.insertBefore(memRow, envioRow);
+  }
+  if (membershipDiscount > 0) {
+    memRow.style.display = "flex";
+    memRow.innerHTML = "<span>Membresía " + mem.tope + "g (" + memDesgloseTxt(mem) + ")</span><span style='font-weight:700'>-" + fmtPlata(membershipDiscount, monC) + "</span>";
+  } else {
+    memRow.style.display = "none";
+  }
+
+  // Toggle: usar o no la membresía en esta compra
+  var memTgl = document.getElementById("cart-mem-toggle");
+  if (!memTgl) {
+    memTgl = document.createElement("div");
+    memTgl.id = "cart-mem-toggle";
+    memTgl.className = "mem-toggle";
+    memTgl.style.display = "none";
+    memRow.parentNode.insertBefore(memTgl, memRow);
+  }
+  if (tieneMembActiva) {
+    var restC = entregasRestantes(currentSocio);
+    memTgl.style.display = "block";
+    memTgl.innerHTML = "<span class='mem-note'>¿Esta compra va con tu membresía?</span>" + modoMemHTML("cart-modo") +
+      "<span class='mem-sub'>" + (usarMembresia ? "Usa 1 de tus " + restC + " entrega" + (restC !== 1 ? "s" : "") + " disponible" + (restC !== 1 ? "s" : "") + "." : "Se cobra al precio normal y no gasta entregas.") + "</span>";
+  } else {
+    memTgl.style.display = "none";
+  }
+
+  // Aviso: el pago total de la membresía se hace en esta entrega
+  var cobroBox = document.getElementById("cart-cobro-mem");
+  if (!cobroBox) {
+    cobroBox = document.createElement("div");
+    cobroBox.id = "cart-cobro-mem";
+    cobroBox.className = "cobro-mem";
+    cobroBox.style.display = "none";
+    var tb = document.querySelector(".cart-total-box");
+    tb.parentNode.insertBefore(cobroBox, tb.nextSibling);
+  }
+  var cobro = mem.aplicada ? cobroMembresiaPendiente() : 0;
+  if (cobro > 0) {
+    cobroBox.style.display = "block";
+    cobroBox.innerHTML = "<b>Pago de tu membresía: USD " + cobro.toLocaleString("es-AR") + "</b>Es tu primer pedido con la membresía, así que cuando lo recibas se abona el total del plan, aparte del total de este pedido.";
+  } else {
+    cobroBox.style.display = "none";
+  }
+
+  var list = document.getElementById("cart-items-list");
+  list.innerHTML = "";
+
+  cart.forEach(function(item, idx) {
+    var cubre = mem.porIdx[idx];
+    var label = item.cat === "flores"
+      ? item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1) + " · " + item.grams + "g" + (cubre ? " · membresía " + cubre.g + "g" : "")
+      : item.cat === "promos"
+      ? (item.promoDetalle || "100g")
+      : item.cat === "semillas"
+      ? (item.tipo || ("x" + item.qty))
+      : "x" + item.qty;
+
+    var div = document.createElement("div");
+    div.className = "cart-item";
+    div.innerHTML =
+      thumbHTML(item.name, item.cat, "im") +
+      '<div class="ci-info">' +
+        '<div class="ci-name">' + sinFuego(item.name) + '</div>' +
+        '<div class="ci-detail">' + label + '</div>' +
+      '</div>' +
+      '<div class="ci-price">' + fmtPlata(item.precio, monedaItem(item)) + '</div>' +
+      '<button class="ci-remove" data-idx="' + idx + '" aria-label="Quitar">' + ICO.close + '</button>';
+
+    div.querySelector(".ci-remove").addEventListener("click", function() {
+      cart.splice(parseInt(this.getAttribute("data-idx")), 1);
+      updateCartBadge();
+      renderCart();
+    });
+    list.appendChild(div);
+  });
+
+  var isEmpty = cart.length === 0;
+  document.getElementById("cart-empty-state").style.display = isEmpty ? "block" : "none";
+  document.getElementById("cart-content").style.display = isEmpty ? "none" : "block";
+}
+
+var selectedDia = null; // id del día elegido
+var diasEnvio = [];
+var DIAS_ENVIO_DEFAULT = [
+  {id:1,nombre:"Martes",dow:2,desde:"20:00",hasta:"23:00",corte_dow:1,corte_hora:17,reabre_dow:3,reabre_hora:10,activo:true},
+  {id:2,nombre:"Jueves",dow:4,desde:"20:00",hasta:"23:00",corte_dow:3,corte_hora:17,reabre_dow:5,reabre_hora:10,activo:true}
+];
+function cargarDiasEnvioSocio() {
+  var raw = (typeof configData !== "undefined" && configData) ? configData.dias_envio : null;
+  if (raw) { try { var a = JSON.parse(raw); if (Array.isArray(a) && a.length) { diasEnvio = a; return; } } catch(e) {} }
+  diasEnvio = JSON.parse(JSON.stringify(DIAS_ENVIO_DEFAULT));
+}
+function _minSemana(dow, hora) { return (dow||0)*1440 + (hora||0)*60; }
+function diaEnvioBloqueado(d) {
+  var now = new Date();
+  var nm = now.getDay()*1440 + now.getHours()*60 + now.getMinutes();
+  var c = _minSemana(d.corte_dow, d.corte_hora);
+  var r = _minSemana(d.reabre_dow, d.reabre_hora);
+  return c < r ? (nm >= c && nm < r) : (nm >= c || nm < r);
+}
+function renderDiasEnvio() {
+  cargarDiasEnvioSocio();
+  var cont = document.getElementById("dia-opts");
+  if (!cont) return;
+  var activos = diasEnvio.filter(function(d){ return d.activo !== false; });
+  cont.innerHTML = activos.map(function(d){
+    var bloq = diaEnvioBloqueado(d);
+    var hs = (d.desde||"") + " a " + (d.hasta||"") + " hs";
+    return '<button type="button" class="dia-opt' + (bloq?" disabled":"") + '" id="dia-' + d.id + '" onclick="setDia(' + d.id + ',this)"><b>' + d.nombre + '</b><small>' + hs + '</small></button>';
+  }).join("");
+  actualizarDiasDisponibles();
+}
+function actualizarDiasDisponibles() {
+  var activos = diasEnvio.filter(function(d){ return d.activo !== false; });
+  var algunoLibre = false;
+  activos.forEach(function(d){
+    var el = document.getElementById("dia-" + d.id);
+    if (!el) return;
+    var bloq = diaEnvioBloqueado(d);
+    el.classList.toggle("disabled", bloq);
+    if (!bloq) algunoLibre = true;
+    if (selectedDia === d.id && bloq) { selectedDia = null; el.classList.remove("active"); }
+  });
+  var aviso = document.getElementById("dia-aviso");
+  if (aviso) {
+    if (activos.length && !algunoLibre) { aviso.style.display = "block"; aviso.textContent = "No hay días disponibles para reservar en este momento."; }
+    else { aviso.style.display = "none"; }
+  }
+}
+function setDia(id, el) {
+  if (el.classList.contains("disabled")) return;
+  selectedDia = id;
+  document.querySelectorAll(".dia-opt").forEach(function(x){ x.classList.remove("active"); });
+  el.classList.add("active");
+}
+
+function copiarAlias() {
+  var alias = "GRANJA.ALTURA.CLAVE";
+  var btn = document.getElementById("copy-alias-btn");
+  function ok(){ if(btn){ btn.textContent = "Copiado"; setTimeout(function(){ btn.textContent = "Copiar"; }, 1800); } showToast("Alias copiado 📋", "ok"); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(alias).then(ok).catch(function(){ fallbackCopy(alias); ok(); });
+  } else { fallbackCopy(alias); ok(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement("textarea");
+  ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); } catch(e){}
+  document.body.removeChild(ta);
+}
+
+function setPago(tipo, el) {
+  selectedPago = tipo;
+  document.querySelectorAll(".pago-opt").forEach(function(x) { x.classList.remove("active"); });
+  el.classList.add("active");
+  var td = document.getElementById("transfer-data");
+  if (td) td.style.display = (tipo === "transferencia") ? "block" : "none";
+}
+
+var subdivPersonas = [];
+var subdivTotalGramos = 0;
+
+function confirmarPedido() {
+  var nombre = currentSocio ? currentSocio.nombre : document.getElementById("input-nombre").value.trim();
+  if (!nombre) { showToast("Ingresá tu nombre", "err"); return; }
+  if (!cart.length) { showToast("El carrito está vacío", "err"); return; }
+
+  // Check minimum cart requirement
+  var floresCarrito = cart.filter(function(i){return i.cat==="flores";});
+  var gramosB = floresCarrito.filter(function(i){return i.tipo==="baja";}).reduce(function(a,i){return a+i.grams;},0);
+  var gramosA = floresCarrito.filter(function(i){return i.tipo==="alta";}).reduce(function(a,i){return a+i.grams;},0);
+  var hayPromoC = cart.some(function(i){return i.cat==="promos";});
+  var minBC = minBajas(), minAC = minAltas();
+  if (floresCarrito.length > 0 && !hayPromoC && gramosB < minBC && gramosA < minAC) {
+    showToast("Mínimo " + minBC + "g de bajas o " + minAC + "g de altas para confirmar", "err");
+    return;
+  }
+
+  // Si hay flores, ofrecer subdividir
+  var totalGrFlores = floresCarrito.reduce(function(a,i){return a+i.grams;},0);
+  // Sumar gramos de promos (las promos son 100g de flores)
+  var promosCart = cart.filter(function(i){return i.cat==="promos";});
+  totalGrFlores += promosCart.reduce(function(a,i){return a+(i.grams||0);},0);
+
+  if (totalGrFlores > 0) {
+    abrirSubdiv(totalGrFlores);
+    return;
+  }
+  procesarPedido();
+}
+
+// ===== SUBDIVIDIR =====
+function abrirSubdiv(totalGramos) {
+  subdivPersonas = [];
+  subdivTotalGramos = totalGramos;
+  document.getElementById("sd-total").textContent = totalGramos + "g";
+  document.getElementById("sd-sub").textContent = "Repartí los " + totalGramos + "g de flores entre las personas (opcional)";
+  document.getElementById("sd-gramos").max = totalGramos;
+  renderSubdiv();
+  document.getElementById("subdiv-modal").classList.add("open");
+}
+function cerrarSubdiv() {
+  document.getElementById("subdiv-modal").classList.remove("open");
+}
+function agregarPersonaSubdiv() {
+  var nombre = document.getElementById("sd-nombre").value.trim();
+  var gramos = parseInt(document.getElementById("sd-gramos").value);
+  if (!nombre) { showToast("Poné el nombre de la persona", "err"); return; }
+  if (!gramos || gramos <= 0) { showToast("Poné los gramos", "err"); return; }
+  var asignado = subdivPersonas.reduce(function(a,p){return a+p.gramos;},0);
+  if (asignado + gramos > subdivTotalGramos) {
+    showToast("Te pasás del total. Quedan " + (subdivTotalGramos - asignado) + "g", "err");
+    return;
+  }
+  subdivPersonas.push({ nombre: nombre, gramos: gramos });
+  document.getElementById("sd-nombre").value = "";
+  document.getElementById("sd-gramos").value = "";
+  renderSubdiv();
+}
+function eliminarPersonaSubdiv(i) {
+  subdivPersonas.splice(i, 1);
+  renderSubdiv();
+}
+function renderSubdiv() {
+  var asignado = subdivPersonas.reduce(function(a,p){return a+p.gramos;},0);
+  document.getElementById("sd-asignado").textContent = asignado + "g";
+  document.getElementById("sd-bar-fill").style.width = Math.min(100, (asignado/subdivTotalGramos)*100) + "%";
+  var list = document.getElementById("sd-list");
+  if (!subdivPersonas.length) {
+    list.innerHTML = '<div class="sd-empty">Agregá personas con su nombre y cuántos gramos lleva cada una</div>';
+  } else {
+    list.innerHTML = subdivPersonas.map(function(p, i){
+      return '<div class="sd-person"><div class="sd-person-info"><div class="sd-person-name">' + p.nombre + '</div><div class="sd-person-g">' + p.gramos + 'g</div></div><button class="sd-person-del" onclick="eliminarPersonaSubdiv(' + i + ')" aria-label="Quitar persona">' + ICO.trash + '</button></div>';
+    }).join("");
+  }
+  // El boton confirmar exige que esté todo repartido SI hay al menos una persona
+  var btn = document.getElementById("sd-confirm-btn");
+  if (subdivPersonas.length > 0 && asignado !== subdivTotalGramos) {
+    btn.textContent = "Faltan " + (subdivTotalGramos - asignado) + "g";
+    btn.disabled = true; btn.style.opacity = ".5";
+  } else {
+    btn.textContent = "Confirmar pedido";
+    btn.disabled = false; btn.style.opacity = "1";
+  }
+}
+function confirmarSinSubdiv() {
+  subdivPersonas = [];
+  cerrarSubdiv();
+  procesarPedido();
+}
+function confirmarConSubdiv() {
+  var asignado = subdivPersonas.reduce(function(a,p){return a+p.gramos;},0);
+  if (subdivPersonas.length > 0 && asignado !== subdivTotalGramos) {
+    showToast("Repartí los " + subdivTotalGramos + "g completos", "err");
+    return;
+  }
+  cerrarSubdiv();
+  procesarPedido();
+}
+
+function procesarPedido() {
+  var btn0 = document.getElementById("confirm-btn");
+  btn0.disabled = true;
+  btn0.textContent = "Verificando stock...";
+  Promise.all([revalidarStock(), revalidarPromos(), revalidarMembresia()]).then(function(r) {
+    var problemas = r[0].concat(r[1]).concat(r[2]);
+    if (problemas.length) {
+      btn0.disabled = false;
+      btn0.textContent = "Confirmar pedido";
+      btn0.style.opacity = "1";
+      mostrarAvisoStock(problemas);
+      return;
+    }
+    enviarPedido();
+  }).catch(function() {
+    btn0.disabled = false;
+    btn0.textContent = "Confirmar pedido";
+    btn0.style.opacity = "1";
+    showToast("No pudimos verificar el stock. Revisá tu conexión e intentá de nuevo.", "err");
+  });
+}
+
+/* Consulta el catálogo real de Supabase justo antes de grabar el pedido:
+   que cada producto siga existiendo y visible, que la baja/alta siga habilitada,
+   que las "solo membresía" correspondan y que alcance el stock */
+function revalidarStock() {
+  var prods = cart.filter(function(i){ return i.cat !== "promos" && i.id != null; });
+  if (!prods.length) return Promise.resolve([]);
+  var ids = [];
+  prods.forEach(function(i){ if (ids.indexOf(String(i.id)) < 0) ids.push(String(i.id)); });
+  return sb("productos?id=in.(" + ids.join(",") + ")", "GET").then(function(data) {
+    if (!Array.isArray(data)) throw new Error("sin datos");
+    var problemas = [], vistos = {}, pedido = {};
+    function add(txt) { if (!vistos[txt]) { vistos[txt] = 1; problemas.push({ txt: txt }); } }
+    prods.forEach(function(i){
+      var prod = data.find(function(x){ return String(x.id) === String(i.id); });
+      if (!prod || prod.activo === false) { add(sinFuego(i.name) + ": ya no está disponible, sacalo del carrito"); return; }
+      if (i.cat !== "flores") return;
+      var swOk = i.tipo === "baja" ? (prod.bajas_activo !== false) : (prod.altas_activo !== false);
+      if (!swOk) { add(prod.nombre + " (" + i.tipo + "): ya no está disponible, sacalo del carrito"); return; }
+      if (prod.solo_membresia && !membresiaVigente()) { add(prod.nombre + ": es solo para socios con membresía activa"); return; }
+      var k = prod.id + "|" + i.tipo;
+      if (!pedido[k]) pedido[k] = { prod: prod, tipo: i.tipo, grams: 0 };
+      pedido[k].grams += i.grams;
+    });
+    Object.keys(pedido).forEach(function(k){
+      var req = pedido[k];
+      var real = stockDe(req.prod, req.tipo);
+      if (real === null) return;
+      if (real < req.grams) {
+        problemas.push({ name: req.prod.nombre, tipo: req.tipo, pedido: req.grams, disponible: Math.max(0, real) });
+      }
+    });
+    return problemas;
+  });
+}
+
+/* Si el carrito usa la membresía, confirma con Supabase que siga disponible este mes */
+function revalidarMembresia() {
+  var antes = calcMembresia(cart, usarMembresia);
+  if (!antes.aplicada) return Promise.resolve([]);
+  return cargarEstadoMembresia().then(function(){
+    var ahora = calcMembresia(cart, usarMembresia);
+    if (ahora.aplicada && ahora.descuento === antes.descuento) return [];
+    return [{ txt: entregasRestantes(currentSocio) <= 0 ? "Ya no te quedan entregas de la membresía disponibles" : "Tu membresía cambió. Revisá el total antes de confirmar" }];
+  });
+}
+
+/* Revalida las promos del carrito: que sigan activas, que sus genéticas sigan disponibles y el cupo mensual */
+function revalidarPromos() {
+  var promosCart = cart.filter(function(i){ return i.cat === "promos"; });
+  if (!promosCart.length) return Promise.resolve([]);
+  return Promise.all([
+    sb("promos", "GET"),
+    sb("pedidos?select=estado,created_at,items", "GET"),
+    sb("productos?categoria=eq.flores&activo=eq.true", "GET")
+  ]).then(function(r){
+    var defs = Array.isArray(r[0]) ? r[0] : null;
+    var flores = Array.isArray(r[2]) ? r[2] : null;
+    if (!defs || !flores) throw new Error("sin datos");
+    calcPromoUsos(Array.isArray(r[1]) ? r[1] : []);
+    var out = [], vistos = {}, pedidas = {};
+    function add(txt) { if (!vistos[txt]) { vistos[txt] = 1; out.push({ txt: txt }); } }
+    promosCart.forEach(function(i){
+      var nom = sinFuego(i.name);
+      var def = i.promo_id != null ? defs.find(function(x){ return String(x.id) === String(i.promo_id); }) : null;
+      if (!def || def.activa === false) { add(nom + ": ya no está disponible, sacala del carrito"); return; }
+      var sel = promoSeleccionDe(i);
+      var gensP = promoGeneticasIds(def);
+      var bien = sel.length > 0 && sel.every(function(s){
+        var g = flores.find(function(x){ return normNombre(x.nombre) === normNombre(s.nombre); });
+        return genParaPromoOk(g) && (!gensP.length || gensP.indexOf(String(g.id)) >= 0);
+      });
+      if (!bien) { add(nom + ": alguna de las genéticas elegidas ya no está disponible, sacala y armala de nuevo"); return; }
+      pedidas[def.id] = (pedidas[def.id] || 0) + 1;
+    });
+    Object.keys(pedidas).forEach(function(pid){
+      var def = defs.find(function(x){ return String(x.id) === String(pid); });
+      if (!def) return;
+      var lim = def.limite_mensual || 0;
+      if (lim <= 0) return;
+      var libres = Math.max(0, lim - usosDePromo(def));
+      if (pedidas[pid] > libres) {
+        out.push({ name: def.nombre, pedido: pedidas[pid], disponible: libres, esPromo: true });
+      }
+    });
+    return out;
+  });
+}
+
+function mostrarAvisoStock(problemas) {
+  var lineas = problemas.map(function(p){
+    if (p.txt) return "• " + p.txt;
+    if (p.esPromo) {
+      return "• " + p.name + ": " +
+        (p.disponible > 0 ? ("solo queda " + p.disponible + " disponible este mes") : "ya se agotó por este mes");
+    }
+    return "• " + p.name + " (" + p.tipo + "): pediste " + p.pedido + "g y " +
+           (p.disponible > 0 ? ("quedan " + p.disponible + "g") : "ya no queda stock");
+  }).join("\n");
+  showToast("Cambió la disponibilidad mientras armabas el pedido", "err");
+  avisar("Algo cambió mientras armabas el pedido:\n\n" + lineas +
+        "\n\nAjustá el carrito y volvé a confirmar.");
+  goScreen("cart");
+}
+
+function enviarPedido() {
+  var nombre = currentSocio ? currentSocio.nombre : document.getElementById("input-nombre").value.trim();
+  var btn = document.getElementById("confirm-btn");
+  btn.disabled = true;
+  btn.textContent = "Enviando...";
+
+  var subtotal = cart.reduce(function(a, i) { return a + i.precio; }, 0);
+  var totalGrFC = cart.filter(function(i){return i.cat==="flores";}).reduce(function(a,i){return a+i.grams;},0);
+  var memC = calcMembresia(cart, usarMembresia);
+  var esMembresiaC = memC.aplicada;
+  var monedaC = monedaCarrito() || "ARS";
+  var costoEnvioC = calcEnvio(totalGrFC, memC, monedaC);
+  var cobroMemC = esMembresiaC ? cobroMembresiaPendiente() : 0;
+  var totalFinal = subtotal - memC.descuento + costoEnvioC;
+
+  var items = cart.map(function(i, idx) {
+    var it = { id: i.id, name: i.name, tipo: i.tipo, grams: i.grams, qty: i.qty, precio: i.precio, cat: i.cat, moneda: monedaItem(i) };
+    if (i.promo_id != null) it.promo_id = i.promo_id;
+    if (i.promoDetalle) it.promoDetalle = i.promoDetalle;
+    if (i.promoItems) it.promoItems = i.promoItems;
+    var cub = memC.porIdx[idx];
+    if (cub) { it.mem_g = cub.g; it.mem_desc = cub.desc; }
+    return it;
+  });
+
+  // Email del input (o el del socio)
+  var emailInput = document.getElementById("input-email").value.trim();
+  var emailFinal = emailInput || (currentSocio ? (currentSocio.email || null) : null);
+
+  // Armar instrucciones con email, dia de entrega y subdivision
+  var instBase = document.getElementById("input-inst").value.trim();
+  var instExtra = [];
+  if (selectedDia) { var dSel = diasEnvio.find(function(x){ return x.id === selectedDia; }); if (dSel) instExtra.push("📅 Día de entrega: " + dSel.nombre + " " + (dSel.desde||"") + " a " + (dSel.hasta||"") + " hs"); }
+  if (subdivPersonas && subdivPersonas.length) {
+    var rep = subdivPersonas.map(function(p){ return p.nombre + " (" + p.gramos + "g)"; }).join(", ");
+    instExtra.push("👥 Subdivisión flores: " + rep);
+  }
+  var instFinal = [instBase].concat(instExtra).filter(function(x){return x;}).join(" · ") || null;
+
+  var pedidoData = {
+    socio: nombre,
+    socio_id: currentSocio ? currentSocio.id : null,
+    socio_email: emailFinal,
+    items: items,
+    total: totalFinal,
+    moneda: monedaC,
+    metodo_pago: selectedPago,
+    estado: "pendiente",
+    es_membresia: esMembresiaC,
+    cobro_membresia: cobroMemC > 0 ? cobroMemC : null,
+    instrucciones: instFinal
+  };
+
+  rpc("crear_pedido", { p: pedidoData }).then(function(r) {
+    if (r && r.id) {
+      enviarEmailAdmin(pedidoData, costoEnvioC);
+      if (esMembresiaC) _memEnCurso++;
+      cart = [];
+      updateCartBadge();
+      goScreen("success");
+    } else {
+      showToast("Error al enviar el pedido", "err");
+    }
+    btn.disabled = false;
+    btn.textContent = "Confirmar pedido";
+  }).catch(function(e) {
+    btn.disabled = false;
+    btn.textContent = "Confirmar pedido";
+    var m = (e && e.message) || "";
+    if (m.indexOf("SIN_STOCK:") === 0) {
+      avisar("Algo cambió mientras armabas el pedido:\n" +
+        m.replace("SIN_STOCK:", "").split(". ").map(function(x){ return x.replace(/\.$/, "").trim(); }).filter(function(x){ return x; }).map(function(x){ return "• " + x; }).join("\n") +
+        "\nAjustá el carrito y volvé a confirmar.");
+      goScreen("cart");
+    } else if (/sesi[oó]n|cuenta/i.test(m)) {
+      showToast(m, "err");
+    } else {
+      showToast("No pudimos enviar el pedido. Revisá tu conexión e intentá de nuevo.", "err");
+    }
+  });
+}
+
+function volverTienda() {
+  document.getElementById("input-nombre").value = "";
+  document.getElementById("input-inst").value = "";
+  var em = document.getElementById("input-email"); if (em) em.value = "";
+  selectedDia = null; subdivPersonas = [];
+  document.querySelectorAll(".dia-opt").forEach(function(x){ x.classList.remove("active"); });
+  goScreen("shop");
+}
+
+// ===== LOGIN =====
+function cargarSocioDeSesion() {
+  if (!SESION || !SESION.uid) return Promise.resolve(null);
+  return sb("socios?auth_id=eq." + SESION.uid + "&limit=1", "GET").then(function(d) {
+    var x = (Array.isArray(d) && d[0]) ? d[0] : null;
+    if (x) delete x.password;
+    return x;
+  });
+}
+function motivoBloqueo(x) {
+  if (x.pausado === true) return "⏸ Tu cuenta está pausada.<br>Comunicate con nosotros para reactivarla.";
+  if (x.activo === false) return "Tu cuenta no está activa. Contactanos.";
+  return "";
+}
+function entrarConSocio(x, conMusica) {
+  currentSocio = x;
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("header-socio").textContent = "Hola, " + String(x.nombre || "").split(" ")[0];
+  if (conMusica) {
+    audio.play().then(function(){
+      isPlaying = true;
+      document.getElementById("mb-play-btn").innerHTML = ICO.pause;
+      document.getElementById("mb-disk").classList.add("playing");
+    }).catch(function(){});
+  }
+  renderMemTile();
+  loadConfig();
+  chequearConfirmados();
+  cargarModoMem();
+  cargarEstadoMembresia().catch(function(){});
+  goDash();
+}
+function cerrarSesionServidor() {
+  var t = SESION ? SESION.access_token : null;
+  guardarSesion(null);
+  if (t) authPost("logout", {}, t).catch(function(){});
+}
+function doLogin() {
+  var user = document.getElementById("login-user").value.trim().toLowerCase();
+  var pass = document.getElementById("login-pass").value;
+  var err = document.getElementById("login-err");
+  var btn = document.getElementById("login-btn");
+  if (!user || !pass) { err.textContent = "Completá usuario y contraseña"; return; }
+  err.textContent = "";
+  btn.disabled = true; btn.textContent = "Ingresando...";
+  function listo() { btn.disabled = false; btn.textContent = "Ingresar"; }
+  authPost("token?grant_type=password", { email: user + MAIL_SOCIOS, password: pass }).then(function(r) {
+    if (!r.ok || !r.data || !r.data.access_token) {
+      listo();
+      err.textContent = r.status === 429 ? "Demasiados intentos. Esperá un minuto y probá de nuevo."
+        : (r.status === 400 || r.status === 401) ? "Usuario o contraseña incorrectos"
+        : "No pudimos ingresar. Intentá de nuevo.";
+      return;
+    }
+    guardarSesion(r.data);
+    return cargarSocioDeSesion().then(function(x) {
+      listo();
+      if (!x) { cerrarSesionServidor(); err.textContent = "No encontramos tu cuenta. Escribinos."; return; }
+      var bloqueo = motivoBloqueo(x);
+      if (bloqueo) { cerrarSesionServidor(); err.innerHTML = bloqueo; return; }
+      document.getElementById("login-pass").value = "";
+      entrarConSocio(x, true);
+    });
+  }).catch(function() { listo(); err.textContent = "Error de conexión. Intentá de nuevo."; });
+}
+/* Al abrir la app: si el socio ya había ingresado en este celular, entra directo */
+function restaurarSesion() {
+  leerSesion();
+  if (!SESION) return;
+  var form = document.getElementById("login-form");
+  form.classList.add("restaurando");
+  function mostrarLogin() { form.classList.remove("restaurando"); }
+  tokenVigente().then(function(tok) {
+    if (!tok) { mostrarLogin(); return; }
+    return cargarSocioDeSesion().then(function(x) {
+      mostrarLogin();
+      if (!x) return;
+      var bloqueo = motivoBloqueo(x);
+      if (bloqueo) { cerrarSesionServidor(); document.getElementById("login-err").innerHTML = bloqueo; return; }
+      entrarConSocio(x, false);
+    });
+  }).catch(mostrarLogin);
+}
+function volverAlLogin(msg) {
+  currentSocio = null;
+  _memEnCurso = 0;
+  cart = [];
+  updateCartBadge();
+  document.getElementById("login-user").value = "";
+  document.getElementById("login-pass").value = "";
+  document.getElementById("login-err").textContent = msg || "";
+  document.getElementById("header-socio").textContent = "Hola";
+  renderMemTile();
+  document.getElementById("login-screen").style.display = "flex";
+  goScreen("shop");
+}
+function sesionVencida() { if (currentSocio) volverAlLogin("Tu sesión venció. Ingresá de nuevo."); }
+function doLogout() {
+  cerrarSesionServidor();
+  volverAlLogin("");
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && document.getElementById("login-screen").style.display !== "none") {
+    doLogin();
+  }
+});
+
+// ===== EMAIL =====
+/* El mail al club lo manda la base (la llave del servicio de mails ya no está en la app) */
+function sendResendEmail(to, subject, html) {
+  return rpc("enviar_mail_admin", { asunto: subject, html: html });
+}
+
+function enviarEmailAdmin(pedido, costoEnvio) {
+  var mon = pedido.moneda || "ARS";
+  var itemsHtml = (pedido.items || []).map(function(i) {
+    return "<tr><td style='padding:6px 10px;border-bottom:1px solid #f0e8d8'>" + i.name + " (" + i.tipo + ")" + (i.grams > 1 ? " — " + i.grams + "g" : "") + (i.mem_g ? " · 🎫 membresía " + i.mem_g + "g" : "") + "</td><td style='padding:6px 10px;border-bottom:1px solid #f0e8d8;text-align:right;font-weight:700'>" + fmtPlata(i.precio || 0, mon) + "</td></tr>";
+  }).join("");
+  var memDescE = (pedido.items || []).reduce(function(a, i){ return a + (i.mem_desc || 0); }, 0);
+  var memGE = (pedido.items || []).reduce(function(a, i){ return a + (i.mem_g || 0); }, 0);
+  var memHtml = memDescE > 0 ? "<tr><td style='padding:6px 10px;color:#3f7a43'>🎫 Membresía (" + memGE + "g)</td><td style='padding:6px 10px;text-align:right;color:#3f7a43'>-" + fmtPlata(memDescE, mon) + "</td></tr>" : "";
+  var envioHtml = costoEnvio > 0 ? "<tr><td style='padding:6px 10px;color:#9a8a78'>🚚 Costo de envío</td><td style='padding:6px 10px;text-align:right'>" + fmtPlata(costoEnvio, mon) + "</td></tr>" : "";
+  var html = "<div style='font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a0f00'>" +
+    "<div style='background:#E8724A;padding:20px;text-align:center;border-radius:12px 12px 0 0'><h2 style='color:white;margin:0;font-size:1.2rem'>🌿 Nuevo pedido — Melody's Farm</h2></div>" +
+    "<div style='background:#F2E8D9;padding:20px;border-radius:0 0 12px 12px'>" +
+    "<p style='margin:0 0 16px'><b>" + pedido.socio + "</b> realizó un nuevo pedido.</p>" +
+    "<table style='width:100%;border-collapse:collapse;background:white;border-radius:8px;overflow:hidden'>" + itemsHtml + memHtml + envioHtml +
+    "<tr><td style='padding:10px;font-weight:900;font-size:1.05rem'>TOTAL</td><td style='padding:10px;text-align:right;font-weight:900;font-size:1.05rem;color:#E8724A'>" + fmtPlata(pedido.total || 0, mon) + "</td></tr></table>" +
+    (pedido.cobro_membresia ? "<p style='margin:12px 0 0;padding:10px;background:#fff3cd;border-radius:8px'>🎫 <b>En esta entrega se cobra la membresía: USD " + pedido.cobro_membresia.toLocaleString("es-AR") + "</b></p>" : "") +
+    "<p style='margin:14px 0 0;font-size:.85rem;color:#9a8a78'>Pago: <b>" + (pedido.metodo_pago||"—") + "</b>" + (pedido.instrucciones ? " · Nota: <i>" + pedido.instrucciones + "</i>" : "") + "</p>" +
+    "</div></div>";
+  sendResendEmail(ADMIN_EMAIL, "🌿 Nuevo pedido de " + pedido.socio, html).catch(function(){});
+}
+
+// ===== MEMBRESIA MODAL =====
+function setCatFromCard(cat) {
+  goCat(cat);
+}
+
+var _memSolicitada = null;
+function solicitarMembresia(gramos) {
+  if (!currentSocio) { showToast("Iniciá sesión para pedir una membresía", "err"); return; }
+  var v = venceSocio(currentSocio);
+  if (currentSocio.membresia_tipo && v && v > new Date()) { showToast("Ya tenés una membresía activa", "err"); return; }
+  var pl = planDeGramos(gramos);
+  if (!pl) { showToast("Ese plan ya no está disponible", "err"); return; }
+  _memSolicitada = pl;
+  var g = parseInt(pl.gramos), usd = parseFloat(pl.precio_usd) || 0;
+  var ent = parseInt(pl.entregas) || 3, meses = parseInt(pl.meses) || 3;
+  var vence = fmtFecha(fechaLocal(sumarMeses(ymdLocal(new Date()), meses)));
+  document.getElementById("mm-title").textContent = "Membresía " + (pl.nombre || "") + " · " + g + " g";
+  document.getElementById("mm-body").innerHTML =
+    '<p class="mm-lead">Antes de activarla, te contamos cómo funciona:</p>' +
+    '<ul class="mm-list">' +
+      '<li>' + ICO.check + '<span><b>Se activa ahora mismo.</b> Ya podés hacer tu primer pedido usando la membresía.</span></li>' +
+      '<li>' + ICO.check + '<span><b>' + ent + ' entregas para usar en ' + meses + ' meses.</b> Las usás cuando quieras, incluso más de una por mes. En cada pedido con la membresía te cubre hasta ' + g + ' g de flores.</span></li>' +
+      '<li>' + ICO.check + '<span>En cada compra elegís si va <b>con o sin la membresía</b>.</span></li>' +
+      '<li>' + ICO.check + '<span><b>El pago total es de USD ' + usd.toLocaleString("es-AR") + '.</b> Se abona cuando recibís tu primer pedido con la membresía.</span></li>' +
+      '<li>' + ICO.check + '<span>Vence el ' + vence + '.</span></li>' +
+    '</ul>';
+  var ok = document.getElementById("mm-ok");
+  ok.disabled = false; ok.textContent = "Sí, activar mi membresía";
+  openMemModal();
+}
+function openMemModal() {
+  document.getElementById("mem-modal").classList.add("open");
+}
+function closeMemModal() {
+  document.getElementById("mem-modal").classList.remove("open");
+}
+function confirmarMembresia() {
+  var pl = _memSolicitada;
+  if (!pl || !currentSocio) return;
+  var ok = document.getElementById("mm-ok");
+  ok.disabled = true; ok.textContent = "Activando...";
+  var g = parseInt(pl.gramos);
+  rpc("activar_membresia", { p_gramos: g }).then(function(r) {
+    if (!r || !r.id) throw new Error("La base no aplicó el cambio");
+    currentSocio = r;
+    _memEnCurso = 0;
+    setModoMemSilencioso(true);
+    var usd = parseFloat(r.membresia_monto_usd) || 0;
+    var nota = "MEMBRESÍA ACTIVADA DESDE LA APP: " + g + "g — USD " + usd + " (se cobra en la primera entrega)";
+    enviarEmailAdmin({ socio: r.nombre, items: [{ name: "Membresía " + g + "g", cat: "membresia", tipo: "membresia", grams: g, qty: 1, precio: 0 }], total: 0, moneda: "USD", metodo_pago: "—", instrucciones: nota }, 0);
+    closeMemModal();
+    renderMemTile();
+    showToast("¡Membresía activada! Ya podés pedir con ella 🎫", "ok");
+    goScreen("pedidos");
+  }).catch(function(e) {
+    ok.disabled = false; ok.textContent = "Sí, activar mi membresía";
+    var m = (e && e.message) || "";
+    showToast(/membres[ií]a|plan|cuenta|sesi[oó]n/i.test(m) ? m : "No pudimos activar la membresía. Intentá de nuevo o escribinos.", "err");
+  });
+}
+
+// ===== NAVIGATION =====
+var screens = ["shop", "cart", "pedidos", "faq", "success"];
+var navIds = { shop: "nav-shop", cart: "nav-cart", pedidos: "nav-pedidos", faq: "nav-faq" };
+
+
+// ===== MIS PEDIDOS =====
+function estadoBadge(estado) {
+  var map = {
+    pendiente: ["Pendiente", "pend"],
+    confirmado: ["Confirmado", "ok"],
+    en_envio: ["En envío", "ok"],
+    enviado: ["Enviado", "ok"],
+    entregado: ["Entregado", "ok"],
+    cancelado: ["Cancelado", "off"]
+  };
+  var m = map[estado] || [(estado || "—"), "off"];
+  return '<span class="est ' + m[1] + '">' + m[0] + '</span>';
+}
+
+var _misPedidos = [];
+function loadMisPedidos() {
+  var cont = document.getElementById("pedidos-content");
+  if (!currentSocio) {
+    cont.innerHTML = '<div class="loading-msg">Iniciá sesión para ver tus pedidos.</div>';
+    return;
+  }
+  cont.innerHTML = '<div class="loading-msg">Cargando tus pedidos...</div>';
+  cargarEstadoMembresia().catch(function(){}).then(function(){
+    return sb("pedidos?socio_id=eq." + currentSocio.id + "&archivado=not.eq.true&order=created_at.desc", "GET");
+  }).then(function(data) {
+    if (!Array.isArray(data) || !data.length) {
+      cont.innerHTML = perfilMembresiaCard() + '<div class="pc-h">Mis pedidos</div><div class="empty-box"><b>Todavía no hiciste pedidos</b>Cuando hagas tu primer pedido va a aparecer acá.</div>';
+      centrarPlanDestacado();
+      return;
+    }
+    _misPedidos = data;
+    var html = perfilMembresiaCard();
+
+    // Repetir último pedido (se saltean las solicitudes de membresía, que no son compras)
+    var ultimo = data.find(function(p){
+      return !p.es_solicitud && Array.isArray(p.items) && p.items.some(function(i){ return i.cat && i.cat !== "membresia"; });
+    });
+    if (ultimo) {
+      html += '<button class="btn sec repeat-btn" onclick="repetirPedido(\'' + ultimo.id + '\')">' + ICO.redo + 'Repetir mi último pedido</button>';
+    }
+
+    // Pedidos en curso (sin historial, sin montos)
+    var enCurso = data.filter(function(p){ return !p.es_solicitud && p.estado !== "entregado" && p.estado !== "cancelado"; });
+    html += '<div class="pc-h">Estado de mis pedidos</div>';
+    if (!enCurso.length) {
+      html += '<div class="empty-box">No tenés pedidos en curso.</div>';
+    } else {
+      enCurso.forEach(function(p){ html += pedidoCard(p); });
+    }
+    cont.innerHTML = html;
+    centrarPlanDestacado();
+    marcarConfirmadosVistos(data);
+  }).catch(function() {
+    cont.innerHTML = '<div class="loading-msg">Sin conexión. Intentá de nuevo.</div>';
+  });
+}
+
+function perfilMembresiaCard() {
+  if (!currentSocio) return "";
+  var s = currentSocio;
+  var html = "";
+  if (s.membresia_tipo && s.membresia_vence) {
+    var vence = venceSocio(s);
+    var vigente = vence > new Date();
+    var usadas = s.membresia_entregas_usadas || 0;
+    var totE = entTot(s);
+    var restantes = entregasRestantes(s);
+    var msg = !vigente ? "Membresía vencida" : (restantes <= 0 ? "Sin entregas disponibles" : (restantes === 1 ? "Te queda 1 entrega (última)" : "Te quedan " + restantes + " de " + totE + " entregas"));
+    var enCursoTxt = (vigente && _memEnCurso > 0) ? '<div class="sub">' + (_memEnCurso === 1 ? "1 pedido con la membresía en camino" : _memEnCurso + " pedidos con la membresía en camino") + '</div>' : '';
+    var cobroP = vigente ? cobroMembresiaPendiente() : 0;
+    var dots = "";
+    for (var i = 1; i <= totE; i++) dots += '<i class="' + (i <= usadas ? 'u' : '') + '"></i>';
+    html += '<div class="mem-status">' +
+      '<div class="sub">' + (vigente ? 'Membresía activa' : 'Tu membresía') + '</div>' +
+      '<div class="ms-g">' + s.membresia_tipo + ' g por mes</div>' +
+      '<div class="dots">' + dots + '</div>' +
+      '<div class="ms-msg">' + msg + '</div>' + enCursoTxt +
+      (vigente ? '<div class="sub">Vence el ' + fmtFecha(vence) + '. Podés usar tus entregas cuando quieras hasta esa fecha, incluso más de una por mes.</div>' : '') +
+      (cobroP > 0 ? '<div class="ms-pago">Pago pendiente: USD ' + cobroP.toLocaleString("es-AR") + ', se abona en tu primera entrega</div>' : '') +
+      (vigente && restantes > 0 ? '<div class="ms-modo-hd">Mis compras</div>' + modoMemHTML("ms-modo") + '<div class="sub" style="margin-top:6px">Lo podés cambiar también en el carrito antes de confirmar.</div>' : '') +
+      (vigente && restantes > 0 ? '<button class="btn" onclick="goScreen(\'shop\');goCat(\'flores\')">Elegir flores</button>' : '') +
+      '</div>';
+    if (vigente) return html;
+    html += '<div class="pc-h">Renová tu membresía</div>';
+  }
+  html += planesHTML();
+  return html;
+}
+
+function pedidoCard(p) {
+  var fecha = p.created_at ? new Date(p.created_at).toLocaleDateString("es-AR", {day:"2-digit",month:"2-digit",year:"numeric"}) : "—";
+  var items = (p.items && p.items.length) ? p.items.map(function(i) {
+    var det = i.cat === "flores" ? (i.tipo + " · " + i.grams + "g") : (i.tipo && i.tipo !== "unidad" ? i.tipo : (i.qty > 1 ? "x" + i.qty : ""));
+    return '<div>' + sinFuego(i.name) + (det ? ' <em>· ' + det + '</em>' : '') + '</div>';
+  }).join("") : '<div class="sub">Sin detalle</div>';
+
+  var confirmado = p.estado === "confirmado";
+  return '<div class="ped-card' + (confirmado ? ' conf' : '') + '">' +
+    '<div class="ped-top"><span>' + fecha + '</span>' + estadoBadge(p.estado) + '</div>' +
+    '<div class="ped-items">' + items + '</div>' +
+    (p.fecha_envio ? '<div class="ped-envio">Envío: ' + new Date(p.fecha_envio).toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit"}) + '</div>' : '') +
+    (confirmado ? '<div class="ped-ok">¡Tu pedido ya está confirmado!</div>' : '') +
+    '</div>';
+}
+
+/* ===== AVISO DE PEDIDO CONFIRMADO ===== */
+function _keyVistos() { return "melodys_confirmados_vistos_" + (currentSocio ? currentSocio.id : "0"); }
+function _getVistos() { try { return JSON.parse(localStorage.getItem(_keyVistos()) || "[]"); } catch(e) { return []; } }
+function _setVistos(a) { try { localStorage.setItem(_keyVistos(), JSON.stringify(a)); } catch(e) {} }
+function chequearConfirmados() {
+  if (!currentSocio) return;
+  sb("pedidos?socio_id=eq." + currentSocio.id + "&estado=eq.confirmado&archivado=not.eq.true&order=created_at.desc", "GET").then(function(data) {
+    if (!Array.isArray(data)) return;
+    var vistos = _getVistos();
+    var nuevos = data.filter(function(p){ return vistos.indexOf(String(p.id)) < 0; });
+    var badge = document.getElementById("nav-badge");
+    if (badge) { badge.style.display = nuevos.length ? "block" : "none"; badge.textContent = nuevos.length; }
+    var banner = document.getElementById("aviso-confirmado");
+    if (banner) {
+      if (nuevos.length) {
+        banner.style.display = "block";
+        banner.innerHTML = '<div class="aviso">' + ICO.ok +
+          '<div><b>' + (nuevos.length > 1 ? '¡Tenés ' + nuevos.length + ' pedidos confirmados!' : '¡Tu pedido está confirmado!') + '</b>' +
+          '<span>Tocá para ver el estado en Mi perfil</span></div>' +
+          '<button class="x" onclick="event.stopPropagation();cerrarAvisoConfirmado()" aria-label="Cerrar aviso">' + ICO.close + '</button></div>';
+      } else { banner.style.display = "none"; }
+    }
+  }).catch(function(){});
+}
+function marcarConfirmadosVistos(data) {
+  var vistos = _getVistos();
+  (data || []).forEach(function(p){ if (p.estado === "confirmado" && vistos.indexOf(String(p.id)) < 0) vistos.push(String(p.id)); });
+  _setVistos(vistos);
+  var badge = document.getElementById("nav-badge");
+  if (badge) badge.style.display = "none";
+  var banner = document.getElementById("aviso-confirmado");
+  if (banner) banner.style.display = "none";
+}
+function cerrarAvisoConfirmado() {
+  if (!currentSocio) return;
+  sb("pedidos?socio_id=eq." + currentSocio.id + "&estado=eq.confirmado&archivado=not.eq.true", "GET").then(function(data) {
+    marcarConfirmadosVistos(data || []);
+  }).catch(function(){});
+}
+
+/* Repetir pedido: se arma el carrito con el catálogo de HOY (precios actuales, solo lo que sigue disponible)
+   y se le avisa al socio qué se sacó o se ajustó */
+var _repitiendo = false;
+function repetirPedido(id) {
+  var p = _misPedidos.find(function(x){ return String(x.id) === String(id); });
+  if (!p || !p.items || !p.items.length) { showToast("No se pudo repetir el pedido", "err"); return; }
+  if (_repitiendo) return;
+  _repitiendo = true;
+  showToast("Revisando qué sigue disponible...", "");
+  Promise.all([
+    sb("productos?activo=eq.true", "GET"),
+    sb("promos?activa=eq.true", "GET"),
+    sb("pedidos?select=estado,created_at,items", "GET")
+  ]).then(function(res){
+    _repitiendo = false;
+    var catalogo = Array.isArray(res[0]) ? res[0] : null;
+    var promosAct = Array.isArray(res[1]) ? res[1] : null;
+    if (!catalogo || !promosAct) { showToast("No pudimos revisar la disponibilidad. Intentá de nuevo.", "err"); return; }
+    calcPromoUsos(Array.isArray(res[2]) ? res[2] : []);
+    var r = armarRepeticion(p.items, catalogo, promosAct);
+    if (!r.cart.length) {
+      avisar("Ninguno de los productos de tu último pedido está disponible hoy:\n\n" + r.quitados.map(function(t){ return "• " + t; }).join("\n"));
+      return;
+    }
+    cart = r.cart;
+    updateCartBadge();
+    goScreen("cart");
+    var avisos = r.quitados.concat(r.ajustados);
+    if (avisos.length || r.preciosCambiaron) {
+      avisar("Armamos tu carrito con tu último pedido, con algunos cambios:\n\n" +
+        avisos.map(function(t){ return "• " + t; }).join("\n") +
+        (r.preciosCambiaron ? (avisos.length ? "\n" : "") + "• Los precios se actualizaron a los de hoy" : "") +
+        "\n\nRevisalo y confirmá.");
+    } else {
+      showToast("Carrito armado con tu último pedido. Revisalo y confirmá", "ok");
+    }
+  }).catch(function(){
+    _repitiendo = false;
+    showToast("No pudimos revisar la disponibilidad. Intentá de nuevo.", "err");
+  });
+}
+
+function armarRepeticion(items, catalogo, promosAct) {
+  var out = { cart: [], quitados: [], ajustados: [], preciosCambiaron: false };
+  var usadoStock = {};
+  var floresCat = catalogo.filter(function(x){ return x.categoria === "flores"; });
+  var memOk = membresiaVigente();
+  function buscarProd(it) {
+    var lista = catalogo.filter(function(x){ return x.categoria === it.cat; });
+    if (it.id != null) return lista.find(function(x){ return String(x.id) === String(it.id); }) || null;
+    /* Pedidos viejos sin id: se busca por nombre */
+    var base = it.cat === "esquejes" ? String(it.name || "").replace(/\s*—\s*Esqueje$/, "") : sinFuego(it.name);
+    return lista.find(function(x){ return normNombre(x.nombre) === normNombre(base); }) || null;
+  }
+  function uid() { return "promo-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6); }
+
+  items.forEach(function(it){
+    if (!it || !it.cat || it.cat === "membresia") return;
+    var nom = sinFuego(it.name);
+    var nuevo = null;
+
+    if (it.cat === "promos") {
+      var pr = it.promo_id != null
+        ? promosAct.find(function(x){ return String(x.id) === String(it.promo_id); })
+        : promosAct.find(function(x){ return normNombre(x.nombre) === normNombre(nom); });
+      if (!pr) { out.quitados.push(nom + ": ya no está disponible"); return; }
+      var lim = pr.limite_mensual || 0;
+      var yaEnNuevo = out.cart.filter(function(c){ return c.cat === "promos" && String(c.promo_id) === String(pr.id); }).length;
+      if (lim > 0 && usosDePromo(pr) + yaEnNuevo >= lim) { out.quitados.push(pr.nombre + ": se agotó por este mes"); return; }
+      var sel = promoSeleccionDe(it);
+      var gensP = promoGeneticasIds(pr);
+      var totalSel = 0;
+      var ok = sel.length > 0 && sel.every(function(s){
+        totalSel += s.grams;
+        var g = floresCat.find(function(x){ return normNombre(x.nombre) === normNombre(s.nombre); });
+        if (!genParaPromoOk(g) || (gensP.length && gensP.indexOf(String(g.id)) < 0)) return false;
+        s.nombre = g.nombre;
+        return true;
+      });
+      if (!ok || totalSel !== pr.cantidad_g) { out.quitados.push(pr.nombre + ": alguna de sus genéticas ya no está disponible o la promo cambió. Podés armarla de nuevo en Promos"); return; }
+      if (parseFloat(it.precio) !== parseFloat(pr.precio)) out.preciosCambiaron = true;
+      out.cart.push({ id: uid(), promo_id: pr.id, name: "🔥 " + pr.nombre, cat: "promos", tipo: "promo", grams: pr.cantidad_g, qty: 1, precio: pr.precio, moneda: "ARS",
+        promoDetalle: sel.map(function(s){ return s.nombre + " " + s.grams + "g"; }).join(", "), promoItems: sel });
+      return;
+    }
+
+    var prod = buscarProd(it);
+    if (!prod) { out.quitados.push(nom + ": ya no está disponible"); return; }
+
+    if (it.cat === "flores") {
+      if (!tipoDisponible(prod, it.tipo)) { out.quitados.push(prod.nombre + " (" + it.tipo + "): ya no está disponible"); return; }
+      if (prod.solo_membresia && !memOk) { out.quitados.push(prod.nombre + ": es solo para socios con membresía activa"); return; }
+      var g = parseInt(it.grams) || 0;
+      if (g <= 0) { out.quitados.push(prod.nombre + ": no se pudo leer la cantidad"); return; }
+      var st = stockDe(prod, it.tipo);
+      var k = prod.id + "|" + it.tipo;
+      if (st !== null) {
+        var libre = st - (usadoStock[k] || 0);
+        if (libre <= 0) { out.quitados.push(prod.nombre + " (" + it.tipo + "): ya no queda stock"); return; }
+        if (libre < g) { out.ajustados.push(prod.nombre + " (" + it.tipo + "): pediste " + g + "g y quedan " + libre + "g, lo ajustamos a " + libre + "g"); g = libre; }
+      }
+      usadoStock[k] = (usadoStock[k] || 0) + g;
+      var pxg = getPriceFlores(it.tipo);
+      if (it.grams && Math.round(it.precio / it.grams) !== pxg) out.preciosCambiaron = true;
+      out.cart.push({ id: prod.id, name: prod.nombre, cat: "flores", tipo: it.tipo, grams: g, qty: 1, precio: pxg * g, moneda: isLista3() ? "USD" : "ARS" });
+      return;
+    }
+
+    if (it.cat === "esquejes") {
+      var mU = String(it.tipo || "").match(/(\d+)u/);
+      var u = (mU && parseInt(mU[1]) >= 10) ? 10 : 5;
+      nuevo = { id: prod.id, name: prod.nombre + " — Esqueje", cat: "esquejes", tipo: "esqueje (" + u + "u · 20 días)", grams: 1, qty: 1, precio: packEsq(u), moneda: "ARS" };
+    } else if (it.cat === "semillas") {
+      var n = parseInt(it.qty) || 5;
+      var semP = PACKS.semillas;
+      nuevo = { id: prod.id, name: prod.nombre, cat: "semillas", tipo: "Pack " + n + "u", grams: 1, qty: n, precio: semP[n] || (getProductPrice(prod) * n), moneda: "ARS" };
+    } else {
+      var q = parseInt(it.qty) || 1;
+      nuevo = { id: prod.id, name: prod.nombre, cat: it.cat, tipo: "unidad", grams: 1, qty: q, precio: getProductPrice(prod) * q, moneda: prod.moneda || "ARS" };
+    }
+    if (parseFloat(it.precio) !== parseFloat(nuevo.precio)) out.preciosCambiaron = true;
+    out.cart.push(nuevo);
+  });
+  /* Un pedido va en una sola moneda: lo que esté en la otra se saca */
+  if (out.cart.length) {
+    var m0 = monedaItem(out.cart[0]);
+    out.cart = out.cart.filter(function(c){
+      if (monedaItem(c) === m0) return true;
+      out.quitados.push(sinFuego(c.name) + ": está en " + (m0 === "USD" ? "pesos" : "dólares") + ", va en un pedido aparte");
+      return false;
+    });
+  }
+  return out;
+}
+
+function goScreen(name) {
+  screens.forEach(function(s) {
+    var el = document.getElementById("s-" + s);
+    if (el) {
+      el.classList.remove("active");
+      if (s === "bot") el.style.display = "none";
+    }
+  });
+  document.querySelectorAll(".nav-item").forEach(function(n) { n.classList.remove("active"); });
+
+  var target = document.getElementById("s-" + name);
+  if (target) {
+    target.classList.add("active");
+  
+  }
+  if (navIds[name]) {
+    var navEl = document.getElementById(navIds[name]);
+    if (navEl) navEl.classList.add("active");
+  }
+
+  if (name === "cart") {
+    renderCart(); renderDiasEnvio();
+    cargarEstadoMembresia().then(function(){ if (document.getElementById("s-cart").classList.contains("active")) renderCart(); }).catch(function(){});
+  }
+  if (name === "pedidos") loadMisPedidos();
+
+  // Al volver al shop, mostrar dashboard
+  if (name === "shop") goDash();
+
+  document.getElementById("main").scrollTop = 0;
+}
+
+// ===== AVISO PROPIO (en lugar del cartel del navegador) =====
+function avisar(texto) {
+  var partes = String(texto || "").split("\n").map(function(x){ return x.trim(); }).filter(function(x){ return x; });
+  var titulo = (partes.shift() || "Aviso").replace(/:$/, "");
+  var body = document.getElementById("av-body");
+  body.innerHTML = "";
+  var ul = null;
+  partes.forEach(function(l) {
+    if (l.charAt(0) === "•") {
+      if (!ul) { ul = document.createElement("ul"); body.appendChild(ul); }
+      var li = document.createElement("li"); li.textContent = l.replace(/^•\s*/, ""); ul.appendChild(li);
+    } else {
+      ul = null;
+      var p = document.createElement("p"); p.textContent = l; body.appendChild(p);
+    }
+  });
+  document.getElementById("av-t").textContent = titulo;
+  document.getElementById("aviso-modal").classList.add("open");
+}
+function cerrarAviso() { document.getElementById("aviso-modal").classList.remove("open"); }
+
+// ===== TOAST =====
+var toastTimer;
+function showToast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "on " + (type || "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.className = ""; }, 2500);
+}
+
+// ===== INIT =====
+loadTrack(0);
+renderMemTile();
+aplicarPacks(null);
+/* Para que el efecto al tocar funcione en iPhone */
+document.addEventListener("touchstart", function(){}, { passive: true });
+</script>
+</body>
+</html>
