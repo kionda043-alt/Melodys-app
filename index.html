@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#F2E8D9"/>
+<link rel="manifest" href="manifest.json"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
@@ -345,6 +347,31 @@ img{display:block;max-width:100%}
 .login-input:focus{border-color:var(--acc)}
 .login-btn{width:100%;min-height:52px;border-radius:var(--rb);background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:17px;margin-top:4px}
 .login-err{color:#8E2F1B;font-size:15px;font-weight:600;text-align:center;margin-top:12px;min-height:20px}
+
+/* ===== v2: aviso propio, buscador ===== */
+#aviso-modal{position:fixed;inset:0;z-index:1200;display:none;align-items:flex-end;justify-content:center}
+#aviso-modal.open{display:flex}
+#aviso-modal .av-t{font-family:var(--hf);font-size:22px;font-weight:700;line-height:1.2;margin:4px 0 10px}
+#aviso-modal ul{list-style:none;margin:0 0 6px}
+#aviso-modal li{padding:9px 0;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.4}
+#aviso-modal li:last-child{border-bottom:0}
+#aviso-modal p{font-size:15.5px;color:var(--ink2);margin:8px 0}
+#aviso-modal .btn{margin-top:14px}
+.buscador{width:100%;min-height:46px;padding:10px 14px;border:1.5px solid var(--line);border-radius:23px;background:var(--surface);font-size:16px;outline:none;margin:0 0 4px}
+.buscador:focus{border-color:var(--acc)}
+.sin-res{text-align:center;color:var(--muted);padding:24px 10px;font-size:15px;display:none}
+.login-form.restaurando{visibility:hidden}
+/* ===== v2: movimientos suaves (se apagan solos si el celular pide menos movimiento) ===== */
+.btn,.login-btn,.cat-tile,.bn,.addb,.pr-row,.pago-opt,.dia-opt,.gr-opt,.tipo-opt,.qty-btn,.mbc-play,.mbc-btn,.logout,.back,.sheet-x{transition:transform .12s ease,background-color .15s ease,border-color .15s ease,opacity .15s ease}
+.btn:active,.login-btn:active,.addb:active,.pago-opt:active,.dia-opt:active,.gr-opt:active,.tipo-opt:active,.qty-btn:active,.mbc-play:active,.mbc-btn:active,.logout:active,.back:active,.sheet-x:active{transform:scale(.95)}
+.cat-tile:active,.bn:active{transform:scale(.975)}
+.pr-row:active{transform:scale(.99)}
+.nav-item .ic{transition:transform .15s ease}
+.nav-item:active .ic{transform:translateY(-2px) scale(1.08)}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.screen.active,#dash-view,#cat-view{animation:entra .22s ease both}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+#cart-badge.bump{animation:bump .35s ease}
 </style>
 </head>
 <body>
@@ -352,13 +379,13 @@ img{display:block;max-width:100%}
 <!-- INGRESO (lógica sin cambios) -->
 <div id="login-screen">
   <img src="logo.png" class="login-logo" alt="Melody's Farm"/>
-  <div class="login-form">
+  <div class="login-form" id="login-form">
     <div class="login-welcome">Bienvenide 🌿</div>
     <label class="login-label" for="login-user">Usuario</label>
     <input class="login-input" id="login-user" type="text" placeholder="usuario" autocomplete="username"/>
     <label class="login-label" for="login-pass">Contraseña</label>
     <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
-    <button class="login-btn" onclick="doLogin()">Ingresar</button>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Ingresar</button>
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
@@ -497,7 +524,7 @@ img{display:block;max-width:100%}
       <details class="faq"><summary>¿Cuánto sale el envío?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Los pedidos de menos de 20 g de flores suman un costo de envío, que ves en el carrito antes de confirmar.</p></details>
       <details class="faq"><summary>¿Cómo pago?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>En efectivo o por transferencia. Si elegís transferencia, los datos aparecen en el carrito y te confirmamos por WhatsApp.</p></details>
       <details class="faq"><summary>¿Cuándo recibo mi pedido?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Al confirmar elegís uno de los días de entrega disponibles. Si dejás tu email, te avisamos el día que llega.</p></details>
-      <details class="faq"><summary>¿Cuánto tardan los esquejes?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Están listos en unos 20 días. Se piden de a 5 unidades ($50.000) o 10 unidades ($80.000).</p></details>
+      <details class="faq"><summary>¿Cuánto tardan los esquejes?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Están listos en unos 20 días. Se piden de a 5 unidades (<span id="faq-esq5">$50.000</span>) o 10 unidades (<span id="faq-esq10">$80.000</span>).</p></details>
       <details class="faq"><summary>¿Qué es subdividir flores?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Al confirmar un pedido con flores podés repartir los gramos entre varias personas, para que cada una reciba su parte separada. Es opcional.</p></details>
       <details class="faq"><summary>¿Qué son las Promos Melodys Fans?<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></summary><p>Son combos del club a precio especial. En algunas elegís cómo repartir los gramos entre las genéticas disponibles. Tienen cupo mensual.</p></details>
       <div class="faq-contact" id="faq-contact" style="display:none">
@@ -657,6 +684,17 @@ img{display:block;max-width:100%}
   </div>
 </div>
 
+<!-- AVISO (reemplaza los carteles del navegador) -->
+<div id="aviso-modal">
+  <div class="sd-overlay" onclick="cerrarAviso()"></div>
+  <div class="sd-sheet" role="alertdialog" aria-modal="true" aria-labelledby="av-t">
+    <div class="grab"></div>
+    <div class="av-t" id="av-t"></div>
+    <div id="av-body"></div>
+    <button class="btn" onclick="cerrarAviso()">Entendido</button>
+  </div>
+</div>
+
 <div id="toast" role="status" aria-live="polite"></div>
 
 <audio id="audio-player" preload="auto" onerror="console.log('Audio no encontrado')"></audio>
@@ -668,6 +706,7 @@ var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 
 // ===== MUSIC =====
 var tracks = [
+  { file: "aprovecha.mp3", name: "Aprovecha" },
   { file: "carnaval_de_melodys_farm.mp3", name: "Carnaval de Melody's Faaarm" },
   { file: "melodys_farm.mp3", name: "Melody's Farm" },
   { file: "la_cata.mp3", name: "La Cata" },
@@ -713,19 +752,75 @@ function nextTrack() {
 audio.addEventListener("ended", function() { nextTrack(); });
 
 // ===== SUPABASE =====
-function sb(path, method, body) {
-  var opts = {
-    method: method || "GET",
-    headers: {
-      "apikey": SB_KEY,
-      "Authorization": "Bearer " + SB_KEY,
-      "Content-Type": "application/json",
-      "Prefer": "return=representation"
-    }
-  };
-  if (body) opts.body = JSON.stringify(body);
-  return fetch(SB_URL + "/rest/v1/" + path, opts).then(function(r) { return r.json(); });
+/* ===== SESIÓN (login seguro de Supabase) =====
+   La sesión queda guardada en el celular: el socio no tiene que ingresar cada vez. */
+var SESION = null, _refrescando = null;
+var SESION_KEY = "melodys_sesion_v2";
+var MAIL_SOCIOS = "@socios.melodys.invalid";
+function guardarSesion(d) {
+  if (d && d.access_token) {
+    SESION = {
+      access_token: d.access_token,
+      refresh_token: d.refresh_token,
+      expires_at: d.expires_at || (Math.floor(Date.now() / 1000) + (d.expires_in || 3600)),
+      uid: (d.user && d.user.id) || (SESION ? SESION.uid : null)
+    };
+  } else { SESION = null; }
+  try { if (SESION) localStorage.setItem(SESION_KEY, JSON.stringify(SESION)); else localStorage.removeItem(SESION_KEY); } catch (e) {}
 }
+function leerSesion() {
+  try { var x = JSON.parse(localStorage.getItem(SESION_KEY) || "null"); if (x && x.access_token && x.refresh_token && x.uid) SESION = x; } catch (e) {}
+}
+function authPost(q, body, token) {
+  return fetch(SB_URL + "/auth/v1/" + q, {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Authorization": "Bearer " + (token || SB_KEY), "Content-Type": "application/json" },
+    body: JSON.stringify(body || {})
+  }).then(function(r) {
+    return r.text().then(function(t) {
+      var d = null; try { d = t ? JSON.parse(t) : null; } catch (e) {}
+      return { ok: r.ok, status: r.status, data: d };
+    });
+  });
+}
+function refrescarSesion() {
+  if (!SESION) return Promise.resolve(false);
+  if (_refrescando) return _refrescando;
+  _refrescando = authPost("token?grant_type=refresh_token", { refresh_token: SESION.refresh_token }).then(function(r) {
+    _refrescando = null;
+    if (r.ok && r.data && r.data.access_token) { guardarSesion(r.data); return true; }
+    if (r.status === 400 || r.status === 401 || r.status === 403) { guardarSesion(null); sesionVencida(); }
+    return false;
+  }, function() { _refrescando = null; return false; });
+  return _refrescando;
+}
+function tokenVigente() {
+  if (!SESION) return Promise.resolve(null);
+  if (SESION.expires_at - Math.floor(Date.now() / 1000) > 60) return Promise.resolve(SESION.access_token);
+  return refrescarSesion().then(function() { return SESION ? SESION.access_token : null; });
+}
+function sbRaw(path, method, body, reintento) {
+  /* El cupo mensual de promos ya no lee los pedidos de todos los socios: usa una función de la base */
+  if (path.indexOf("pedidos?select=estado,created_at,items") === 0) { path = "rpc/pedidos_promos_mes"; method = "POST"; body = {}; }
+  return tokenVigente().then(function(tok) {
+    var opts = {
+      method: method || "GET",
+      headers: { "apikey": SB_KEY, "Authorization": "Bearer " + (tok || SB_KEY), "Content-Type": "application/json", "Prefer": "return=representation" }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    return fetch(SB_URL + "/rest/v1/" + path, opts);
+  }).then(function(r) {
+    if (r.status === 401 && !reintento && SESION) {
+      return refrescarSesion().then(function(ok) { return ok ? sbRaw(path, method, body, true) : r; });
+    }
+    return r;
+  });
+}
+function sb(path, method, body) {
+  return sbRaw(path, method, body).then(function(r) { return r.json(); });
+}
+/* Llama a una función de la base. Si la base la rechaza, el error trae el mensaje para mostrar */
+function rpc(nombre, args) { return sbChk("rpc/" + nombre, "POST", args || {}); }
 
 // ===== STATE =====
 var cart = [];
@@ -753,9 +848,7 @@ function monSym(m) { return m === "USD" ? "USD " : "$"; }
 function fmtPlata(n, m) { return monSym(m) + (Math.round(n) || 0).toLocaleString("es-AR"); }
 /* Igual que sb() pero avisa si Supabase rechaza el cambio */
 function sbChk(path, method, body) {
-  var opts = { method: method || "GET", headers: { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "application/json", "Prefer": "return=representation" } };
-  if (body) opts.body = JSON.stringify(body);
-  return fetch(SB_URL + "/rest/v1/" + path, opts).then(function(r) {
+  return sbRaw(path, method, body).then(function(r) {
     return r.text().then(function(t) {
       var d = null; try { d = t ? JSON.parse(t) : null; } catch (e) {}
       if (!r.ok) throw new Error((d && (d.message || d.details)) || ("error " + r.status));
@@ -792,6 +885,7 @@ window.addEventListener("load", function() {
   loadTrack(0);
   loadConfig();
   updateCartBadge();
+  restaurarSesion();
 });
 
 // ===== CONFIG =====
@@ -808,6 +902,8 @@ function loadConfig() {
       MEMBRESIAS = (Array.isArray(ms) && ms.length) ? ms : membresiasDefault();
       MEMBRESIAS.forEach(function(m){ MEM_PRECIOS[parseInt(m.gramos)] = parseFloat(m.precio_usd) || 0; });
       refreshMembresiaPrecios();
+      aplicarPacks(d[0].precios_packs);
+      aplicarWhatsapp(d[0].whatsapp_club);
       renderMemTile();
     }
   });
@@ -899,6 +995,29 @@ var ICO = {
 /* Número de WhatsApp del club para el botón de Ayuda (solo dígitos, con código de país, ej: 5491112345678).
    Si queda vacío, el botón no se muestra. */
 var WHATSAPP_CLUB = "";
+function aplicarWhatsapp(n) {
+  n = String(n || "").replace(/\D/g, "");
+  WHATSAPP_CLUB = n;
+  var c = document.getElementById("faq-contact"); if (!c) return;
+  if (n) { document.getElementById("faq-wa").href = "https://wa.me/" + n; c.style.display = "block"; }
+  else { c.style.display = "none"; }
+}
+/* Precios de packs (esquejes y semillas). Si en la configuración no hay nada cargado, valen estos */
+var PACKS = { esquejes: { 5: 50000, 10: 80000 }, semillas: { 5: 25000, 10: 40000, 20: 65000 } };
+function packEsq(u) { return u >= 10 ? PACKS.esquejes[10] : PACKS.esquejes[5]; }
+function txtEsq() { return "5 u $" + PACKS.esquejes[5].toLocaleString("es-AR") + " · 10 u $" + PACKS.esquejes[10].toLocaleString("es-AR"); }
+function aplicarPacks(raw) {
+  var p = null; try { p = raw ? JSON.parse(raw) : null; } catch (e) {}
+  if (p && typeof p === "object") {
+    ["esquejes", "semillas"].forEach(function(k) {
+      if (!p[k] || typeof p[k] !== "object") return;
+      Object.keys(PACKS[k]).forEach(function(u) { var v = parseFloat(p[k][u]); if (v > 0) PACKS[k][u] = v; });
+    });
+  }
+  var a = document.getElementById("faq-esq5"), b = document.getElementById("faq-esq10");
+  if (a) a.textContent = "$" + PACKS.esquejes[5].toLocaleString("es-AR");
+  if (b) b.textContent = "$" + PACKS.esquejes[10].toLocaleString("es-AR");
+}
 
 /* Planes de membresía: mismos textos que tenía la app. Los precios salen de la configuración (MEM_PRECIOS). */
 function planesHTML() {
@@ -1254,7 +1373,7 @@ function cargarEstadoMembresia() {
     sb("socios?id=eq." + currentSocio.id, "GET"),
     sb("pedidos?socio_id=eq." + currentSocio.id + "&es_membresia=eq.true&select=id,estado,created_at,es_solicitud,membresia_contada", "GET")
   ]).then(function(r){
-    if (Array.isArray(r[0]) && r[0][0]) currentSocio = r[0][0];
+    if (Array.isArray(r[0]) && r[0][0]) { currentSocio = r[0][0]; delete currentSocio.password; }
     if (Array.isArray(r[1])) _memEnCurso = calcEnCurso(r[1]);
     renderMemTile();
   });
@@ -1280,6 +1399,20 @@ function renderProducts(cat, data) {
     return;
   }
   grid.innerHTML = "";
+  if (cat === "flores" && data.length >= 6) {
+    var bus = document.createElement("input");
+    bus.type = "search"; bus.className = "buscador"; bus.placeholder = "Buscar genética"; bus.setAttribute("aria-label", "Buscar genética");
+    var sinRes = document.createElement("div"); sinRes.className = "sin-res"; sinRes.textContent = "No encontramos esa genética.";
+    bus.addEventListener("input", function() {
+      var q = normNombre(bus.value), hay = 0;
+      grid.querySelectorAll(".pr-row").forEach(function(row) {
+        var ok = !q || normNombre(row.getAttribute("data-n")).indexOf(q) >= 0;
+        row.style.display = ok ? "" : "none"; if (ok) hay++;
+      });
+      sinRes.style.display = hay ? "none" : "block";
+    });
+    grid.appendChild(bus); grid.appendChild(sinRes);
+  }
   if (cat === "flores") {
     data = data.map(function(p, i){ return { p:p, i:i }; }).sort(function(a, b){
       var ma = a.p.solo_membresia ? 1 : 0, mb = b.p.solo_membresia ? 1 : 0;
@@ -1299,7 +1432,7 @@ function renderProducts(cat, data) {
         priceText = formatFloresPrice(tipoRef);
       }
     } else if (cat === "esquejes") {
-      priceText = "5 u $50.000 · 10 u $80.000";
+      priceText = txtEsq();
     } else if (cat === "semillas") {
       var pr2 = getProductPrice(p);
       priceText = pr2 > 0 ? "Pack: $" + pr2.toLocaleString("es-AR") + "/u" : "Consultar precio";
@@ -1326,6 +1459,7 @@ function renderProducts(cat, data) {
 
     var div = document.createElement("div");
     div.className = "pr-row";
+    div.setAttribute("data-n", p.nombre || "");
     div.innerHTML =
       thumbHTML(p.nombre, cat, "im") +
       '<div class="mid">' +
@@ -1450,13 +1584,13 @@ function updateAddBtn() {
     var currency = isLista3() ? "USD " : "$";
     btn.textContent = total > 0 ? "Agregar — " + currency + total.toLocaleString("es-AR") : "Agregar al carrito";
   } else if (cat === "esquejes") {
-    var precioEsq = modalQty >= 10 ? 80000 : 50000;
+    var precioEsq = packEsq(modalQty);
     var unidEsq = modalQty >= 10 ? "10u" : "5u";
     btn.textContent = "Agregar " + unidEsq + " — $" + precioEsq.toLocaleString("es-AR");
   } else {
     var pr = getProductPrice(modalProduct);
     if (currentCat === "semillas") {
-      var semPrices = {5: 25000, 10: 40000, 20: 65000};
+      var semPrices = PACKS.semillas;
       var semLabel = "Pack " + modalQty + "u";
       var semTotal = semPrices[modalQty] || (pr * modalQty);
       btn.textContent = "Agregar " + semLabel + " — $" + semTotal.toLocaleString("es-AR");
@@ -1495,7 +1629,7 @@ function addToCart() {
       moneda: isLista3() ? "USD" : "ARS"
     };
   } else if (cat === "esquejes") {
-    var precioEsqC = modalQty >= 10 ? 80000 : 50000;
+    var precioEsqC = packEsq(modalQty);
     item = {
       id: modalProduct.id,
       name: modalProduct.nombre + " — Esqueje",
@@ -1507,7 +1641,7 @@ function addToCart() {
       moneda: "ARS"
     };
   } else if (cat === "semillas") {
-    var semPricesAC = {5: 25000, 10: 40000, 20: 65000};
+    var semPricesAC = PACKS.semillas;
     var prSemAC = getProductPrice(modalProduct);
     item = {
       id: modalProduct.id,
@@ -1546,6 +1680,7 @@ function updateCartBadge() {
   if (cart.length > 0) {
     badge.textContent = cart.length;
     badge.style.display = "flex";
+    badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump");
   } else {
     badge.style.display = "none";
   }
@@ -2033,7 +2168,7 @@ function mostrarAvisoStock(problemas) {
            (p.disponible > 0 ? ("quedan " + p.disponible + "g") : "ya no queda stock");
   }).join("\n");
   showToast("Cambió la disponibilidad mientras armabas el pedido", "err");
-  alert("Algo cambió mientras armabas el pedido:\n\n" + lineas +
+  avisar("Algo cambió mientras armabas el pedido:\n\n" + lineas +
         "\n\nAjustá el carrito y volvé a confirmar.");
   goScreen("cart");
 }
@@ -2091,9 +2226,8 @@ function enviarPedido() {
     instrucciones: instFinal
   };
 
-  sb("pedidos", "POST", pedidoData).then(function(r) {
-    if (r && r[0] && r[0].id) {
-      descontarStockFlores(items, r[0].id);
+  rpc("crear_pedido", { p: pedidoData }).then(function(r) {
+    if (r && r.id) {
       enviarEmailAdmin(pedidoData, costoEnvioC);
       if (esMembresiaC) _memEnCurso++;
       cart = [];
@@ -2104,40 +2238,45 @@ function enviarPedido() {
     }
     btn.disabled = false;
     btn.textContent = "Confirmar pedido";
-  }).catch(function() {
-    showToast("Error de conexión", "err");
+  }).catch(function(e) {
     btn.disabled = false;
     btn.textContent = "Confirmar pedido";
+    var m = (e && e.message) || "";
+    if (m.indexOf("SIN_STOCK:") === 0) {
+      avisar("Algo cambió mientras armabas el pedido:\n" +
+        m.replace("SIN_STOCK:", "").split(". ").map(function(x){ return x.replace(/\.$/, "").trim(); }).filter(function(x){ return x; }).map(function(x){ return "• " + x; }).join("\n") +
+        "\nAjustá el carrito y volvé a confirmar.");
+      goScreen("cart");
+    } else if (/sesi[oó]n|cuenta/i.test(m)) {
+      showToast(m, "err");
+    } else if (e && e.name === "TypeError") {
+      showToast("No pudimos enviar el pedido. Revisá tu conexión e intentá de nuevo.", "err");
+    } else {
+      /* Red de seguridad: si la base rechaza la función por un motivo inesperado, el pedido se graba igual
+         por la vía anterior y le queda una nota al admin para descontar el stock a mano. */
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+      var resp = JSON.parse(JSON.stringify(pedidoData));
+      resp.nota_admin = "\u26a0\ufe0f Pedido cargado por la vía de respaldo: STOCK NO DESCONTADO, descontarlo a mano. (" + m.slice(0, 120) + ")";
+      sb("pedidos", "POST", resp).then(function(r2) {
+        btn.disabled = false;
+        btn.textContent = "Confirmar pedido";
+        if (r2 && r2[0] && r2[0].id) {
+          enviarEmailAdmin(pedidoData, costoEnvioC);
+          if (esMembresiaC) _memEnCurso++;
+          cart = [];
+          updateCartBadge();
+          goScreen("success");
+        } else {
+          showToast("No pudimos enviar el pedido. Intentá de nuevo o escribinos.", "err");
+        }
+      }).catch(function() {
+        btn.disabled = false;
+        btn.textContent = "Confirmar pedido";
+        showToast("No pudimos enviar el pedido. Revisá tu conexión e intentá de nuevo.", "err");
+      });
+    }
   });
-}
-
-function descontarStockFlores(items, pedidoId) {
-  (items || []).forEach(function(it) {
-    if (it.cat !== "flores" || !it.grams) return;
-    var col = it.tipo === "baja" ? "stock_bajas_g" : "stock_altas_g";
-    var q = it.id ? ("productos?id=eq." + it.id) : ("productos?nombre=eq." + encodeURIComponent(it.name) + "&limit=1");
-    sb(q, "GET").then(function(d) {
-      if (!d || !d[0]) { logStockFallo(pedidoId, it, "producto no encontrado"); return; }
-      var prod = d[0];
-      var actual = prod[col] || 0;
-      var nuevo = Math.max(0, actual - it.grams);
-      var patch = {}; patch[col] = nuevo;
-      sb("productos?id=eq." + prod.id, "PATCH", patch).then(function(r) {
-        if (!r || !r[0] || r[0][col] !== nuevo) logStockFallo(pedidoId, it, "no se pudo actualizar");
-      }).catch(function() { logStockFallo(pedidoId, it, "error de conexion"); });
-    }).catch(function() { logStockFallo(pedidoId, it, "error de conexion"); });
-  });
-}
-
-function logStockFallo(pedidoId, it, motivo) {
-  var txt = "\u26a0\ufe0f STOCK NO DESCONTADO: " + it.name + " (" + it.tipo + ", " + it.grams + "g) \u2014 " + motivo;
-  try { console.warn(txt); } catch(e) {}
-  if (!pedidoId) return;
-  sb("pedidos?id=eq." + pedidoId, "GET").then(function(d) {
-    if (!d || !d[0]) return;
-    var prev = d[0].nota_admin || "";
-    sb("pedidos?id=eq." + pedidoId, "PATCH", { nota_admin: (prev ? prev + " | " : "") + txt });
-  }).catch(function(){});
 }
 
 function volverTienda() {
@@ -2150,57 +2289,105 @@ function volverTienda() {
 }
 
 // ===== LOGIN =====
+function cargarSocioDeSesion() {
+  if (!SESION || !SESION.uid) return Promise.resolve(null);
+  return sb("socios?auth_id=eq." + SESION.uid + "&limit=1", "GET").then(function(d) {
+    var x = (Array.isArray(d) && d[0]) ? d[0] : null;
+    if (x) delete x.password;
+    return x;
+  });
+}
+function motivoBloqueo(x) {
+  if (x.pausado === true) return "⏸ Tu cuenta está pausada.<br>Comunicate con nosotros para reactivarla.";
+  if (x.activo === false) return "Tu cuenta no está activa. Contactanos.";
+  return "";
+}
+function entrarConSocio(x, conMusica) {
+  currentSocio = x;
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("header-socio").textContent = "Hola, " + String(x.nombre || "").split(" ")[0];
+  if (conMusica) {
+    audio.play().then(function(){
+      isPlaying = true;
+      document.getElementById("mb-play-btn").innerHTML = ICO.pause;
+      document.getElementById("mb-disk").classList.add("playing");
+    }).catch(function(){});
+  }
+  renderMemTile();
+  loadConfig();
+  chequearConfirmados();
+  cargarModoMem();
+  cargarEstadoMembresia().catch(function(){});
+  goDash();
+}
+function cerrarSesionServidor() {
+  var t = SESION ? SESION.access_token : null;
+  guardarSesion(null);
+  if (t) authPost("logout", {}, t).catch(function(){});
+}
 function doLogin() {
   var user = document.getElementById("login-user").value.trim().toLowerCase();
   var pass = document.getElementById("login-pass").value;
   var err = document.getElementById("login-err");
+  var btn = document.getElementById("login-btn");
   if (!user || !pass) { err.textContent = "Completá usuario y contraseña"; return; }
   err.textContent = "";
-  sb("socios?username=eq." + encodeURIComponent(user) + "&password=eq." + encodeURIComponent(pass), "GET")
-    .then(function(data) {
-      if (!data || !data.length) {
-        err.textContent = "Usuario o contraseña incorrectos";
-        return;
-      }
-      if (data[0].pausado === true) {
-        err.innerHTML = "⏸ Tu cuenta está pausada.<br>Comunicate con nosotros para reactivarla.";
-        return;
-      }
-      if (data[0].activo === false) {
-        err.textContent = "Tu cuenta no está activa. Contactanos.";
-        return;
-      }
-      currentSocio = data[0];
-      document.getElementById("login-screen").style.display = "none";
-      document.getElementById("header-socio").textContent = "Hola, " + currentSocio.nombre.split(" ")[0];
-      // Autoplay música
-      audio.play().then(function(){
-        isPlaying = true;
-        document.getElementById("mb-play-btn").innerHTML = ICO.pause;
-        document.getElementById("mb-disk").classList.add("playing");
-      }).catch(function(){});
-      renderMemTile();
-      loadConfig();
-      chequearConfirmados();
-      cargarModoMem();
-      cargarEstadoMembresia().catch(function(){});
-      goDash();
-    })
-    .catch(function() { err.textContent = "Error de conexión. Intentá de nuevo."; });
+  btn.disabled = true; btn.textContent = "Ingresando...";
+  function listo() { btn.disabled = false; btn.textContent = "Ingresar"; }
+  authPost("token?grant_type=password", { email: user + MAIL_SOCIOS, password: pass }).then(function(r) {
+    if (!r.ok || !r.data || !r.data.access_token) {
+      listo();
+      err.textContent = r.status === 429 ? "Demasiados intentos. Esperá un minuto y probá de nuevo."
+        : (r.status === 400 || r.status === 401) ? "Usuario o contraseña incorrectos"
+        : "No pudimos ingresar. Intentá de nuevo.";
+      return;
+    }
+    guardarSesion(r.data);
+    return cargarSocioDeSesion().then(function(x) {
+      listo();
+      if (!x) { cerrarSesionServidor(); err.textContent = "No encontramos tu cuenta. Escribinos."; return; }
+      var bloqueo = motivoBloqueo(x);
+      if (bloqueo) { cerrarSesionServidor(); err.innerHTML = bloqueo; return; }
+      document.getElementById("login-pass").value = "";
+      entrarConSocio(x, true);
+    });
+  }).catch(function() { listo(); err.textContent = "Error de conexión. Intentá de nuevo."; });
 }
-
-function doLogout() {
+/* Al abrir la app: si el socio ya había ingresado en este celular, entra directo */
+function restaurarSesion() {
+  leerSesion();
+  if (!SESION) return;
+  var form = document.getElementById("login-form");
+  form.classList.add("restaurando");
+  function mostrarLogin() { form.classList.remove("restaurando"); }
+  tokenVigente().then(function(tok) {
+    if (!tok) { mostrarLogin(); return; }
+    return cargarSocioDeSesion().then(function(x) {
+      mostrarLogin();
+      if (!x) return;
+      var bloqueo = motivoBloqueo(x);
+      if (bloqueo) { cerrarSesionServidor(); document.getElementById("login-err").innerHTML = bloqueo; return; }
+      entrarConSocio(x, false);
+    });
+  }).catch(mostrarLogin);
+}
+function volverAlLogin(msg) {
   currentSocio = null;
   _memEnCurso = 0;
   cart = [];
   updateCartBadge();
   document.getElementById("login-user").value = "";
   document.getElementById("login-pass").value = "";
-  document.getElementById("login-err").textContent = "";
+  document.getElementById("login-err").textContent = msg || "";
   document.getElementById("header-socio").textContent = "Hola";
   renderMemTile();
   document.getElementById("login-screen").style.display = "flex";
   goScreen("shop");
+}
+function sesionVencida() { if (currentSocio) volverAlLogin("Tu sesión venció. Ingresá de nuevo."); }
+function doLogout() {
+  cerrarSesionServidor();
+  volverAlLogin("");
 }
 
 document.addEventListener("keydown", function(e) {
@@ -2288,45 +2475,23 @@ function confirmarMembresia() {
   if (!pl || !currentSocio) return;
   var ok = document.getElementById("mm-ok");
   ok.disabled = true; ok.textContent = "Activando...";
-  var g = parseInt(pl.gramos), usd = parseFloat(pl.precio_usd) || 0;
-  var ini = ymdLocal(new Date());
-  var datos = {
-    membresia_tipo: g,
-    membresia_inicio: ini,
-    membresia_vence: sumarMeses(ini, parseInt(pl.meses) || 3),
-    membresia_entregas_total: parseInt(pl.entregas) || 3,
-    membresia_entregas_usadas: 0,
-    membresia_pago_pendiente: true,
-    membresia_monto_usd: usd
-  };
-  sbChk("socios?id=eq." + currentSocio.id, "PATCH", datos).then(function(r) {
-    if (!r || !r[0]) throw new Error("Supabase no aplicó el cambio");
-    currentSocio = r[0];
+  var g = parseInt(pl.gramos);
+  rpc("activar_membresia", { p_gramos: g }).then(function(r) {
+    if (!r || !r.id) throw new Error("La base no aplicó el cambio");
+    currentSocio = r;
     _memEnCurso = 0;
     setModoMemSilencioso(true);
+    var usd = parseFloat(r.membresia_monto_usd) || 0;
     var nota = "MEMBRESÍA ACTIVADA DESDE LA APP: " + g + "g — USD " + usd + " (se cobra en la primera entrega)";
-    var aviso = {
-      socio: currentSocio.nombre,
-      socio_id: currentSocio.id,
-      socio_email: currentSocio.email || null,
-      items: [{ name: "Membresía " + g + "g", cat: "membresia", tipo: "membresia", grams: g, qty: 1, precio: 0 }],
-      total: 0,
-      moneda: "USD",
-      metodo_pago: "pendiente",
-      estado: "pendiente",
-      instrucciones: nota,
-      es_membresia: true,
-      es_solicitud: true
-    };
-    sb("pedidos", "POST", aviso).catch(function(){});
-    enviarEmailAdmin({ socio: aviso.socio, items: aviso.items, total: 0, moneda: "USD", metodo_pago: "—", instrucciones: nota }, 0);
+    enviarEmailAdmin({ socio: r.nombre, items: [{ name: "Membresía " + g + "g", cat: "membresia", tipo: "membresia", grams: g, qty: 1, precio: 0 }], total: 0, moneda: "USD", metodo_pago: "—", instrucciones: nota }, 0);
     closeMemModal();
     renderMemTile();
     showToast("¡Membresía activada! Ya podés pedir con ella 🎫", "ok");
     goScreen("pedidos");
-  }).catch(function() {
+  }).catch(function(e) {
     ok.disabled = false; ok.textContent = "Sí, activar mi membresía";
-    showToast("No pudimos activar la membresía. Intentá de nuevo o escribinos.", "err");
+    var m = (e && e.message) || "";
+    showToast(/membres[ií]a|plan|cuenta|sesi[oó]n/i.test(m) ? m : "No pudimos activar la membresía. Intentá de nuevo o escribinos.", "err");
   });
 }
 
@@ -2501,7 +2666,7 @@ function repetirPedido(id) {
     calcPromoUsos(Array.isArray(res[2]) ? res[2] : []);
     var r = armarRepeticion(p.items, catalogo, promosAct);
     if (!r.cart.length) {
-      alert("Ninguno de los productos de tu último pedido está disponible hoy:\n\n" + r.quitados.map(function(t){ return "• " + t; }).join("\n"));
+      avisar("Ninguno de los productos de tu último pedido está disponible hoy:\n\n" + r.quitados.map(function(t){ return "• " + t; }).join("\n"));
       return;
     }
     cart = r.cart;
@@ -2509,7 +2674,7 @@ function repetirPedido(id) {
     goScreen("cart");
     var avisos = r.quitados.concat(r.ajustados);
     if (avisos.length || r.preciosCambiaron) {
-      alert("Armamos tu carrito con tu último pedido, con algunos cambios:\n\n" +
+      avisar("Armamos tu carrito con tu último pedido, con algunos cambios:\n\n" +
         avisos.map(function(t){ return "• " + t; }).join("\n") +
         (r.preciosCambiaron ? (avisos.length ? "\n" : "") + "• Los precios se actualizaron a los de hoy" : "") +
         "\n\nRevisalo y confirmá.");
@@ -2591,10 +2756,10 @@ function armarRepeticion(items, catalogo, promosAct) {
     if (it.cat === "esquejes") {
       var mU = String(it.tipo || "").match(/(\d+)u/);
       var u = (mU && parseInt(mU[1]) >= 10) ? 10 : 5;
-      nuevo = { id: prod.id, name: prod.nombre + " — Esqueje", cat: "esquejes", tipo: "esqueje (" + u + "u · 20 días)", grams: 1, qty: 1, precio: u >= 10 ? 80000 : 50000, moneda: "ARS" };
+      nuevo = { id: prod.id, name: prod.nombre + " — Esqueje", cat: "esquejes", tipo: "esqueje (" + u + "u · 20 días)", grams: 1, qty: 1, precio: packEsq(u), moneda: "ARS" };
     } else if (it.cat === "semillas") {
       var n = parseInt(it.qty) || 5;
-      var semP = {5: 25000, 10: 40000, 20: 65000};
+      var semP = PACKS.semillas;
       nuevo = { id: prod.id, name: prod.nombre, cat: "semillas", tipo: "Pack " + n + "u", grams: 1, qty: n, precio: semP[n] || (getProductPrice(prod) * n), moneda: "ARS" };
     } else {
       var q = parseInt(it.qty) || 1;
@@ -2647,6 +2812,27 @@ function goScreen(name) {
   document.getElementById("main").scrollTop = 0;
 }
 
+// ===== AVISO PROPIO (en lugar del cartel del navegador) =====
+function avisar(texto) {
+  var partes = String(texto || "").split("\n").map(function(x){ return x.trim(); }).filter(function(x){ return x; });
+  var titulo = (partes.shift() || "Aviso").replace(/:$/, "");
+  var body = document.getElementById("av-body");
+  body.innerHTML = "";
+  var ul = null;
+  partes.forEach(function(l) {
+    if (l.charAt(0) === "•") {
+      if (!ul) { ul = document.createElement("ul"); body.appendChild(ul); }
+      var li = document.createElement("li"); li.textContent = l.replace(/^•\s*/, ""); ul.appendChild(li);
+    } else {
+      ul = null;
+      var p = document.createElement("p"); p.textContent = l; body.appendChild(p);
+    }
+  });
+  document.getElementById("av-t").textContent = titulo;
+  document.getElementById("aviso-modal").classList.add("open");
+}
+function cerrarAviso() { document.getElementById("aviso-modal").classList.remove("open"); }
+
 // ===== TOAST =====
 var toastTimer;
 function showToast(msg, type) {
@@ -2660,12 +2846,9 @@ function showToast(msg, type) {
 // ===== INIT =====
 loadTrack(0);
 renderMemTile();
-(function(){
-  if (WHATSAPP_CLUB) {
-    document.getElementById("faq-wa").href = "https://wa.me/" + WHATSAPP_CLUB;
-    document.getElementById("faq-contact").style.display = "block";
-  }
-})();
+aplicarPacks(null);
+/* Para que el efecto al tocar funcione en iPhone */
+document.addEventListener("touchstart", function(){}, { passive: true });
 </script>
 </body>
 </html>
