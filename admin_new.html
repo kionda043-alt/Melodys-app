@@ -480,6 +480,44 @@ button.chip{font-family:var(--fn);}
   .g3,.g4{grid-template-columns:1fr!important;}
   .sc-val{font-size:1.5rem;}
 }
+
+/* ===== Orden en celular: nada se desliza hacia los costados ===== */
+html,body{max-width:100%;overflow-x:hidden;}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.ped-filtros{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+#buscar-pedido{width:270px;}
+@media(max-width:900px){
+  .page{overflow-x:hidden;}
+  .duo{grid-template-columns:1fr;gap:12px;}
+  .ped-filtros{width:100%;}
+  #buscar-pedido,#filtro-estado{width:100%!important;flex:1 1 100%;}
+  /* Pestañas: grilla pareja, todas a la vista */
+  .itabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;padding:6px;}
+  #ct-tabs{grid-template-columns:repeat(auto-fit,minmax(92px,1fr));}
+  .itab{display:flex;align-items:center;justify-content:center;min-height:52px;padding:6px 1px;font-size:.7rem;letter-spacing:0;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:anywhere;}
+  /* Tablas: una tarjeta por fila, con los datos apilados */
+  .tw:not(.desk-only){overflow:visible;border:0;background:transparent;box-shadow:none;border-radius:0;}
+  .tw table{display:block;width:100%;}
+  .tw thead{display:none;}
+  .tw tbody{display:block;}
+  .tw tbody tr{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:4px 14px;margin-bottom:10px;}
+  .tw tbody td{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border:0;border-bottom:1px solid var(--border);text-align:right;max-width:none!important;width:auto!important;white-space:normal!important;overflow:visible!important;font-size:.9rem!important;}
+  .tw tbody td>*{min-width:0;}
+  .tw tbody td:last-child{border-bottom:0;}
+  .tw tbody td::before{content:attr(data-l);flex:0 0 38%;text-align:left;font-family:var(--fn);font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);}
+  .tw tbody td.c-tit{order:-1;display:block;text-align:left;font-size:1.02rem!important;font-weight:700;}
+  .tw tbody td.c-tit::before{display:none;}
+  .tw tbody td.c-largo{display:block;text-align:left;line-height:1.5;}
+  .tw tbody td.c-largo::before{display:block;margin-bottom:4px;}
+  .tw tbody td.c-acc{order:9;justify-content:stretch;gap:8px;border-bottom:0;}
+  .tw tbody td.c-acc::before{display:none;}
+  .tw tbody td.c-acc .btn{flex:1;justify-content:center;}
+  .tw tbody td.c-vacio{display:block;text-align:center;border:0;color:var(--text3);}
+  .tw tbody td.c-vacio::before{display:none;}
+  .tw tbody td.c-sin{display:none;}
+  .tw tbody td input.fgi,.tw tbody td select.fgs{min-width:0!important;width:58%;flex:0 0 58%;}
+  .ct-tabla td,.ct-tabla th{white-space:normal;}
+}
 </style>
 </head>
 <body>
@@ -580,7 +618,7 @@ button.chip{font-family:var(--fn);}
       <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn bsm" onclick="abrirVentaManual()">+ Cargar venta manual</button></div>
       <div class="sec-hd">
         <div><div class="sec-t">Gestión de pedidos</div><div class="sec-sub">Confirmá y asigná horarios de envío</div></div>
-        <select class="fgs" id="filtro-estado" style="width:180px" onchange="loadPedidos()"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="confirmado">Confirmado</option><option value="en_envio">En envío</option><option value="entregado">Entregado</option></select>
+        <div class="ped-filtros"><input class="fgi" type="search" id="buscar-pedido" placeholder="Buscar por socio, producto o categoría" aria-label="Buscar pedido" oninput="pintarPedidos()"/><select class="fgs" id="filtro-estado" style="width:180px" onchange="loadPedidos()"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="confirmado">Confirmado</option><option value="en_envio">En envío</option><option value="entregado">Entregado</option></select></div>
       </div>
       <div class="tw desk-only"><table><thead><tr><th>Socio</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th>Fecha envío</th><th>Pedido</th><th>Acciones</th><th></th></tr></thead><tbody id="tbl-pedidos"></tbody></table></div>
       <div class="card mob-only" id="mob-pedidos" style="padding:0;overflow:hidden"></div>
@@ -612,7 +650,7 @@ button.chip{font-family:var(--fn);}
         <div class="card" style="margin-bottom:20px">
           <div class="card-hd"><span class="card-title">Precios globales de flores</span><button class="btn bp2 bsm" onclick="guardarPreciosFlores()">💾 Guardar precios</button></div>
           <div class="psec" style="margin-bottom:16px"><div class="psec-t">Listas de precios — precio de flores por gramo</div><div id="listas-editor"></div><div style="font-size:.7rem;color:var(--text3);margin-top:8px">La moneda de cada lista es la que ve el socio en el precio de las flores. Los otros productos usan la moneda cargada en cada producto. Los cambios se aplican al tocar "Guardar precios".</div></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="duo">
             <div class="psec"><div class="psec-t">🛒 Mínimo de compra — por carrito</div><div class="pgrid" style="grid-template-columns:1fr 1fr"><div><label>Mín. BAJAS (g)</label><input type="number" id="fl-min-baja" placeholder="0"/></div><div><label>Mín. ALTAS (g)</label><input type="number" id="fl-min-alta" placeholder="0"/></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:7px">El socio cumple con cualquiera de los dos. Las promos cumplen el mínimo automáticamente.</div></div>
             <div class="psec"><div class="psec-t">🚚 Costo de envío — pedidos menores a 20g</div><div style="max-width:160px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Precio ($)</label><input type="number" id="fl-envio" placeholder="0"/></div></div></div></div>
             <div class="psec"><div class="psec-t">🪴 Esquejes — precio por pack ($)</div><div class="pgrid" style="grid-template-columns:1fr 1fr"><div><label>5 unidades</label><input type="number" id="pk-esq-5" placeholder="50000"/></div><div><label>10 unidades</label><input type="number" id="pk-esq-10" placeholder="80000"/></div></div></div>
@@ -817,6 +855,18 @@ button.chip{font-family:var(--fn);}
 </div>
 
 <!-- MODAL ACCION PEDIDO -->
+<div class="mo" id="salir-dlg">
+  <div class="mb" style="max-width:380px">
+    <div class="mb-body" style="text-align:center;padding:26px 22px">
+      <h3 style="font-size:1.2rem;margin-bottom:6px">¿Salir del admin?</h3>
+      <div style="font-size:.9rem;color:var(--text2);margin-bottom:18px">Si salís, vas a tener que ingresar la contraseña de nuevo.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="btn" style="justify-content:center" onclick="quedarme()">Quedarme</button>
+        <button class="btn bp2" style="justify-content:center" onclick="salirDeVerdad()">Salir</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="mo" id="modal-accion-pedido">
   <div class="mb" style="max-width:420px">
     <div class="mb-hd"><div class="mb-t">Gestionar pedido</div><button class="mb-cl" onclick="cerrarModal('modal-accion-pedido')">✕ Cerrar</button></div>
@@ -1072,20 +1122,37 @@ function loadBarSemana(){
 
 function loadPedidos(){
   var filtro=document.getElementById("filtro-estado").value;var query="pedidos?order=created_at.desc&archivado=not.eq.true";if(filtro)query+="&estado=eq."+filtro;
-  sb(query,"GET").then(function(data){allPedidos=data||[];var tbody=document.getElementById("tbl-pedidos");tbody.innerHTML="";
-    renderPedidosMob(allPedidos);
-    if(!allPedidos.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Sin pedidos</td></tr>';return;}
-    allPedidos.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";var acc="";
+  sb(query,"GET").then(function(data){allPedidos=data||[];pintarPedidos();});
+}
+/* Buscador de pedidos: por socio, producto, categoría, forma de pago o estado */
+var CAT_BUSCA={flores:"flores flor",promos:"promos promo",bombones:"bombones bombon comestibles",semillas:"semillas semilla",esquejes:"esquejes esqueje",cremas:"cremas crema",hongos:"hongos hongo microdosis",membresia:"membresia membresias"};
+function normBusca(t){return String(t||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");}
+function textoPedido(p){
+  var t=[p.socio,p.estado,String(p.estado||"").replace("_"," "),p.metodo_pago,p.instrucciones,p.nota_admin,(p.origen||""),(p.es_membresia?"membresia":"")];
+  (p.items||[]).forEach(function(i){t.push(i.name,i.tipo,i.cat,CAT_BUSCA[i.cat]||"",i.promoDetalle||"");});
+  return normBusca(t.join(" "));
+}
+function filtrarPedidos(lista){
+  var el=document.getElementById("buscar-pedido");var q=normBusca(el?el.value:"").trim();
+  if(!q)return lista;
+  var partes=q.split(/\s+/);
+  return lista.filter(function(p){var t=textoPedido(p);return partes.every(function(x){return t.indexOf(x)>=0;});});
+}
+function pintarPedidos(){
+    var lista=filtrarPedidos(allPedidos);var hayBusqueda=lista.length!==allPedidos.length||!!(document.getElementById("buscar-pedido")||{}).value;
+    var tbody=document.getElementById("tbl-pedidos");tbody.innerHTML="";
+    renderPedidosMob(lista,hayBusqueda);
+    if(!lista.length){tbody.innerHTML='<tr><td colspan="9" class="empty">'+(hayBusqueda&&allPedidos.length?"Ningún pedido coincide con la búsqueda":"Sin pedidos")+'</td></tr>';return;}
+    lista.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";var acc="";
       if(p.estado==="pendiente")acc='<button class="btn bp2 bsm" onclick="abrirConfirmar('+p.id+')">✓ Confirmar</button>';
       else if(p.estado==="confirmado")acc='<button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'en_envio\')">→ En envío</button>';
       else if(p.estado==="en_envio")acc='<button class="btn bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button>';
       if(p.es_solicitud)acc=accSolicitud(p);
       var verBtn='<button class="btn bsm" onclick="verDetallePedido('+p.id+')" title="Ver detalle">👁 Ver</button>';var delBtn='<button class="btn bsm bic" onclick="confirmarAccionPedido('+p.id+')" title="Archivar/Borrar" style="color:var(--text3)">⋯</button>';tbody.innerHTML+='<tr><td class="tdm">'+p.socio+tagPedido(p)+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>'+fmtTot(p)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td><td style="font-size:.78rem;font-family:var(--mono)">'+(p.fecha_envio?fmtDate(p.fecha_envio):'<span style="color:var(--text3)">—</span>')+'</td><td style="font-size:.78rem;font-family:var(--mono);color:var(--text3)">'+fmtDate(p.created_at)+'</td><td>'+verBtn+' '+acc+'</td><td>'+delBtn+'</td></tr>';});
-  });
 }
-function renderPedidosMob(lista){
+function renderPedidosMob(lista,hayBusqueda){
   var c=document.getElementById("mob-pedidos");if(!c)return;
-  if(!lista||!lista.length){c.innerHTML='<div class="empty" style="padding:24px;text-align:center;color:var(--text3)">Sin pedidos</div>';return;}
+  if(!lista||!lista.length){c.innerHTML='<div class="empty" style="padding:24px;text-align:center;color:var(--text3)">'+(hayBusqueda&&allPedidos.length?"Ningún pedido coincide con la búsqueda":"Sin pedidos")+'</div>';return;}
   c.innerHTML=lista.map(function(p){
     var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";
     var acc="";
@@ -2774,6 +2841,70 @@ function exportarContabilidad(){
   toast("Reporte exportado","success");
 }
 
+
+/* ===== Tablas como tarjetas en celular: cada dato lleva el nombre de su columna ===== */
+function rotularTablas(){
+  document.querySelectorAll(".tw table").forEach(function(t){
+    var ths=Array.prototype.map.call(t.querySelectorAll("thead th"),function(th){return th.textContent.trim();});
+    if(!ths.length)return;
+    var iTit=-1;
+    ths.forEach(function(h,i){if(iTit<0&&/^(socio|nombre)$/i.test(h))iTit=i;});
+    if(iTit<0)iTit=/^n[º°o]$/i.test(ths[0])?-1:0;
+    t.querySelectorAll("tbody tr").forEach(function(tr){
+      var tds=tr.children;
+      if(tds.length===1&&tds[0].colSpan>1){tds[0].className=(tds[0].className.replace(/\bc-\w+/g,"")+" c-vacio").trim();return;}
+      for(var i=0;i<tds.length;i++){
+        var td=tds[i],h=ths[i]||"";
+        if(td.getAttribute("data-l")!==h)td.setAttribute("data-l",h);
+        var cls="";
+        var tieneCtrl=!!td.querySelector("input,select,textarea");
+        var txt=td.textContent.trim();
+        if(i===iTit&&!tieneCtrl)cls="c-tit";
+        else if(/^acci/i.test(h)||(!h&&td.querySelector("button")))cls="c-acc";
+        else if(!h&&!txt&&!td.children.length)cls="c-sin";
+        else if(!tieneCtrl&&(txt.length>60||(td.children.length>1&&Array.prototype.every.call(td.children,function(x){return x.tagName==="DIV";}))))cls="c-largo";
+        ["c-tit","c-acc","c-sin","c-largo","c-vacio"].forEach(function(c){td.classList.toggle(c,c===cls);});
+      }
+    });
+  });
+}
+(function(){
+  var pend=false;
+  function pedir(){if(pend)return;pend=true;(window.requestAnimationFrame||setTimeout)(function(){pend=false;rotularTablas();});}
+  if(window.MutationObserver)new MutationObserver(pedir).observe(document.body,{childList:true,subtree:true});
+  pedir();
+})();
+
+/* ===== Botón atrás del celular: cierra lo abierto, vuelve a la sección anterior y pregunta antes de salir ===== */
+var _navPila=[],_navActual="general",_atrasArmado=false,_saliendo=false;
+var _goToBase=goTo;
+goTo=function(p){
+  if(p!==_navActual){_navPila.push(_navActual);if(_navPila.length>30)_navPila.shift();_navActual=p;}
+  return _goToBase(p);
+};
+function armarAtras(){try{history.pushState({melodys:1},"");}catch(e){}}
+var _initBase=init;
+init=function(){_initBase();if(!_atrasArmado){_atrasArmado=true;armarAtras();}};
+function panelAbierto(){return document.getElementById("app").classList.contains("on");}
+window.addEventListener("popstate",function(){
+  if(_saliendo||!panelAbierto())return;
+  var dlg=document.getElementById("salir-dlg");
+  if(dlg.classList.contains("on")){dlg.classList.remove("on");armarAtras();return;}
+  var abiertos=document.querySelectorAll(".mo.on");
+  if(abiertos.length){abiertos[abiertos.length-1].classList.remove("on");armarAtras();return;}
+  var sbar=document.getElementById("sb");
+  if(sbar&&sbar.classList.contains("on")){cerrarSidebar();armarAtras();return;}
+  if(_navPila.length){_navActual=_navPila.pop();_goToBase(_navActual);armarAtras();return;}
+  dlg.classList.add("on");armarAtras();
+});
+function quedarme(){document.getElementById("salir-dlg").classList.remove("on");}
+function salirDeVerdad(){
+  document.getElementById("salir-dlg").classList.remove("on");
+  _saliendo=true;_atrasArmado=false;_navPila=[];_navActual="general";
+  doLogout();
+  try{history.go(-2);}catch(e){}
+  setTimeout(function(){_saliendo=false;},800);
+}
 </script>
 </body>
 </html>

@@ -10,29 +10,33 @@
 <link rel="icon" href="favicon-admin.ico"/>
 <link rel="icon" type="image/png" href="favicon-admin.png"/>
 <link rel="apple-touch-icon" href="favicon-admin.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{
-  --bg:#f0f2f5;--surface:#ffffff;--surface2:#f8f9fb;--surface3:#eef0f4;
-  --sb:#1e3a5f;--sb2:#162d4a;--sb3:#254875;--sbt:#c8d8ea;--sbt2:#7fa3c0;
-  --border:#e2e6ed;--border2:#d0d5de;
-  --text:#1a2332;--text2:#4a5568;--text3:#8a96a8;
-  --blue:#2563eb;--blue2:#1d4ed8;--blue-bg:#eff6ff;--blue-lt:#dbeafe;
-  --orange:#ea580c;--orange2:#c2410c;--orange-bg:#fff7ed;--orange-lt:#fed7aa;
-  --green:#16a34a;--green-bg:#f0fdf4;--green-lt:#bbf7d0;
-  --red:#dc2626;--red-bg:#fef2f2;--red-lt:#fecaca;
-  --yellow:#ca8a04;--yellow-bg:#fefce8;--yellow-lt:#fef08a;
+  --bg:#F2E8D9;--surface:#FBF6EE;--surface2:#F6EEDF;--surface3:#E8DAC5;
+  --sb:#2E2016;--sb2:#241910;--sb3:#4B3A2B;--sbt:#F2E8D9;--sbt2:#CDBFAE;
+  --border:#DCCBB4;--border2:#CDB99C;
+  --text:#2E2016;--text2:#4B3A2B;--text3:#6F5C4A;
+  --blue:#B24B27;--blue2:#96391A;--blue-bg:#FBE9DF;--blue-lt:#F5CDB8;
+  --orange:#C2410C;--orange2:#9A3412;--orange-bg:#FDEBDD;--orange-lt:#F8C9A8;
+  --green:#2F6B35;--green-bg:#E3F2E3;--green-lt:#BFE0C1;
+  --red:#A8321B;--red-bg:#F8DDD3;--red-lt:#EFB9A8;
+  --yellow:#8A6200;--yellow-bg:#FCEBC0;--yellow-lt:#F5D77A;
   --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-lt:#ddd6fe;
   --r:8px;--r2:12px;--r3:16px;
   --sh:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
   --sh2:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
   --sh3:0 10px 25px rgba(0,0,0,.12),0 4px 6px rgba(0,0,0,.05);
-  --fn:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+  --fn:'Source Sans 3',system-ui,-apple-system,sans-serif;--hf:'Fraunces',Georgia,serif;--mono:'JetBrains Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:var(--fn);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--fn);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;-webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:var(--hf);letter-spacing:0;}
+button,.btn{transition:transform .12s ease,background-color .15s ease;}
+button:active{transform:scale(.97);}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* LOGIN */
 #ls{display:flex;min-height:100vh;}
@@ -611,6 +615,9 @@ button.chip{font-family:var(--fn);}
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
             <div class="psec"><div class="psec-t">🛒 Mínimo de compra — por carrito</div><div class="pgrid" style="grid-template-columns:1fr 1fr"><div><label>Mín. BAJAS (g)</label><input type="number" id="fl-min-baja" placeholder="0"/></div><div><label>Mín. ALTAS (g)</label><input type="number" id="fl-min-alta" placeholder="0"/></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:7px">El socio cumple con cualquiera de los dos. Las promos cumplen el mínimo automáticamente.</div></div>
             <div class="psec"><div class="psec-t">🚚 Costo de envío — pedidos menores a 20g</div><div style="max-width:160px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Precio ($)</label><input type="number" id="fl-envio" placeholder="0"/></div></div></div></div>
+            <div class="psec"><div class="psec-t">🪴 Esquejes — precio por pack ($)</div><div class="pgrid" style="grid-template-columns:1fr 1fr"><div><label>5 unidades</label><input type="number" id="pk-esq-5" placeholder="50000"/></div><div><label>10 unidades</label><input type="number" id="pk-esq-10" placeholder="80000"/></div></div></div>
+            <div class="psec"><div class="psec-t">🌱 Semillas — precio por pack ($)</div><div class="pgrid" style="grid-template-columns:1fr 1fr 1fr"><div><label>5 unidades</label><input type="number" id="pk-sem-5" placeholder="25000"/></div><div><label>10 unidades</label><input type="number" id="pk-sem-10" placeholder="40000"/></div><div><label>20 unidades</label><input type="number" id="pk-sem-20" placeholder="65000"/></div></div></div>
+            <div class="psec"><div class="psec-t">💬 WhatsApp del club (botón de Ayuda en la app de socios)</div><div style="max-width:260px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Número con código de país, solo dígitos</label><input type="text" id="cfg-whatsapp" inputmode="numeric" placeholder="5491112345678"/></div></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:7px">Si queda vacío, el botón no se muestra.</div></div>
           </div>
         </div>
         <div class="sec-hd"><div class="sec-t">Genéticas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'flores')">+ Agregar genética</button></div>
@@ -1054,13 +1061,13 @@ function fmtCorto(n){n=n||0;if(n>=1000000)return (n/1000000).toFixed(1).replace(
 function renderDonut(pedHoy){
   var data=["pendiente","confirmado","en_envio","entregado"].map(function(e){return pedHoy.filter(function(p){return p.estado===e;}).length;});
   if(charts.d)charts.d.destroy();var ctx=document.getElementById("chart-pedidos-dia");if(!ctx)return;
-  charts.d=new Chart(ctx,{type:"doughnut",data:{labels:["Pendiente","Confirmado","En envío","Entregado"],datasets:[{data:data,backgroundColor:["#fef08a","#dbeafe","#fed7aa","#bbf7d0"],borderColor:["#ca8a04","#2563eb","#ea580c","#16a34a"],borderWidth:2,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right",labels:{color:"#4a5568",font:{size:11,family:"Inter"},padding:14,usePointStyle:true}}}}});
+  charts.d=new Chart(ctx,{type:"doughnut",data:{labels:["Pendiente","Confirmado","En envío","Entregado"],datasets:[{data:data,backgroundColor:["#fef08a","#dbeafe","#fed7aa","#bbf7d0"],borderColor:["#ca8a04","#B24B27","#ea580c","#16a34a"],borderWidth:2,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right",labels:{color:"#4a5568",font:{size:11,family:"Inter"},padding:14,usePointStyle:true}}}}});
 }
 function loadBarSemana(){
   var days=[];var labels=[];for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);d.setHours(0,0,0,0);days.push(d);labels.push(d.toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit"}));}
   var data=days.map(function(d){var next=new Date(d);next.setDate(next.getDate()+1);return allPedidos.filter(function(p){var t=new Date(p.created_at);return t>=d&&t<next&&p.estado!=="cancelado"&&!p.es_solicitud&&p.moneda!=="USD";}).reduce(function(a,p){return a+(p.total||0);},0);});
   if(charts.s)charts.s.destroy();var ctx=document.getElementById("chart-semana");if(!ctx)return;
-  charts.s=new Chart(ctx,{type:"bar",data:{labels:labels,datasets:[{label:"Recaudación",data:data,backgroundColor:"rgba(37,99,235,.15)",borderColor:"#2563eb",borderWidth:2,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#8a96a8",font:{size:10}},grid:{color:"#e2e6ed"}},y:{ticks:{color:"#8a96a8",font:{size:10},callback:function(v){return"$"+v.toLocaleString("es-AR");}},grid:{color:"#e2e6ed"}}}}});
+  charts.s=new Chart(ctx,{type:"bar",data:{labels:labels,datasets:[{label:"Recaudación",data:data,backgroundColor:"rgba(232,114,74,.15)",borderColor:"#B24B27",borderWidth:2,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#8a96a8",font:{size:10}},grid:{color:"#e2e6ed"}},y:{ticks:{color:"#8a96a8",font:{size:10},callback:function(v){return"$"+v.toLocaleString("es-AR");}},grid:{color:"#e2e6ed"}}}}});
 }
 
 function loadPedidos(){
@@ -1383,11 +1390,20 @@ function loadConfig(){
     var mb=document.getElementById("fl-min-baja");if(mb)mb.value=(configData.min_bajas_g!=null?configData.min_bajas_g:20);
     var ma=document.getElementById("fl-min-alta");if(ma)ma.value=(configData.min_altas_g!=null?configData.min_altas_g:10);
     renderPlanesEditor();
+    var PK_DEF={esquejes:{5:50000,10:80000},semillas:{5:25000,10:40000,20:65000}},pk=null;
+    try{pk=configData.precios_packs?JSON.parse(configData.precios_packs):null;}catch(e){}
+    [["pk-esq-5","esquejes",5],["pk-esq-10","esquejes",10],["pk-sem-5","semillas",5],["pk-sem-10","semillas",10],["pk-sem-20","semillas",20]].forEach(function(x){
+      var el=document.getElementById(x[0]);if(!el)return;var v=pk&&pk[x[1]]?parseFloat(pk[x[1]][x[2]]):0;el.value=v>0?v:PK_DEF[x[1]][x[2]];
+    });
+    var wa=document.getElementById("cfg-whatsapp");if(wa)wa.value=configData.whatsapp_club||"";
   });
 }
 function guardarPreciosFlores(){
   capturarPreciosListas();
   var datos={listas_precios:JSON.stringify(LISTAS),costo_envio:parseFloat(document.getElementById("fl-envio").value)||0,min_bajas_g:parseInt(document.getElementById("fl-min-baja").value)||0,min_altas_g:parseInt(document.getElementById("fl-min-alta").value)||0};
+  function _pk(id,def){var v=parseFloat(document.getElementById(id).value);return v>0?v:def;}
+  datos.precios_packs=JSON.stringify({esquejes:{5:_pk("pk-esq-5",50000),10:_pk("pk-esq-10",80000)},semillas:{5:_pk("pk-sem-5",25000),10:_pk("pk-sem-10",40000),20:_pk("pk-sem-20",65000)}});
+  datos.whatsapp_club=(document.getElementById("cfg-whatsapp").value||"").replace(/\D/g,"")||null;
   LISTAS.forEach(function(l){datos["flores_baja_lista"+l.n]=parseFloat(configData["flores_baja_lista"+l.n])||0;datos["flores_alta_lista"+l.n]=parseFloat(configData["flores_alta_lista"+l.n])||0;});
   sbChk("configuracion?id=eq.1","PATCH",datos).then(function(r){
     if(!r||!r.length){datos.id=1;return sbChk("configuracion","POST",datos);}
@@ -2652,7 +2668,7 @@ function ctRenderDow(peds,medir){
   document.getElementById("ct-dow-hint").textContent=mi>=0&&mx>0?("El que más: "+DOW_NOM[mi]):"";
   if(typeof Chart==="undefined")return;
   var ctx=document.getElementById("ct-chart-dow");if(_ctChartDow)_ctChartDow.destroy();
-  _ctChartDow=new Chart(ctx,{type:"bar",data:{labels:DOW_NOM.map(function(x){return x.slice(0,3);}),datasets:[{data:vals,backgroundColor:vals.map(function(v,i){return i===mi?CT_COL[0]:"#b9d3f2";}),borderRadius:4,borderSkipped:false}]},
+  _ctChartDow=new Chart(ctx,{type:"bar",data:{labels:DOW_NOM.map(function(x){return x.slice(0,3);}),datasets:[{data:vals,backgroundColor:vals.map(function(v,i){return i===mi?CT_COL[0]:"#F0C9B5";}),borderRadius:4,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:"#1a2332",callbacks:{title:function(it){return DOW_NOM[it[0].dataIndex];},label:function(it){return " "+ctFmtMed(it.raw,medir);}}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11},color:"#8a96a8"}},y:{beginAtZero:true,grid:{color:"#eef0f4"},border:{display:false},ticks:{precision:0,font:{size:10},color:"#8a96a8",callback:function(v){return fmtEje(v,(medir==="plata"||medir==="ticket"||medir==="ppg"),medir);}}}}}});
 }
