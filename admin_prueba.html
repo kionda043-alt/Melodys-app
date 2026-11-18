@@ -494,7 +494,7 @@ html,body{max-width:100%;overflow-x:hidden;}
   /* Pestañas: grilla pareja, todas a la vista */
   .itabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;padding:6px;}
   #ct-tabs{grid-template-columns:repeat(auto-fit,minmax(92px,1fr));}
-  .itab{display:flex;align-items:center;justify-content:center;min-height:52px;padding:6px 3px;font-size:.74rem;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:anywhere;}
+  .itab{display:flex;align-items:center;justify-content:center;min-height:52px;padding:6px 1px;font-size:.7rem;letter-spacing:0;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:anywhere;}
   /* Tablas: una tarjeta por fila, con los datos apilados */
   .tw:not(.desk-only){overflow:visible;border:0;background:transparent;box-shadow:none;border-radius:0;}
   .tw table{display:block;width:100%;}
@@ -2862,7 +2862,7 @@ function rotularTablas(){
         if(i===iTit&&!tieneCtrl)cls="c-tit";
         else if(/^acci/i.test(h)||(!h&&td.querySelector("button")))cls="c-acc";
         else if(!h&&!txt&&!td.children.length)cls="c-sin";
-        else if(!tieneCtrl&&txt.length>60)cls="c-largo";
+        else if(!tieneCtrl&&(txt.length>60||(td.children.length>1&&Array.prototype.every.call(td.children,function(x){return x.tagName==="DIV";}))))cls="c-largo";
         ["c-tit","c-acc","c-sin","c-largo","c-vacio"].forEach(function(c){td.classList.toggle(c,c===cls);});
       }
     });
