@@ -518,6 +518,37 @@ html,body{max-width:100%;overflow-x:hidden;}
   .tw tbody td input.fgi,.tw tbody td select.fgs{min-width:0!important;width:58%;flex:0 0 58%;}
   .ct-tabla td,.ct-tabla th{white-space:normal;}
 }
+
+/* ===== Desplegables (Lista de precios, Envíos) ===== */
+.acc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh);margin-bottom:10px;overflow:hidden;}
+.acc>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;min-height:60px;}
+.acc>summary::-webkit-details-marker{display:none;}
+.acc>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--text3);border-bottom:2px solid var(--text3);transform:rotate(45deg);margin:0 4px 4px auto;flex-shrink:0;transition:transform .18s;}
+.acc[open]>summary::after{transform:rotate(-135deg);margin-bottom:-4px;}
+.acc[open]>summary{border-bottom:1px solid var(--border);}
+.acc-ic{width:36px;height:36px;border-radius:10px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;}
+.acc-t{font-weight:700;font-size:.98rem;color:var(--text);min-width:0;line-height:1.25;}
+.acc-t small{display:block;font-weight:500;font-size:.78rem;color:var(--text3);margin-top:2px;}
+.acc-st{flex-shrink:0;margin-left:auto;}
+.acc-st+summary::after,.acc>summary .acc-st~*{margin-left:0;}
+.acc>summary:has(.acc-st)::after{margin-left:4px;}
+.acc-b{padding:16px;}
+.acc-n{font-size:.76rem;color:var(--text3);margin-top:10px;line-height:1.45;}
+.acc-sub{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin:18px 0 10px;}
+.pp-row{padding:14px 0;border-bottom:1px solid var(--border);}
+.pp-row:first-child{padding-top:0;}
+.pp-row:last-child{border-bottom:0;padding-bottom:0;}
+.pp-nm{font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:10px;}
+.pp-nm span{font-weight:500;color:var(--text3);font-size:.78rem;}
+.pp-g{grid-template-columns:repeat(auto-fit,minmax(118px,1fr));}
+.pp-g select{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r);padding:9px 11px;color:var(--text);font-family:var(--fn);font-size:.85rem;outline:none;}
+.pk-g{grid-template-columns:repeat(auto-fit,minmax(118px,1fr));max-width:460px;}
+.pie-guardar{display:flex;justify-content:flex-end;margin-top:14px;}
+.rowB .dB{font-size:.74rem;color:var(--text2);margin-top:4px;line-height:1.35;}
+@media(max-width:900px){
+  .pp-g input,.pp-g select,.pk-g input{font-size:16px;padding:11px 12px;}
+  .pie-guardar .btn{width:100%;justify-content:center;}
+}
 </style>
 </head>
 <body>
@@ -557,11 +588,11 @@ html,body{max-width:100%;overflow-x:hidden;}
       <div class="sb-sec">Principal</div>
       <button class="ni-btn active" onclick="goTo('general')"><span class="ni">◈</span>General</button>
       <button class="ni-btn" onclick="goTo('pedidos')"><span class="ni">📋</span>Pedidos<span class="nbadge" id="badge-pedidos" style="display:none">0</span></button>
-      <button class="ni-btn" onclick="goTo('envios')"><span class="ni">🚚</span>Envíos<span class="nbadge y" id="badge-envios" style="display:none">0</span></button>
+      <button class="ni-btn" onclick="goTo('envios')"><span class="ni">🚚</span>Envíos</button>
       <div class="sb-sec">Gestión</div>
       <button class="ni-btn" onclick="goTo('catalogo')"><span class="ni">🌿</span>Catálogo</button>
+      <button class="ni-btn" onclick="goTo('precios')"><span class="ni">💲</span>Lista de precios</button>
       <button class="ni-btn" onclick="goTo('socios')"><span class="ni">👥</span>Socios</button>
-      <button class="ni-btn" onclick="goTo('administrativa')"><span class="ni">📊</span>Historial de ventas</button>
       <button class="ni-btn" onclick="goTo('contabilidad')"><span class="ni">📈</span>Contabilidad</button>
     </nav>
     <div class="sb-ft">
@@ -597,11 +628,11 @@ html,body{max-width:100%;overflow-x:hidden;}
       <div class="dash-lbl">Ir a</div>
       <div class="dash-grid">
         <div class="dash-tile" onclick="goTo('pedidos')"><span class="dash-bdg" id="d-bdg-ped" style="display:none">0</span><div class="dash-ic i-blue">📋</div><div class="dash-nm">Pedidos</div><div class="dash-ds" id="d-ds-ped">—</div></div>
-        <div class="dash-tile" onclick="goTo('envios')"><span class="dash-bdg" id="d-bdg-env" style="display:none">0</span><div class="dash-ic i-orange">🚚</div><div class="dash-nm">Envíos</div><div class="dash-ds" id="d-ds-env">—</div></div>
+        <div class="dash-tile" onclick="goTo('envios')"><div class="dash-ic i-orange">🚚</div><div class="dash-nm">Envíos</div><div class="dash-ds">Días y horarios de entrega</div></div>
         <div class="dash-tile" onclick="goTo('catalogo')"><div class="dash-ic i-green">🌿</div><div class="dash-nm">Catálogo</div><div class="dash-ds" id="d-ds-cat">—</div></div>
         <div class="dash-tile" onclick="goTo('socios')"><div class="dash-ic i-purple">👥</div><div class="dash-nm">Socios</div><div class="dash-ds" id="d-ds-soc">—</div></div>
         <div class="dash-tile" onclick="goTo('contabilidad')"><div class="dash-ic i-red">📈</div><div class="dash-nm">Contabilidad</div><div class="dash-ds">Reportes y análisis</div></div>
-        <div class="dash-tile" onclick="goTo('administrativa')"><div class="dash-ic i-gray">📊</div><div class="dash-nm">Historial</div><div class="dash-ds">Ventas por mes</div></div>
+        <div class="dash-tile" onclick="goTo('precios')"><div class="dash-ic i-gray">💲</div><div class="dash-nm">Lista de precios</div><div class="dash-ds">Precios, packs y envío</div></div>
       </div>
       <div class="card" style="margin-bottom:16px">
         <div class="card-hd"><span class="card-title">Últimos pedidos</span><button class="btn bsm" onclick="goTo('pedidos')">Ver todos →</button></div>
@@ -620,18 +651,14 @@ html,body{max-width:100%;overflow-x:hidden;}
         <div><div class="sec-t">Gestión de pedidos</div><div class="sec-sub">Confirmá y asigná horarios de envío</div></div>
         <div class="ped-filtros"><input class="fgi" type="search" id="buscar-pedido" placeholder="Buscar por socio, producto o categoría" aria-label="Buscar pedido" oninput="pintarPedidos()"/><select class="fgs" id="filtro-estado" style="width:180px" onchange="loadPedidos()"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="confirmado">Confirmado</option><option value="en_envio">En envío</option><option value="entregado">Entregado</option></select></div>
       </div>
-      <div class="tw desk-only"><table><thead><tr><th>Socio</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th>Fecha envío</th><th>Pedido</th><th>Acciones</th><th></th></tr></thead><tbody id="tbl-pedidos"></tbody></table></div>
+      <div class="tw desk-only"><table><thead><tr><th>Socio</th><th>Dirección</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th>Fecha envío</th><th>Pedido</th><th>Acciones</th><th></th></tr></thead><tbody id="tbl-pedidos"></tbody></table></div>
       <div class="card mob-only" id="mob-pedidos" style="padding:0;overflow:hidden"></div>
     </div>
 
     <!-- ENVIOS -->
     <div class="page" id="page-envios">
-      <div class="sec-hd"><div><div class="sec-t">Envíos confirmados</div><div class="sec-sub">Marcalos como entregados para quitarlos de la lista</div></div></div>
-      <div class="tw"><table><thead><tr><th>Socio</th><th>Dirección</th><th>Productos</th><th>Total</th><th>Pago</th><th>Fecha envío</th><th>Acción</th></tr></thead><tbody id="tbl-envios"></tbody></table></div>
-      <div class="card" style="margin-top:18px">
-        <div class="card-hd"><span class="card-title">📅 Días y horarios de envío</span><div style="display:flex;gap:8px"><button class="btn bsm" onclick="agregarDiaEnvio()">+ Agregar día</button><button class="btn bp2 bsm" onclick="guardarDiasEnvio()">💾 Guardar</button></div></div>
-        <div id="dias-envio-editor"></div>
-      </div>
+      <div class="sec-hd"><div><div class="sec-t">Días y horarios de envío</div><div class="sec-sub">Tocá un día para ver y cambiar sus horarios</div></div><div style="display:flex;gap:8px"><button class="btn bsm" onclick="agregarDiaEnvio()">+ Agregar día</button><button class="btn bp2 bsm" onclick="guardarDiasEnvio()">💾 Guardar</button></div></div>
+      <div id="dias-envio-editor"></div>
     </div>
 
     <!-- CATALOGO -->
@@ -647,25 +674,14 @@ html,body{max-width:100%;overflow-x:hidden;}
         <button class="itab" onclick="switchCatTab('membresias')">💳 Membresías</button>
       </div>
       <div id="cat-flores">
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-hd"><span class="card-title">Precios globales de flores</span><button class="btn bp2 bsm" onclick="guardarPreciosFlores()">💾 Guardar precios</button></div>
-          <div class="psec" style="margin-bottom:16px"><div class="psec-t">Listas de precios — precio de flores por gramo</div><div id="listas-editor"></div><div style="font-size:.7rem;color:var(--text3);margin-top:8px">La moneda de cada lista es la que ve el socio en el precio de las flores. Los otros productos usan la moneda cargada en cada producto. Los cambios se aplican al tocar "Guardar precios".</div></div>
-          <div class="duo">
-            <div class="psec"><div class="psec-t">🛒 Mínimo de compra — por carrito</div><div class="pgrid" style="grid-template-columns:1fr 1fr"><div><label>Mín. BAJAS (g)</label><input type="number" id="fl-min-baja" placeholder="0"/></div><div><label>Mín. ALTAS (g)</label><input type="number" id="fl-min-alta" placeholder="0"/></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:7px">El socio cumple con cualquiera de los dos. Las promos cumplen el mínimo automáticamente.</div></div>
-            <div class="psec"><div class="psec-t">🚚 Costo de envío — pedidos menores a 20g</div><div style="max-width:160px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Precio ($)</label><input type="number" id="fl-envio" placeholder="0"/></div></div></div></div>
-            <div class="psec"><div class="psec-t">🪴 Esquejes — precio por pack ($)</div><div class="pgrid" style="grid-template-columns:1fr 1fr"><div><label>5 unidades</label><input type="number" id="pk-esq-5" placeholder="50000"/></div><div><label>10 unidades</label><input type="number" id="pk-esq-10" placeholder="80000"/></div></div></div>
-            <div class="psec"><div class="psec-t">🌱 Semillas — precio por pack ($)</div><div class="pgrid" style="grid-template-columns:1fr 1fr 1fr"><div><label>5 unidades</label><input type="number" id="pk-sem-5" placeholder="25000"/></div><div><label>10 unidades</label><input type="number" id="pk-sem-10" placeholder="40000"/></div><div><label>20 unidades</label><input type="number" id="pk-sem-20" placeholder="65000"/></div></div></div>
-            <div class="psec"><div class="psec-t">💬 WhatsApp del club (botón de Ayuda en la app de socios)</div><div style="max-width:260px"><div class="pgrid" style="grid-template-columns:1fr"><div><label>Número con código de país, solo dígitos</label><input type="text" id="cfg-whatsapp" inputmode="numeric" placeholder="5491112345678"/></div></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:7px">Si queda vacío, el botón no se muestra.</div></div>
-          </div>
-        </div>
         <div class="sec-hd"><div class="sec-t">Genéticas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'flores')">+ Agregar genética</button></div>
         <div id="tbl-flores" class="gen-grid"></div>
       </div>
-      <div id="cat-bombones" style="display:none"><div class="sec-hd"><div class="sec-t">Bombones</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'bombones')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Precios por lista</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-bombones"></tbody></table></div></div>
-      <div id="cat-semillas" style="display:none"><div class="sec-hd"><div class="sec-t">Semillas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'semillas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Precios por lista</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-semillas"></tbody></table></div></div>
-      <div id="cat-esquejes" style="display:none"><div class="sec-hd"><div class="sec-t">Esquejes</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'esquejes')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Precios por lista</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-esquejes"></tbody></table></div></div>
-      <div id="cat-cremas" style="display:none"><div class="sec-hd"><div class="sec-t">Cremas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'cremas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Precios por lista</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-cremas"></tbody></table></div></div>
-      <div id="cat-hongos" style="display:none"><div class="sec-hd"><div class="sec-t">Hongos</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'hongos')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Precios por lista</th><th>Moneda</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-hongos"></tbody></table></div></div>
+      <div id="cat-bombones" style="display:none"><div class="sec-hd"><div class="sec-t">Bombones</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'bombones')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-bombones"></tbody></table></div></div>
+      <div id="cat-semillas" style="display:none"><div class="sec-hd"><div class="sec-t">Semillas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'semillas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-semillas"></tbody></table></div></div>
+      <div id="cat-esquejes" style="display:none"><div class="sec-hd"><div class="sec-t">Esquejes</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'esquejes')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-esquejes"></tbody></table></div></div>
+      <div id="cat-cremas" style="display:none"><div class="sec-hd"><div class="sec-t">Cremas</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'cremas')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-cremas"></tbody></table></div></div>
+      <div id="cat-hongos" style="display:none"><div class="sec-hd"><div class="sec-t">Hongos</div><button class="btn bp2 bsm" onclick="abrirModalProducto(null,'hongos')">+ Agregar</button></div><div class="tw"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Disponible</th><th>Acciones</th></tr></thead><tbody id="tbl-hongos"></tbody></table></div></div>
       <div id="cat-promos" style="display:none">
         <div class="sec-hd"><div class="sec-t">Promos</div><button class="btn bp2 bsm" onclick="abrirModalPromo(null)">+ Nueva promo</button></div>
         <div id="lista-promos"></div>
@@ -684,6 +700,20 @@ html,body{max-width:100%;overflow-x:hidden;}
       </div>
     </div>
 
+    <!-- LISTA DE PRECIOS -->
+    <div class="page" id="page-precios">
+      <div class="sec-hd"><div><div class="sec-t">Lista de precios</div><div class="sec-sub">Tocá un bloque para abrirlo. Los cambios se aplican al tocar Guardar precios.</div></div><button class="btn bp2" onclick="guardarPrecios()">💾 Guardar precios</button></div>
+      <details class="acc"><summary><span class="acc-ic">🌸</span><span class="acc-t">Flores<small>Precio por gramo de cada lista</small></span></summary><div class="acc-b"><div id="listas-editor"></div><div class="acc-n">La moneda de cada lista es la que ve el socio en el precio de las flores. Los demás productos usan la moneda elegida en su propio bloque.</div></div></details>
+      <details class="acc"><summary><span class="acc-ic">🛒</span><span class="acc-t">Mínimo de compra<small>Gramos mínimos por carrito</small></span></summary><div class="acc-b"><div class="pgrid pk-g"><div><label>Mín. BAJAS (g)</label><input type="number" id="fl-min-baja" placeholder="0"/></div><div><label>Mín. ALTAS (g)</label><input type="number" id="fl-min-alta" placeholder="0"/></div></div><div class="acc-n">El socio cumple con cualquiera de los dos. Las promos cumplen el mínimo automáticamente.</div></div></details>
+      <details class="acc"><summary><span class="acc-ic">🚚</span><span class="acc-t">Costo de envío<small>Para pedidos de menos de 20 g</small></span></summary><div class="acc-b"><div class="pgrid pk-g"><div><label>Precio ($)</label><input type="number" id="fl-envio" placeholder="0"/></div></div></div></details>
+      <details class="acc"><summary><span class="acc-ic">✂️</span><span class="acc-t">Esquejes<small>Precio por pack</small></span></summary><div class="acc-b"><div class="pgrid pk-g"><div><label>5 unidades ($)</label><input type="number" id="pk-esq-5" placeholder="50000"/></div><div><label>10 unidades ($)</label><input type="number" id="pk-esq-10" placeholder="80000"/></div></div></div></details>
+      <details class="acc"><summary><span class="acc-ic">🌱</span><span class="acc-t">Semillas<small>Precio por pack y por variedad</small></span></summary><div class="acc-b"><div class="pgrid pk-g"><div><label>5 unidades ($)</label><input type="number" id="pk-sem-5" placeholder="25000"/></div><div><label>10 unidades ($)</label><input type="number" id="pk-sem-10" placeholder="40000"/></div><div><label>20 unidades ($)</label><input type="number" id="pk-sem-20" placeholder="65000"/></div></div><div class="acc-sub">Precio por variedad</div><div id="pp-semillas"></div><div class="acc-n">El socio paga el precio del pack. El precio por variedad es el que se muestra al lado de cada semilla en la lista de la app.</div></div></details>
+      <details class="acc"><summary><span class="acc-ic">🍫</span><span class="acc-t">Bombones<small>Precio de cada producto por lista</small></span></summary><div class="acc-b"><div id="pp-bombones"></div></div></details>
+      <details class="acc"><summary><span class="acc-ic">🧴</span><span class="acc-t">Cremas<small>Precio de cada producto por lista</small></span></summary><div class="acc-b"><div id="pp-cremas"></div></div></details>
+      <details class="acc"><summary><span class="acc-ic">🍄</span><span class="acc-t">Hongos<small>Precio de cada producto por lista</small></span></summary><div class="acc-b"><div id="pp-hongos"></div></div></details>
+      <div class="pie-guardar"><button class="btn bp2" onclick="guardarPrecios()">💾 Guardar precios</button></div>
+    </div>
+
     <!-- SOCIOS -->
     <div class="page" id="page-socios">
       <div class="sec-hd">
@@ -696,13 +726,6 @@ html,body{max-width:100%;overflow-x:hidden;}
       <div class="mob-only" id="soc-lista"></div>
     </div>
 
-    <!-- ADMINISTRATIVA -->
-    <div class="page" id="page-administrativa">
-      <div id="adm-ventas">
-        <div class="sec-hd"><div class="sec-t">Historial de ventas</div><div style="display:flex;gap:10px"><input type="month" class="fgi" id="filtro-mes" style="width:180px" onchange="loadVentasMes()"/><button class="btn bp2 bsm" onclick="exportarExcel()">⬇ Excel</button></div></div>
-        <div class="tw"><table><thead><tr><th>Fecha</th><th>Socio</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th></tr></thead><tbody id="tbl-ventas"></tbody></table></div>
-      </div>
-    </div>
 
     <!-- CONTABILIDAD -->
     <div class="page" id="page-contabilidad">
@@ -918,7 +941,6 @@ html,body{max-width:100%;overflow-x:hidden;}
       <input type="hidden" id="mp2-id"/><input type="hidden" id="mp2-cat"/>
       <div class="fg"><label class="fgl">Nombre</label><input type="text" class="fgi" id="mp2-nombre" placeholder="Ej: G-Funk"/></div>
       <div class="fg"><label class="fgl">Descripción</label><textarea class="fgi" id="mp2-desc" placeholder="Descripción del producto..." rows="3" style="resize:vertical"></textarea></div>
-      <div id="mp2-precios-wrap"><div class="div"></div><div class="fgl" style="margin-bottom:12px">Precios por lista</div><div class="pgrid" id="mp2-precios-grid" style="margin-bottom:14px"></div><div class="fg"><label class="fgl">Moneda</label><select class="fgs" id="mp2-moneda"><option value="ARS">ARS — Pesos argentinos</option><option value="USD">USD — Dólares</option></select></div></div>
     </div>
     <div class="mb-ft"><button class="btn" onclick="cerrarModal('modal-producto')">Cancelar</button><button class="btn bp2" onclick="guardarProducto()">Guardar producto</button></div>
   </div>
@@ -1028,7 +1050,7 @@ function doLogin(){var p=document.getElementById("lf-pass").value;if(p===ADMIN_P
 function doLogout(){document.getElementById("app").classList.remove("on");document.getElementById("ls").style.display="flex";document.getElementById("lf-pass").value="";document.getElementById("lf-err").textContent="";}
 document.getElementById("lf-pass").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
 
-var pTitles={general:"General",pedidos:"Pedidos",envios:"Envíos",catalogo:"Catálogo",socios:"Socios",administrativa:"Historial de ventas",contabilidad:"Contabilidad"};
+var pTitles={general:"General",pedidos:"Pedidos",envios:"Envíos",catalogo:"Catálogo",precios:"Lista de precios",socios:"Socios",contabilidad:"Contabilidad"};
 function toggleSidebar(){var s=document.getElementById("sb"),o=document.getElementById("sb-ov");if(!s)return;var on=s.classList.toggle("on");if(o)o.classList.toggle("on",on);}
 function cerrarSidebar(){var s=document.getElementById("sb"),o=document.getElementById("sb-ov");if(s)s.classList.remove("on");if(o)o.classList.remove("on");}
 function goTo(p){
@@ -1036,16 +1058,15 @@ function goTo(p){
   document.querySelectorAll(".page").forEach(function(x){x.classList.remove("active");});
   document.querySelectorAll(".ni-btn").forEach(function(x){x.classList.remove("active");});
   document.getElementById("page-"+p).classList.add("active");
-  document.querySelectorAll(".ni-btn").forEach(function(x){if(x.textContent.trim().toLowerCase().startsWith(pTitles[p].toLowerCase().slice(0,4)))x.classList.add("active");});
+  document.querySelectorAll(".ni-btn").forEach(function(x){if(x.getAttribute("onclick")==="goTo('"+p+"')")x.classList.add("active");});
   document.getElementById("topbar-title").textContent=pTitles[p];
-  if(p==="general")loadGeneral();if(p==="pedidos")loadPedidos();if(p==="envios"){loadEnvios();loadDiasEnvioAdmin();}
-  if(p==="catalogo")loadCatalogo();if(p==="socios")loadSocios();if(p==="administrativa")loadAdministrativa();if(p==="contabilidad")loadContabilidad();
+  if(p==="general")loadGeneral();if(p==="pedidos")loadPedidos();if(p==="envios")loadDiasEnvioAdmin();
+  if(p==="catalogo")loadCatalogo();if(p==="precios")loadPrecios();if(p==="socios")loadSocios();if(p==="contabilidad")loadContabilidad();
 }
 function refreshAll(){var a=document.querySelector(".page.active");if(a)goTo(a.id.replace("page-",""));}
 
 function init(){
   var now=new Date();document.getElementById("tb-date").textContent=now.toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long"});
-  var mes=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");var fi=document.getElementById("filtro-mes");if(fi)fi.value=mes;
   loadConfig();loadGeneral();
   sb("socios?order=nombre.asc","GET").then(function(d){ allSocios=d||[]; }).catch(function(){});
 }
@@ -1122,7 +1143,16 @@ function loadBarSemana(){
 
 function loadPedidos(){
   var filtro=document.getElementById("filtro-estado").value;var query="pedidos?order=created_at.desc&archivado=not.eq.true";if(filtro)query+="&estado=eq."+filtro;
-  sb(query,"GET").then(function(data){allPedidos=data||[];pintarPedidos();});
+  sb(query,"GET").then(function(data){
+    allPedidos=data||[];
+    if(allSocios&&allSocios.length){pintarPedidos();return;}
+    sb("socios?order=nombre.asc","GET").then(function(d){allSocios=Array.isArray(d)?d:[];}).catch(function(){}).then(pintarPedidos);
+  });
+}
+/* Dirección cargada en el socio del pedido (vacío si no tiene o si el pedido no es de un socio) */
+function dirDe(p){
+  var s=(allSocios||[]).find(function(x){return (p.socio_id!=null&&x.id===p.socio_id)||x.nombre===p.socio;});
+  return s&&s.direccion?String(s.direccion).trim():"";
 }
 /* Buscador de pedidos: por socio, producto, categoría, forma de pago o estado */
 var CAT_BUSCA={flores:"flores flor",promos:"promos promo",bombones:"bombones bombon comestibles",semillas:"semillas semilla",esquejes:"esquejes esqueje",cremas:"cremas crema",hongos:"hongos hongo microdosis",membresia:"membresia membresias"};
@@ -1142,13 +1172,13 @@ function pintarPedidos(){
     var lista=filtrarPedidos(allPedidos);var hayBusqueda=lista.length!==allPedidos.length||!!(document.getElementById("buscar-pedido")||{}).value;
     var tbody=document.getElementById("tbl-pedidos");tbody.innerHTML="";
     renderPedidosMob(lista,hayBusqueda);
-    if(!lista.length){tbody.innerHTML='<tr><td colspan="9" class="empty">'+(hayBusqueda&&allPedidos.length?"Ningún pedido coincide con la búsqueda":"Sin pedidos")+'</td></tr>';return;}
+    if(!lista.length){tbody.innerHTML='<tr><td colspan="10" class="empty">'+(hayBusqueda&&allPedidos.length?"Ningún pedido coincide con la búsqueda":"Sin pedidos")+'</td></tr>';return;}
     lista.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";var acc="";
       if(p.estado==="pendiente")acc='<button class="btn bp2 bsm" onclick="abrirConfirmar('+p.id+')">✓ Confirmar</button>';
       else if(p.estado==="confirmado")acc='<button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'en_envio\')">→ En envío</button>';
       else if(p.estado==="en_envio")acc='<button class="btn bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button>';
       if(p.es_solicitud)acc=accSolicitud(p);
-      var verBtn='<button class="btn bsm" onclick="verDetallePedido('+p.id+')" title="Ver detalle">👁 Ver</button>';var delBtn='<button class="btn bsm bic" onclick="confirmarAccionPedido('+p.id+')" title="Archivar/Borrar" style="color:var(--text3)">⋯</button>';tbody.innerHTML+='<tr><td class="tdm">'+p.socio+tagPedido(p)+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>'+fmtTot(p)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td><td style="font-size:.78rem;font-family:var(--mono)">'+(p.fecha_envio?fmtDate(p.fecha_envio):'<span style="color:var(--text3)">—</span>')+'</td><td style="font-size:.78rem;font-family:var(--mono);color:var(--text3)">'+fmtDate(p.created_at)+'</td><td>'+verBtn+' '+acc+'</td><td>'+delBtn+'</td></tr>';});
+      var verBtn='<button class="btn bsm" onclick="verDetallePedido('+p.id+')" title="Ver detalle">👁 Ver</button>';var delBtn='<button class="btn bsm bic" onclick="confirmarAccionPedido('+p.id+')" title="Archivar/Borrar" style="color:var(--text3)">⋯</button>';var dir=dirDe(p);tbody.innerHTML+='<tr><td class="tdm">'+p.socio+tagPedido(p)+'</td><td style="font-size:.82rem;max-width:200px">'+(dir?escA(dir):'<span style="color:var(--text3)">—</span>')+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>'+fmtTot(p)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td><td style="font-size:.78rem;font-family:var(--mono)">'+(p.fecha_envio?fmtDate(p.fecha_envio):'<span style="color:var(--text3)">—</span>')+'</td><td style="font-size:.78rem;font-family:var(--mono);color:var(--text3)">'+fmtDate(p.created_at)+'</td><td>'+verBtn+' '+acc+'</td><td>'+delBtn+'</td></tr>';});
 }
 function renderPedidosMob(lista,hayBusqueda){
   var c=document.getElementById("mob-pedidos");if(!c)return;
@@ -1161,9 +1191,11 @@ function renderPedidosMob(lista,hayBusqueda){
     else if(p.estado==="en_envio")acc='<button class="btn bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button>';
     if(p.es_solicitud)acc=accSolicitud(p);
     var envio=p.fecha_envio?(" · 🚚 "+fmtDate(p.fecha_envio)):"";
+    var dir=dirDe(p);
     return '<div class="rowB">'
       +'<div class="b1"><span class="nB">'+(p.socio||"—")+tagPedido(p)+'</span><span class="tB">'+fmtTot(p)+'</span></div>'
       +'<div class="iB">'+items+'</div>'
+      +(dir?'<div class="dB">📍 '+escA(dir)+'</div>':'')
       +'<div class="b3">'+eBadge(p.estado)+'<span class="meta">'+(p.metodo_pago==="transferencia"?"⟳ Transf.":"💵 Efvo.")+envio+'</span>'
       +'<span class="btns"><button class="btn bsm" onclick="verDetallePedido('+p.id+')">👁 Ver</button>'+acc
       +'<button class="btn bsm bic" onclick="confirmarAccionPedido('+p.id+')" style="color:var(--text3)">⋯</button></span></div>'
@@ -1348,16 +1380,8 @@ function confirmarAccionPedido(id){accionPedidoId=id;var p=allPedidos.find(funct
 function archivarPedido(){if(!accionPedidoId)return;sb("pedidos?id=eq."+accionPedidoId,"PATCH",{archivado:true}).then(function(){cerrarModal("modal-accion-pedido");toast("Pedido archivado","success");loadPedidos();});}
 function borrarPedidoPerm(){if(!accionPedidoId)return;if(!confirm("⚠️ ÚLTIMO AVISO: el pedido se borra para siempre y NO se puede recuperar. ¿Seguro?"))return;sb("pedidos?id=eq."+accionPedidoId,"DELETE").then(function(){cerrarModal("modal-accion-pedido");toast("Pedido eliminado","success");loadPedidos();});}
 
-function loadEnvios(){sb("pedidos?estado=in.(confirmado,en_envio)&order=fecha_envio.asc","GET").then(function(data){
-  var tbody=document.getElementById("tbl-envios");tbody.innerHTML="";
-  data=(data||[]).filter(function(p){return !p.es_solicitud;});
-  if(!data.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Sin envíos pendientes</td></tr>';return;}
-  data.forEach(function(p){
-    var s=allSocios.find(function(x){return (p.socio_id!=null&&x.id===p.socio_id)||x.nombre===p.socio;});var dir=s&&s.direccion?s.direccion:"—";
-    var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";
-    tbody.innerHTML+='<tr><td class="tdm">'+p.socio+tagPedido(p)+'</td><td style="font-size:.82rem">'+dir+'</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">'+items+'</td><td><strong>'+fmtTot(p)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.fecha_envio)+'</td><td><button class="btn bg2 bsm" onclick="cambiarEstado('+p.id+',\'entregado\')">✓ Entregado</button></td></tr>';
-  });
-});}
+/* La lista de envíos confirmados se sacó: esa información está en Pedidos */
+function loadEnvios(){}
 
 var catTabs=["flores","bombones","semillas","esquejes","cremas","hongos"];
 var allCatTabs=["flores","bombones","semillas","esquejes","cremas","hongos","promos","membresias"];
@@ -1423,11 +1447,11 @@ function renderListasEditor(){
   c.innerHTML=h;
 }
 function agregarLista(){
-  capturarPreciosListas();
+  capturarPreciosListas();capturarPreciosProductos();
   var n=LISTAS.reduce(function(m,l){return Math.max(m,l.n);},0)+1;
   if(n>MAX_LISTAS){toast("Máximo "+MAX_LISTAS+" listas","error");return;}
   LISTAS.push({n:n,nombre:"Lista "+n,moneda:"ARS"});
-  renderListasEditor();
+  renderListasEditor();renderPreciosProductos();
   toast("Lista "+n+" agregada. Cargá sus precios y tocá Guardar precios","success");
 }
 function quitarLista(){
@@ -1437,7 +1461,7 @@ function quitarLista(){
     var n=Array.isArray(d)?d.length:0;
     if(n>0){toast("Hay "+n+" socio"+(n>1?"s":"")+" en "+listaNombre(l.n)+". Pasalos a otra lista antes de quitarla","error");return;}
     if(!confirm("¿Quitar "+listaNombre(l.n)+"? Se aplica al tocar Guardar precios."))return;
-    LISTAS.pop();renderListasEditor();
+    capturarPreciosProductos();LISTAS.pop();renderListasEditor();renderPreciosProductos();
   });
 }
 function renderListaOptions(sel){
@@ -1462,65 +1486,114 @@ function loadConfig(){
     [["pk-esq-5","esquejes",5],["pk-esq-10","esquejes",10],["pk-sem-5","semillas",5],["pk-sem-10","semillas",10],["pk-sem-20","semillas",20]].forEach(function(x){
       var el=document.getElementById(x[0]);if(!el)return;var v=pk&&pk[x[1]]?parseFloat(pk[x[1]][x[2]]):0;el.value=v>0?v:PK_DEF[x[1]][x[2]];
     });
-    var wa=document.getElementById("cfg-whatsapp");if(wa)wa.value=configData.whatsapp_club||"";
   });
 }
-function guardarPreciosFlores(){
+function guardarPrecios(){
   capturarPreciosListas();
   var datos={listas_precios:JSON.stringify(LISTAS),costo_envio:parseFloat(document.getElementById("fl-envio").value)||0,min_bajas_g:parseInt(document.getElementById("fl-min-baja").value)||0,min_altas_g:parseInt(document.getElementById("fl-min-alta").value)||0};
   function _pk(id,def){var v=parseFloat(document.getElementById(id).value);return v>0?v:def;}
   datos.precios_packs=JSON.stringify({esquejes:{5:_pk("pk-esq-5",50000),10:_pk("pk-esq-10",80000)},semillas:{5:_pk("pk-sem-5",25000),10:_pk("pk-sem-10",40000),20:_pk("pk-sem-20",65000)}});
-  datos.whatsapp_club=(document.getElementById("cfg-whatsapp").value||"").replace(/\D/g,"")||null;
   LISTAS.forEach(function(l){datos["flores_baja_lista"+l.n]=parseFloat(configData["flores_baja_lista"+l.n])||0;datos["flores_alta_lista"+l.n]=parseFloat(configData["flores_alta_lista"+l.n])||0;});
   sbChk("configuracion?id=eq.1","PATCH",datos).then(function(r){
     if(!r||!r.length){datos.id=1;return sbChk("configuracion","POST",datos);}
     return r;
-  }).then(function(){toast("Precios y listas guardados","success");loadConfig();})
+  }).then(function(){return guardarPreciosProductos();})
+  .then(function(n){toast("Precios guardados"+(n?" ("+n+" producto"+(n>1?"s":"")+")":""),"success");loadPrecios();})
   .catch(function(e){toast("No se pudo guardar: "+e.message,"error");});
 }
 
-/* ---------- Productos: precios por lista ---------- */
-function preciosListasTxt(p){
-  var usd=p.moneda==="USD";
-  return LISTAS.map(function(l){
-    var v=p["precio_lista"+l.n+(usd?"_usd":"_ars")];
-    return '<div style="white-space:nowrap;font-size:.8rem"><span style="color:var(--text3)">'+escA(l.nombre)+':</span> <span style="font-family:var(--mono)">'+(v?fmt(v):"—")+'</span></div>';
-  }).join("");
-}
+/* ---------- Productos del catálogo: solo nombre, descripción y disponibilidad ---------- */
 function renderTablaProductos(cat,data){
   if(cat==="flores"){return renderFloresCards(data||[]);}
   var tbody=document.getElementById("tbl-"+cat);if(!tbody)return;tbody.innerHTML="";
-  if(!data||!data.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Sin productos. Agregá el primero.</td></tr>';return;}
-  var hasDesc=["semillas","esquejes"].includes(cat);
+  if(!data||!data.length){tbody.innerHTML='<tr><td colspan="4" class="empty">Sin productos. Agregá el primero.</td></tr>';return;}
   data.forEach(function(p){
     var tog='<label class="tgl"><input type="checkbox"'+(p.activo?" checked":"")+" onchange=\"toggleProducto('"+p.id+"',this.checked)\"/><span class=\"tgl-s\"></span></label>";
     var acc='<button class="btn bsm bic" onclick="abrirModalProducto(\''+p.id+'\',\''+cat+'\')" title="Editar">✏</button> <button class="btn bsm bic br2" onclick="eliminarProducto(\''+p.id+'\',\''+cat+'\')" title="Eliminar">✕</button>';
-    var mon=p.moneda==="USD"?'<span class="badge bb">USD</span>':'<span class="badge bgr">ARS</span>';
-    tbody.innerHTML+='<tr><td class="tdm">'+p.nombre+'</td>'+(hasDesc?'<td style="font-size:.78rem;max-width:140px">'+(p.descripcion||"—")+'</td>':'')+'<td>'+preciosListasTxt(p)+'</td><td>'+mon+'</td><td>'+tog+'</td><td>'+acc+'</td></tr>';
+    tbody.innerHTML+='<tr><td class="tdm">'+escA(p.nombre)+'</td><td style="font-size:.82rem;max-width:320px">'+(p.descripcion?escA(p.descripcion):'<span style="color:var(--text3)">—</span>')+'</td><td>'+tog+'</td><td>'+acc+'</td></tr>';
   });
 }
 function abrirModalProducto(id,cat){
   document.getElementById("mp2-id").value=id||"";document.getElementById("mp2-cat").value=cat;document.getElementById("mp2-titulo").textContent=id?"Editar producto":"Nuevo producto";
-  document.getElementById("mp2-nombre").value="";document.getElementById("mp2-desc").value="";document.getElementById("mp2-moneda").value="ARS";
-  document.getElementById("mp2-precios-wrap").style.display=cat==="flores"?"none":"block";
+  document.getElementById("mp2-nombre").value="";document.getElementById("mp2-desc").value="";
   var p=id?allProductos.find(function(x){return x.id===id;}):null;
-  if(p){document.getElementById("mp2-nombre").value=p.nombre||"";document.getElementById("mp2-desc").value=p.descripcion||"";document.getElementById("mp2-moneda").value=p.moneda||"ARS";}
-  var grid=document.getElementById("mp2-precios-grid");
-  if(grid)grid.innerHTML=LISTAS.map(function(l){
-    var v=p?(p["precio_lista"+l.n+"_ars"]||p["precio_lista"+l.n+"_usd"]||""):"";
-    return '<div><label>'+escA(l.nombre)+'</label><input type="number" class="fgi" id="mp2-l'+l.n+'" placeholder="0" value="'+escA(v)+'"/></div>';
-  }).join("");
+  if(p){document.getElementById("mp2-nombre").value=p.nombre||"";document.getElementById("mp2-desc").value=p.descripcion||"";}
   abrirModal("modal-producto");
 }
 function guardarProducto(){
   var id=document.getElementById("mp2-id").value;var cat=document.getElementById("mp2-cat").value;var nombre=document.getElementById("mp2-nombre").value.trim();
   if(!nombre){toast("Ingresá un nombre","error");return;}
-  var moneda=document.getElementById("mp2-moneda").value;var esUsd=moneda==="USD";
-  var datos={nombre:nombre,descripcion:document.getElementById("mp2-desc").value,categoria:cat,moneda:moneda,activo:true};
-  if(cat!=="flores"){LISTAS.forEach(function(l){var el=document.getElementById("mp2-l"+l.n);var v=el?(parseFloat(el.value)||0):0;datos["precio_lista"+l.n+(esUsd?"_usd":"_ars")]=v;});}
+  /* Precios y moneda ya no se tocan acá: se cargan en Lista de precios */
+  var datos={nombre:nombre,descripcion:document.getElementById("mp2-desc").value,categoria:cat,activo:true};
+  if(!id)datos.moneda="ARS";
+  var conPrecio=PP_CATS.indexOf(cat)>=0;
   var prom=id?sbChk("productos?id=eq."+id,"PATCH",datos):sbChk("productos","POST",datos);
-  prom.then(function(){cerrarModal("modal-producto");toast(id?"Actualizado":"Creado","success");loadProductosCat(cat);})
+  prom.then(function(){cerrarModal("modal-producto");toast(id?"Actualizado":(conPrecio?"Creado. El precio se carga en Lista de precios":"Creado"),"success");loadProductosCat(cat);})
   .catch(function(e){toast("No se pudo guardar: "+e.message,"error");});
+}
+
+/* ---------- Lista de precios: precio de cada producto por lista ---------- */
+var PP_CATS=["semillas","bombones","cremas","hongos"];
+var _ppProds=[],_ppEdit={};
+function loadPrecios(){
+  _ppEdit={};
+  return loadConfig().then(function(){
+    return sb("productos?categoria=in.("+PP_CATS.join(",")+")&order=nombre.asc","GET");
+  }).then(function(d){
+    _ppProds=Array.isArray(d)?d:[];
+    renderPreciosProductos();
+  });
+}
+function ppCol(n,moneda){return "precio_lista"+n+(moneda==="USD"?"_usd":"_ars");}
+function ppValor(p,n){
+  var e=_ppEdit[p.id];
+  if(e&&e.l[n]!==undefined)return e.l[n];
+  var mon=p.moneda==="USD"?"USD":"ARS";
+  var v=p[ppCol(n,mon)]||p[ppCol(n,mon==="USD"?"ARS":"USD")];
+  return v?v:"";
+}
+function ppMoneda(p){var e=_ppEdit[p.id];return e&&e.moneda?e.moneda:(p.moneda==="USD"?"USD":"ARS");}
+/* Guarda lo que está escrito en pantalla antes de volver a dibujar */
+function capturarPreciosProductos(){
+  _ppProds.forEach(function(p){
+    var sel=document.getElementById("pp-"+p.id+"-mon");if(!sel)return;
+    var e={moneda:sel.value,l:{}};
+    LISTAS.forEach(function(l){var el=document.getElementById("pp-"+p.id+"-l"+l.n);if(el)e.l[l.n]=el.value;});
+    _ppEdit[p.id]=e;
+  });
+}
+function renderPreciosProductos(){
+  PP_CATS.forEach(function(cat){
+    var c=document.getElementById("pp-"+cat);if(!c)return;
+    var l=_ppProds.filter(function(p){return p.categoria===cat;});
+    if(!l.length){c.innerHTML='<div class="empty" style="padding:8px 0;text-align:left">Sin productos en esta categoría. Se agregan desde el Catálogo.</div>';return;}
+    c.innerHTML=l.map(function(p){
+      var mon=ppMoneda(p);
+      return '<div class="pp-row"><div class="pp-nm">'+escA(p.nombre)+(p.activo===false?' <span>· no disponible</span>':'')+'</div>'
+        +'<div class="pgrid pp-g"><div><label>Moneda</label><select id="pp-'+p.id+'-mon"><option value="ARS"'+(mon!=="USD"?" selected":"")+'>Pesos</option><option value="USD"'+(mon==="USD"?" selected":"")+'>Dólares</option></select></div>'
+        +LISTAS.map(function(li){return '<div><label>'+escA(li.nombre)+'</label><input type="number" min="0" id="pp-'+p.id+'-l'+li.n+'" placeholder="0" value="'+escA(ppValor(p,li.n))+'"/></div>';}).join("")
+        +'</div></div>';
+    }).join("");
+  });
+}
+/* Manda a la base solo los productos cuyo precio o moneda cambió. Devuelve cuántos guardó. */
+function guardarPreciosProductos(){
+  capturarPreciosProductos();
+  var tareas=[];
+  _ppProds.forEach(function(p){
+    var e=_ppEdit[p.id];if(!e)return;
+    var monOrig=p.moneda==="USD"?"USD":"ARS";
+    var datos={},cambio=e.moneda!==monOrig;
+    if(cambio)datos.moneda=e.moneda;
+    LISTAS.forEach(function(l){
+      var col=ppCol(l.n,e.moneda);var nuevo=parseFloat(e.l[l.n])||0;var viejo=parseFloat(p[col])||0;
+      if(nuevo!==viejo||cambio){datos[col]=nuevo;if(nuevo!==viejo)cambio=true;}
+    });
+    if(cambio)tareas.push(sbChk("productos?id=eq."+p.id,"PATCH",datos).then(function(r){
+      if(!r||!r.length)throw new Error("no se pudo guardar el precio de "+p.nombre);
+    }));
+  });
+  return Promise.all(tareas).then(function(){return tareas.length;});
 }
 
 /* ---------- Socios ---------- */
@@ -2042,11 +2115,6 @@ function togglePausaSocio(id,pausado){
 function verHistorial2(s){document.getElementById("hist2-nombre").textContent=s.nombre;document.getElementById("hist2-body").innerHTML='<div class="loading">Cargando...</div>';abrirModal("modal-hist");sb("pedidos?socio_id=eq."+s.id+"&order=created_at.desc","GET").then(function(data){if(!data||!data.length){sb("pedidos?socio=eq."+encodeURIComponent(s.nombre)+"&order=created_at.desc","GET").then(function(d2){renderHistorial(d2||[]);});return;}renderHistorial(data);});}
 function renderHistorial(data){var body=document.getElementById("hist2-body");if(!data.length){body.innerHTML='<div class="empty">Sin historial</div>';return;}var html='<div class="tw"><table><thead><tr><th>Fecha</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th></tr></thead><tbody>';data.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";html+='<tr><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.created_at)+'</td><td style="font-size:.78rem;max-width:180px">'+items+'</td><td><strong>'+fmtTot(p)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td></tr>';});html+='</tbody></table></div>';body.innerHTML=html;}
 
-function switchAdminTab(tab){["resumen","ventas"].forEach(function(t){var el=document.getElementById("adm-"+t);if(el)el.style.display=t===tab?"block":"none";});document.querySelectorAll("#page-administrativa .itab").forEach(function(b,i){b.classList.toggle("active",i===["resumen","ventas"].indexOf(tab));});if(tab==="ventas")loadVentasMes();}
-function loadAdministrativa(){loadVentasMes();}
-function rangoMes(mes){var pr=mes.split("-");var ini=new Date(parseInt(pr[0]),parseInt(pr[1])-1,1);var fin=new Date(parseInt(pr[0]),parseInt(pr[1]),1);return {ini:ini.toISOString(),fin:fin.toISOString()};}
-function loadVentasMes(){var mes=document.getElementById("filtro-mes").value;if(!mes)return;var r=rangoMes(mes);sb("pedidos?created_at=gte."+r.ini+"&created_at=lt."+r.fin+"&order=created_at.desc","GET").then(function(data){var tbody=document.getElementById("tbl-ventas");tbody.innerHTML="";data=(data||[]).filter(function(p){return !p.es_solicitud;});if(!data.length){tbody.innerHTML='<tr><td colspan="6" class="empty">Sin ventas en este período</td></tr>';return;}data.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"—";tbody.innerHTML+='<tr style="cursor:pointer" onclick="verDetalleHist('+p.id+')"><td style="font-family:var(--mono);font-size:.78rem">'+fmtDate(p.created_at)+'</td><td class="tdm">'+p.socio+tagPedido(p)+'</td><td style="font-size:.78rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+items+'</td><td><strong>'+fmtTot(p)+'</strong></td><td>'+pBadge(p.metodo_pago)+'</td><td>'+eBadge(p.estado)+'</td></tr>';});window._histPedidos=data;});}
-function verDetalleHist(id){var p=(window._histPedidos||[]).find(function(x){return x.id===id;});if(p&&!allPedidos.find(function(x){return x.id===id;}))allPedidos.push(p);verDetallePedido(id);}
 function loadMembresias(){var now=new Date();sb("socios?membresia_tipo=not.is.null&order=membresia_vence.asc","GET").then(function(data){data=data||[];var act=data.filter(function(s){return s.membresia_vence&&new Date(s.membresia_vence)>now;});var ven=data.filter(function(s){return !s.membresia_vence||new Date(s.membresia_vence)<=now;});var i10=act.filter(function(s){return s.membresia_tipo===10;}).length;var i25=act.filter(function(s){return s.membresia_tipo===25;}).length;var i50=act.filter(function(s){return s.membresia_tipo===50;}).length;document.getElementById("adm-mem-stats").innerHTML='<div class="sc green"><div class="sc-hd"><span class="sc-lbl">Activas</span><div class="sc-icon green">✅</div></div><div class="sc-val">'+act.length+'</div><div class="sc-sub">De '+data.length+' totales</div></div><div class="sc blue"><div class="sc-hd"><span class="sc-lbl">Por tipo</span><div class="sc-icon blue">📊</div></div><div class="sc-val" style="font-size:1.1rem">10g:'+i10+' · 25g:'+i25+' · 50g:'+i50+'</div></div><div class="sc orange"><div class="sc-hd"><span class="sc-lbl">Vencidas</span><div class="sc-icon orange">⚠️</div></div><div class="sc-val" style="color:var(--red)">'+ven.length+'</div><div class="sc-sub">Renovación pendiente</div></div>';var tbody=document.getElementById("tbl-mem");tbody.innerHTML="";if(!data.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Sin membresías</td></tr>';return;}
 // Traer pedidos de membresía de todos para contar y mostrar fechas
 sb("pedidos?es_membresia=eq.true&order=created_at.desc","GET").then(function(peds){
@@ -2061,7 +2129,6 @@ sb("pedidos?es_membresia=eq.true&order=created_at.desc","GET").then(function(ped
   });
 });});}
 
-function exportarExcel(){var mes=document.getElementById("filtro-mes")?document.getElementById("filtro-mes").value:"";var now=new Date();if(!mes)mes=now.getFullYear()+"-"+("0"+(now.getMonth()+1)).slice(-2);var r=rangoMes(mes);sb("pedidos?created_at=gte."+r.ini+"&created_at=lt."+r.fin+"&order=created_at.asc","GET").then(function(data){data=(data||[]).filter(function(p){return !p.es_solicitud;});if(!data.length){toast("Sin datos para exportar","error");return;}var rows=[["Fecha","Socio","Productos","Moneda","Total","Método pago","Estado"]];data.forEach(function(p){var items=p.items?p.items.map(function(i){return i.name+(i.grams>1?" "+i.grams+"g":"");}).join(", "):"";rows.push([fmtDate(p.created_at),p.socio,items,p.moneda||"ARS",p.total,p.metodo_pago||"efectivo",p.estado]);});rows.push([]);["ARS","USD"].forEach(function(m){var vivos=data.filter(function(p){return (p.moneda||"ARS")===m&&p.estado!=="cancelado";});if(vivos.length)rows.push(["","","TOTAL (sin cancelados)",m,vivos.reduce(function(a,p){return a+(p.total||0);},0),"",""]);});var wb=XLSX.utils.book_new();var ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=[{wch:18},{wch:20},{wch:40},{wch:8},{wch:12},{wch:16},{wch:14}];XLSX.utils.book_append_sheet(wb,ws,"Ventas");XLSX.writeFile(wb,"melodys_farm_ventas_"+mes+".xlsx");toast("Excel exportado","success");});}
 
 /* ===== FLORES: tarjetas con stock separado + contraste ===== */
 var _flores=[];
@@ -2249,28 +2316,44 @@ function loadDiasEnvioAdmin(){
 }
 function parseDiasAdm(raw){ if(raw){try{var a=JSON.parse(raw);if(Array.isArray(a)&&a.length)return a;}catch(e){}} return JSON.parse(JSON.stringify(DIAS_ENVIO_DEFAULT_ADM)); }
 function dowSelectAdm(val,onch){ return '<select class="fgs" style="padding:7px" onchange="'+onch+'">'+DOW_NAMES.map(function(n,i){return '<option value="'+i+'"'+(i==val?" selected":"")+'>'+n+'</option>';}).join("")+'</select>'; }
+var _diaAbierto=null;
+function diaEnvResumen(d){
+  var corte=(DOW_NAMES[d.corte_dow]||"").toLowerCase();
+  return (DOW_NAMES[d.dow]||"")+" · "+(d.desde||"")+" a "+(d.hasta||"")+" hs"+(corte?" · cierra "+corte+" "+d.corte_hora+" hs":"");
+}
+function diaEnvEstado(d){return d.activo!==false?'<span class="badge bg">Activo</span>':'<span class="badge bgr">Pausado</span>';}
 function renderDiasEnvioEditor(){
   var c=document.getElementById("dias-envio-editor");if(!c)return;
-  if(!_diasEnvio.length){c.innerHTML='<div class="empty" style="padding:16px;text-align:center;color:var(--text3)">Sin días. Agregá uno con "+ Agregar día".</div>';return;}
+  if(!_diasEnvio.length){c.innerHTML='<div class="card"><div class="empty" style="padding:16px;text-align:center;color:var(--text3)">Sin días. Agregá uno con "+ Agregar día".</div></div>';return;}
   c.innerHTML=_diasEnvio.map(function(d,idx){
-    return '<div class="gen-card" style="margin-bottom:12px">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px">'
-      +'<input class="fgi" style="max-width:180px;font-weight:700" value="'+(d.nombre||"")+'" onchange="setDiaEnvCampo('+idx+',\'nombre\',this.value)" placeholder="Nombre (ej: Martes)"/>'
-      +'<div style="display:flex;gap:8px;align-items:center">'
-      +'<span class="pill '+(d.activo!==false?"on":"off")+'" onclick="toggleDiaEnvActivo('+idx+')">'+(d.activo!==false?"✓ Activo":"Pausado")+'</span>'
-      +'<button class="btn bsm bic br2" onclick="quitarDiaEnvio('+idx+')" title="Quitar día">✕</button>'
-      +'</div></div>'
-      +'<div class="fr2" style="margin-bottom:10px"><div class="fg" style="margin:0"><label class="fgl">Día de entrega</label>'+dowSelectAdm(d.dow,"setDiaEnvCampo("+idx+",'dow',parseInt(this.value))")+'</div>'
-      +'<div class="fg" style="margin:0"><label class="fgl">Horario de entrega</label><div style="display:flex;gap:6px;align-items:center"><input class="fgi" type="time" value="'+(d.desde||"20:00")+'" onchange="setDiaEnvCampo('+idx+',\'desde\',this.value)"/><span>a</span><input class="fgi" type="time" value="'+(d.hasta||"23:00")+'" onchange="setDiaEnvCampo('+idx+',\'hasta\',this.value)"/></div></div></div>'
-      +'<div class="fr2"><div class="fg" style="margin:0"><label class="fgl">Cierra pedidos (corte)</label><div style="display:flex;gap:6px;align-items:center">'+dowSelectAdm(d.corte_dow,"setDiaEnvCampo("+idx+",'corte_dow',parseInt(this.value))")+'<input class="fgi" type="number" min="0" max="23" style="max-width:66px" value="'+d.corte_hora+'" onchange="setDiaEnvCampo('+idx+',\'corte_hora\',parseInt(this.value)||0)"/><span>hs</span></div></div>'
+    return '<details class="acc"'+(idx===_diaAbierto?" open":"")+' ontoggle="diaEnvToggle('+idx+',this.open)">'
+      +'<summary><span class="acc-ic">📅</span><span class="acc-t"><span id="dia-tit-'+idx+'">'+escA(d.nombre||"Sin nombre")+'</span><small id="dia-res-'+idx+'">'+escA(diaEnvResumen(d))+'</small></span><span class="acc-st" id="dia-est-'+idx+'">'+diaEnvEstado(d)+'</span></summary>'
+      +'<div class="acc-b">'
+      +'<div class="fr2" style="margin-bottom:12px"><div class="fg" style="margin:0"><label class="fgl">Nombre que ve el socio</label><input class="fgi" style="font-weight:700" value="'+escA(d.nombre||"")+'" onchange="setDiaEnvCampo('+idx+',\'nombre\',this.value)" placeholder="Ej: Martes"/></div>'
+      +'<div class="fg" style="margin:0"><label class="fgl">Día de entrega</label>'+dowSelectAdm(d.dow,"setDiaEnvCampo("+idx+",'dow',parseInt(this.value))")+'</div></div>'
+      +'<div class="fg"><label class="fgl">Horario de entrega</label><div style="display:flex;gap:6px;align-items:center"><input class="fgi" type="time" value="'+(d.desde||"20:00")+'" onchange="setDiaEnvCampo('+idx+',\'desde\',this.value)"/><span>a</span><input class="fgi" type="time" value="'+(d.hasta||"23:00")+'" onchange="setDiaEnvCampo('+idx+',\'hasta\',this.value)"/></div></div>'
+      +'<div class="fr2" style="margin-bottom:14px"><div class="fg" style="margin:0"><label class="fgl">Cierra pedidos (corte)</label><div style="display:flex;gap:6px;align-items:center">'+dowSelectAdm(d.corte_dow,"setDiaEnvCampo("+idx+",'corte_dow',parseInt(this.value))")+'<input class="fgi" type="number" min="0" max="23" style="max-width:66px" value="'+d.corte_hora+'" onchange="setDiaEnvCampo('+idx+',\'corte_hora\',parseInt(this.value)||0)"/><span>hs</span></div></div>'
       +'<div class="fg" style="margin:0"><label class="fgl">Reabre pedidos</label><div style="display:flex;gap:6px;align-items:center">'+dowSelectAdm(d.reabre_dow,"setDiaEnvCampo("+idx+",'reabre_dow',parseInt(this.value))")+'<input class="fgi" type="number" min="0" max="23" style="max-width:66px" value="'+d.reabre_hora+'" onchange="setDiaEnvCampo('+idx+',\'reabre_hora\',parseInt(this.value)||0)"/><span>hs</span></div></div></div>'
-      +'</div>';
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px solid var(--border)">'
+      +'<span class="pill '+(d.activo!==false?"on":"off")+'" id="dia-pill-'+idx+'" onclick="toggleDiaEnvActivo('+idx+')">'+(d.activo!==false?"✓ Activo":"Pausado")+'</span>'
+      +'<button class="btn bsm br2" onclick="quitarDiaEnvio('+idx+')">✕ Quitar día</button>'
+      +'</div></div></details>';
   }).join("");
 }
-function setDiaEnvCampo(idx,campo,val){ if(_diasEnvio[idx]) _diasEnvio[idx][campo]=val; }
-function toggleDiaEnvActivo(idx){ if(_diasEnvio[idx]){ _diasEnvio[idx].activo=!(_diasEnvio[idx].activo!==false); renderDiasEnvioEditor(); } }
-function quitarDiaEnvio(idx){ if(!confirm("¿Quitar este día de envío?"))return; _diasEnvio.splice(idx,1); renderDiasEnvioEditor(); }
-function agregarDiaEnvio(){ var maxId=_diasEnvio.reduce(function(m,d){return Math.max(m,d.id||0);},0); _diasEnvio.push({id:maxId+1,nombre:"Nuevo día",dow:2,desde:"20:00",hasta:"23:00",corte_dow:1,corte_hora:17,reabre_dow:3,reabre_hora:10,activo:true}); renderDiasEnvioEditor(); }
+function diaEnvToggle(idx,abierto){if(abierto)_diaAbierto=idx;else if(_diaAbierto===idx)_diaAbierto=null;}
+/* Actualiza el renglón de arriba sin volver a dibujar (así no se pierde lo que se está escribiendo) */
+function diaEnvRefrescar(idx){
+  var d=_diasEnvio[idx];if(!d)return;
+  var t=document.getElementById("dia-tit-"+idx),r=document.getElementById("dia-res-"+idx),e=document.getElementById("dia-est-"+idx),p=document.getElementById("dia-pill-"+idx);
+  if(t)t.textContent=d.nombre||"Sin nombre";
+  if(r)r.textContent=diaEnvResumen(d);
+  if(e)e.innerHTML=diaEnvEstado(d);
+  if(p){p.className="pill "+(d.activo!==false?"on":"off");p.textContent=d.activo!==false?"✓ Activo":"Pausado";}
+}
+function setDiaEnvCampo(idx,campo,val){ if(_diasEnvio[idx]){ _diasEnvio[idx][campo]=val; diaEnvRefrescar(idx); } }
+function toggleDiaEnvActivo(idx){ if(_diasEnvio[idx]){ _diasEnvio[idx].activo=!(_diasEnvio[idx].activo!==false); diaEnvRefrescar(idx); } }
+function quitarDiaEnvio(idx){ if(!confirm("¿Quitar este día de envío? Se aplica al tocar Guardar."))return; _diasEnvio.splice(idx,1); _diaAbierto=null; renderDiasEnvioEditor(); }
+function agregarDiaEnvio(){ var maxId=_diasEnvio.reduce(function(m,d){return Math.max(m,d.id||0);},0); _diasEnvio.push({id:maxId+1,nombre:"Nuevo día",dow:2,desde:"20:00",hasta:"23:00",corte_dow:1,corte_hora:17,reabre_dow:3,reabre_hora:10,activo:true}); _diaAbierto=_diasEnvio.length-1; renderDiasEnvioEditor(); }
 function guardarDiasEnvio(){ sb("configuracion?id=eq.1","PATCH",{dias_envio:JSON.stringify(_diasEnvio)}).then(function(){toast("Días de envío guardados","success");}); }
 
 /* ============================================================
